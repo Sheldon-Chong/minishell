@@ -151,5 +151,5 @@ int print_error(t_error error, t_token_info *token_info);
 int	bash_cmd(char **env, t_token_info *token_info);
 
 void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out);
-
+char	*get_path(char *cmd, char **env);
 #endif

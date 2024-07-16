@@ -1,6 +1,6 @@
 # include "minishell.h"
 
-static char	*get_path(char *cmd, char **env)
+char	*get_path(char *cmd, char **env)
 {
 	char	*path;
 	char	*sub;
