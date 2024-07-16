@@ -91,6 +91,15 @@ typedef struct s_error
 	char	*subject;
 }	t_error;
 
+typedef struct s_executor
+{
+	int pipefd[2];
+	int cmd_in;
+	int cmd_out;
+	int status;
+}	t_executor;
+
+
 // utils
 int				get_length_of_list(t_token *head);
 int				newline(int var);
@@ -133,11 +142,12 @@ void			chunk_tokens(t_token_info *token_list);
 int				handle_redir(t_token *head, t_token *token_chunk);
 
 // to be removed
-void			run_cmds(char **env, t_token_info *token_info);
+void			executor(char **env, t_token_info *token_info);
 char			*get_path(char *tokens, char **env);
 
 // error printing
 int print_error(t_error error, t_token_info *token_info);
 
+int	bash_cmd(char **env, t_token_info *token_info);
 
 #endif

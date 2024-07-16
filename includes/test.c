@@ -31,7 +31,7 @@ void run_cmd(char **cmd, char **env, t_token_info *token_info, int in_fd, int ou
 }
 
 // Function to run a list of commands with piping
-void run_cmds(char **env, t_token_info *token_info)
+void executor(char **env, t_token_info *token_info)
 {
     t_token *chunk_list = token_info->token_chunks;
     int pipefd[2];

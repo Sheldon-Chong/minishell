@@ -6,7 +6,7 @@
 /*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/09 11:08:18 by shechong          #+#    #+#             */
-/*   Updated: 2024/07/09 16:32:12 by shechong         ###   ########.fr       */
+/*   Updated: 2024/07/16 18:43:44 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ bool			is_in_charset(int c, char *charset);
 bool			str_charset(char *str, char *charset, int mode);
 bool			is_in_strset(char *str, char *strset);
 
+int				nothing(void);
 
 char			*c2str(int c);
 

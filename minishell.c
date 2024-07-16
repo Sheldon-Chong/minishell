@@ -61,9 +61,7 @@ int	main(int ac, char **av, char **env)
 			token_info->env_arr = env;
 			print_tokens(token_info, 'l');
 			if (scan_cmd(token_info) && !token_info->has_error)
-			{
-				run_cmds(env, token_info); //THIS IS TO BE REPLACED
-			}
+				executor(env, token_info); //THIS IS TO BE REPLACED
 			free_TokenList(token_info);
 		}
 	}
