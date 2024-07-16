@@ -79,6 +79,7 @@ typedef struct s_token_info
 	t_token		*cmd_start;
 	char		**env_arr;
 	bool		has_error;
+	t_list		*heredocs;
 	t_env		*global_env;
 }	t_token_info;
 
@@ -143,11 +144,12 @@ int				handle_redir(t_token *head, t_token *token_chunk);
 
 // to be removed
 void			executor(char **env, t_token_info *token_info);
-char			*get_path(char *tokens, char **env);
 
 // error printing
 int print_error(t_error error, t_token_info *token_info);
-
+`
 int	bash_cmd(char **env, t_token_info *token_info);
+
+void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out);
 
 #endif

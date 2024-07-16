@@ -6,7 +6,7 @@ LDFLAGS = -lncurses -lreadline
 
 OUTPUT = minishell
 
-SRCS = $(wildcard *.c ./libft/*.c ./tokenization/*.c ./env/*.c ./execution/parse_cmd.c ./execution/parse_pipe_cmd.c ./execution/parse_cmd_utils.c ./execution/parse_pipe_cmd_utils.c)
+SRCS = $(wildcard *.c ./libft/*.c ./tokenization/*.c ./env/*.c ./execution/*.c)
 
 OBJS = $(SRCS:%.c=%.o)
 
