@@ -1,5 +1,28 @@
 # include "minishell.h"
 
+static char	*get_path(char *cmd, char **env)
+{
+	char	*path;
+	char	*sub;
+	char	*join;
+	char	*pathjoin;
+
+	path = getenv("PATH");
+	while (path && *path)
+	{
+		sub = ft_substr(path, 0, (size_t)(ft_strchr(path, ':') - path));
+		join = ft_strjoin(sub, "/");
+		pathjoin = ft_strjoin(join, cmd);
+		if (access(pathjoin, F_OK) == 0)
+			return (f(join, f(sub, (void *)pathjoin)));
+		f(pathjoin, f(join, f(sub, NULL)));
+		path = ft_strchr(path, ':');
+		if (path)
+			path ++;
+	}
+	return ("\0");
+}
+
 // execute a command with the given arguments, recieving the cmd_in_fd as input and piping its output to cmd_out
 void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out)
 {

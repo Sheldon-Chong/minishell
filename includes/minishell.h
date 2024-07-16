@@ -64,6 +64,7 @@ typedef struct s_token
 	char			*heredoc;		//token chunk only
 	t_io			*io_list;		//for token chunk only
 	struct s_token	*next;			//for BOTH tokens and token chunks
+	t_list		*heredocs;
 }	t_token;
 
 
@@ -79,7 +80,6 @@ typedef struct s_token_info
 	t_token		*cmd_start;
 	char		**env_arr;
 	bool		has_error;
-	t_list		*heredocs;
 	t_env		*global_env;
 }	t_token_info;
 
@@ -147,7 +147,7 @@ void			executor(char **env, t_token_info *token_info);
 
 // error printing
 int print_error(t_error error, t_token_info *token_info);
-`
+
 int	bash_cmd(char **env, t_token_info *token_info);
 
 void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out);
