@@ -17,19 +17,16 @@
 
 # define SHELL_MSG "minishell$ "
 # define SPACE_CHAR " \f\v\t\r\n"
-# define INVALID_ENV_CHAR "[]<>!@$%%^-+~/ "
+# define INVALID_ENV_CHAR "[]<>!@$%%^-+~/&() "
 # define BASH_CMDS "env,cd,unset,export,exit"
 # define BRACE -125
 # define INVALID_CHARS "{};\\"
-# define SHELL_OPERATORS "|><()&"
+# define SHELL_OPERATORS "|><"
 
 # define T_PIPE 'p'
 # define T_CMD 'c'
 # define T_REDIR 'r'
 
-# define T_OR 'o'
-# define T_AND 'a'
-# define T_SUBSHELL '('
 
 # define NOT_WITHIN_QUOTE '\0'
 
@@ -42,6 +39,19 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_io
+{
+	enum
+	{
+		IO_AIN,
+		IO_AOUT,
+		IO_IN,
+		IO_OUT
+	}	e_type; //type of redirection, AIN<<, AOUT>>, IN<, OUT>
+	t_list		*value;
+	struct s_io	*next;
+}	t_io;
+
 typedef struct s_token
 {
 	char			*word;			// for token only
@@ -52,8 +62,11 @@ typedef struct s_token
 	char			**tokens;			//token chunk only
 	struct s_token	*start;			//token chunk only
 	char			*heredoc;		//token chunk only
+	t_io			*io_list;		//for token chunk only
 	struct s_token	*next;			//for BOTH tokens and token chunks
 }	t_token;
+
+
 
 
 typedef struct s_token_info
@@ -68,6 +81,9 @@ typedef struct s_token_info
 	bool		has_error;
 	t_env		*global_env;
 }	t_token_info;
+
+
+
 
 typedef struct s_error
 {

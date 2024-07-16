@@ -28,12 +28,9 @@ static int	shell_operator(char *str, int end, t_token **token_list)
 		return (append_tok(tok(ft_substr(str, end, 1), T_REDIR), token_list), 1);
 	else if (!ft_strncmp("><", string, 2) || !ft_strncmp("<>", string, 2))
 		printf("unexpected character\n");
-	else if (!ft_strncmp("&&", string, 2))
-		return (append_tok(tok(ft_substr(str, end, 2), T_AND), token_list), 2);
-	else if (!ft_strncmp("||", string, 2))
-		return (append_tok(tok(ft_substr(str, end, 2), T_OR), token_list), 2);
 	else
 		return (append_tok(tok(c2str(str[end]), T_PIPE), token_list), 1);
+	return (0);
 }
 
 static int	form_token(char *str, int end, t_token **token_list)

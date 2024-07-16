@@ -28,15 +28,13 @@ char	*get_path(char *cmd, char **env)
 	return ("\0");
 }
 
-//to be replaced by Jyap
-void	run_cmds(char **env, t_token_info *token_info)
+// executes a given command and its following parameters
+void run_cmd(char **cmd, char **env, t_token_info *token_info)
 {
 	char	*command;
 	int		pid;
-	char	**args;
 
-	args = token_info->cmd_start->tokens;
-	command = get_path(args[0], env);
+	command = get_path(cmd[0], env);
 	pid = fork();
 	if (pid != 0)
 	{
@@ -47,7 +45,18 @@ void	run_cmds(char **env, t_token_info *token_info)
 	else if (pid == 0)
 	{
 		if (access(command, F_OK) == 0)
-			execve((const char *)command, (char *const *)args, env);
+			execve((const char *)command, (char *const *)cmd, env);
 		exit(0);
+	}
+}
+
+//to be replaced by Jyap
+void	run_cmds(char **env, t_token_info *token_info)
+{
+	t_token *chunk_list = token_info->token_chunks;
+	while (chunk_list)
+	{
+		run_cmd(chunk_list->tokens, env, token_info);
+		chunk_list = chunk_list->next;
 	}
 }

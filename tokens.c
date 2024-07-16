@@ -2,16 +2,16 @@
 
 bool pattern_rec(t_token *pattern_start, t_token_info *token_info)
 {
-	if (is_in_strset(pattern_start->word, "|,>,>>,<,<<,&&,(,)") && (!pattern_start->next))
+	if (is_in_strset(pattern_start->word, "|,>,>>,<,<<") && (!pattern_start->next))
 		return (print_error((t_error){'s', "newline"}, token_info), true); 
 	if (!pattern_start->next)
 		return (false);
-	if (is_in_strset(pattern_start->word, "|,>,>>,<,<<,&&,("))
+	if (is_in_strset(pattern_start->word, "|,>,>>,<,<<"))
 	{
-		if (is_in_strset(pattern_start->next->word, "|,>,>>,<,<<,&&"))
+		if (is_in_strset(pattern_start->next->word, "|,>,>>,<,<<"))
 			return (print_error((t_error){'s', pattern_start->next->word}, token_info), true);
 	}
-
+	return (false);
 }
 
 bool post_validate(t_token_info *token_info)

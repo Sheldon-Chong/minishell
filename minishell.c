@@ -89,8 +89,7 @@ int	main(int ac, char **av, char **env)
 			{
 				if (str_in_arr(token_info->cmd_start->tokens[0], BASH_CMDS))
 					bash_cmd(env, token_info);
-				else if (get_length_of_list(token_info->token_chunks) == 1)
-					run_cmds(env, token_info); //THIS IS TO BE REPLACED
+				run_cmds(env, token_info); //THIS IS TO BE REPLACED
 			}
 			print_tokens(token_info, 'l');
 			free_TokenList(token_info);
