@@ -86,15 +86,15 @@ int	print_tokens(t_token_info *token_info, char format)
 	{
 		int i = -1;
 		printf("	TOKEN %d: [", i2);
-		while(head2->cmds[++i])
-			printf("\"%s\", ", head2->cmds[i]);
+		while(head2->tokens[++i])
+			printf("\"%s\", ", head2->tokens[i]);
 		printf("] (%c), infile: %s, outfile: %s\n", head2->type, head2->infile, head2->outfile);
 		head2 = head2->next;
 		i2 ++;
 	}
 	printf("%s\n>> EXCEVE:\n%s", C_BBLUE, C_RESET);
 	if (!(token_info->cmd_start == NULL))
-		printf("	start at: [%s]\n", token_info->cmd_start->cmds[0]);
+		printf("	start at: [%s]\n", token_info->cmd_start->tokens[0]);
 	else
 		printf("	start at: None\n");
 	printf("\n===============\n");

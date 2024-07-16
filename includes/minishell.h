@@ -44,15 +44,15 @@ typedef struct s_env
 
 typedef struct s_token
 {
-	char			*word;
-	char			type;
-	char			*infile; //token chunk only
-	char			*outfile; //token chunk only
-	char			outfile_mode; //token chunk only
-	char			**cmds; //token chunk only
-	struct s_token	*start; //token chunk only
-	char			*heredoc; //token chunk only
-	struct s_token	*next; //for BOTH tokens and token chunks
+	char			*word;			// for token only
+	char			type;			// for both
+	char			*infile;		//token chunk only
+	char			*outfile;		//token chunk only
+	char			outfile_mode;	//token chunk only
+	char			**tokens;			//token chunk only
+	struct s_token	*start;			//token chunk only
+	char			*heredoc;		//token chunk only
+	struct s_token	*next;			//for BOTH tokens and token chunks
 }	t_token;
 
 
@@ -118,7 +118,7 @@ int				handle_redir(t_token *head, t_token *token_chunk);
 
 // to be removed
 void			run_cmds(char **env, t_token_info *token_info);
-char			*get_path(char *cmd, char **env);
+char			*get_path(char *tokens, char **env);
 
 // error printing
 int print_error(t_error error, t_token_info *token_info);

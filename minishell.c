@@ -6,7 +6,7 @@ int	bash_cmd(char **env, t_token_info *token_info)
 	char	**args;
 	int		i;
 
-	args = token_info->cmd_start->cmds;
+	args = token_info->cmd_start->tokens;
 	if ((!ft_strcmp(args[0], "echo")) && args[1] && !ft_strcmp(args[1], "-n"))
 	{
 		i = 1;
@@ -45,14 +45,14 @@ t_token	*scan_cmd(t_token_info *token_info)
 
 	list = token_info->token_chunks;
 	token_info->cmd_start = token_info->token_chunks;
-	while (list && list->cmds[0])
+	while (list && list->tokens[0])
 	{
-		if (str_in_arr(list->cmds[0], BASH_CMDS))
+		if (str_in_arr(list->tokens[0], BASH_CMDS))
 		{
 		}
-		else if (access(get_path(list->cmds[0],
+		else if (access(get_path(list->tokens[0],
 					token_info->env_arr), F_OK) != 0 \
-					|| !strcmp(list->cmds[0], ""))
+					|| !strcmp(list->tokens[0], ""))
 		{
 			printf("bash: %s: command not found\n", list->start->word);
 			token_info->cmd_start = list->next;
@@ -87,7 +87,7 @@ int	main(int ac, char **av, char **env)
 			token_info->env_arr = env;
 			if (scan_cmd(token_info) && !token_info->has_error)
 			{
-				if (str_in_arr(token_info->cmd_start->cmds[0], BASH_CMDS))
+				if (str_in_arr(token_info->cmd_start->tokens[0], BASH_CMDS))
 					bash_cmd(env, token_info);
 				else if (get_length_of_list(token_info->token_chunks) == 1)
 					run_cmds(env, token_info); //THIS IS TO BE REPLACED

@@ -78,7 +78,7 @@ int	export(t_token_info *token_info)
 	char	**args;
 	char	*var_name;
 
-	args = token_info->cmd_start->cmds;
+	args = token_info->cmd_start->tokens;
 	if (!(token_info->token_list->next))
 		print_env(&token_info->global_env, 'x');
 	else

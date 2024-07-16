@@ -18,7 +18,7 @@ int	free_TokenList(t_token_info *token_info)
 	while (head)
 	{
 		temp = head->next;
-		free(head->cmds);
+		free(head->tokens);
 		free(head);
 		head = temp;
 	}

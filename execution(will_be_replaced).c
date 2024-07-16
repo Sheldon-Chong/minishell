@@ -35,7 +35,7 @@ void	run_cmds(char **env, t_token_info *token_info)
 	int		pid;
 	char	**args;
 
-	args = token_info->cmd_start->cmds;
+	args = token_info->cmd_start->tokens;
 	command = get_path(args[0], env);
 	pid = fork();
 	if (pid != 0)

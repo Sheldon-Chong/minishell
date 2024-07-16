@@ -46,13 +46,13 @@ void	chunk_tokens(t_token_info *token_info)
 		}
 		else if (head->type == T_PIPE)
 		{
-			token_chunk->cmds = tokens2arr(token_chunk, head);
+			token_chunk->tokens = tokens2arr(token_chunk, head);
 			append_tok(token_chunk, &(token_info->token_chunks));
 			token_chunk = tok("", 'g');
 			token_chunk->start = head->next;
 		}
 		head = head->next;
 	}
-	token_chunk->cmds = tokens2arr(token_chunk, NULL);
+	token_chunk->tokens = tokens2arr(token_chunk, NULL);
 	append_tok(token_chunk, &(token_info->token_chunks));
 }
