@@ -14,6 +14,11 @@ int	handle_redir(t_token *head, t_token *token_chunk)
 			else
 				close(file);
 			head->outfile_mode = 'a' * (!ft_strcmp(head->word, ">>"));
+			if (token_chunk->heredoc_buffer != NULL)
+			{
+				free(token_chunk->heredoc_buffer); 
+				token_chunk->heredoc_buffer = NULL;
+			}
 			token_chunk->outfile = head->next->word;
 		}
 		if (!ft_strcmp(head->word, "<"))

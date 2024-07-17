@@ -48,6 +48,11 @@ char	**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_in
 		{
 			if(!ft_strncmp(token->word, "<<", 2))
 			{
+				if (token_chunk->infile != NULL)
+				{
+					free(token_chunk->infile);
+					token_chunk->infile = NULL;
+				}
 				token_chunk->heredoc_buffer = expand_env(here_doc_input(token->next->word), token_info);
 			}
 			token = token->next->next;

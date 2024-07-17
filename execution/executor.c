@@ -40,6 +40,7 @@ void set_fd_in(t_token *current_chunk, t_executor *executor)
 {
 	if (current_chunk->heredoc_buffer != NULL)
 	{
+		printf("heredoc detected\n");
 		int fd[2];
 		pipe(fd);
 		ft_putstr_fd(current_chunk->heredoc_buffer, fd[1]);
