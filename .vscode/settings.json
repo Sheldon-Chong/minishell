@@ -2,6 +2,11 @@
 	"files.associations": {
 		"cstdlib": "c",
 		"locale": "c",
-		"minishell.h": "c"
+		"minishell.h": "c",
+		"sstream": "c",
+		"libft.h": "c",
+		"__tuple": "c",
+		"array": "c",
+		"stdio.h": "c"
 	}
 }

@@ -48,8 +48,11 @@ typedef struct s_io
 		IO_IN,
 		IO_OUT
 	}	e_type; //type of redirection, AIN<<, AOUT>>, IN<, OUT>
-	t_list		*value;
-	struct s_io	*next;
+	//t_list		*value;
+	//struct s_io	*next;
+	char		*infile_name;
+	char		*outfile_name;
+	char		*heredoc_buffer;
 }	t_io;
 
 typedef struct s_token
@@ -64,7 +67,7 @@ typedef struct s_token
 	char			*heredoc;		//token chunk only
 	t_io			*io_list;		//for token chunk only
 	struct s_token	*next;			//for BOTH tokens and token chunks
-	t_list		*heredocs;
+	t_list			*heredocs;
 }	t_token;
 
 
@@ -140,16 +143,17 @@ bool			quote_alternate(char c, char *quote);
 
 //chunking
 void			chunk_tokens(t_token_info *token_list);
-int				handle_redir(t_token *head, t_token *token_chunk);
 
 // to be removed
 void			executor(char **env, t_token_info *token_info);
 
 // error printing
-int print_error(t_error error, t_token_info *token_info);
+int		print_error(t_error error, t_token_info *token_info);
 
-int	bash_cmd(char **env, t_token_info *token_info);
+int		bash_cmd(char **env, t_token_info *token_info);
 
-void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out);
+void	exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out);
 char	*get_path(char *cmd, char **env);
+void	parse_cmd_list_for_io(t_token_info *token_info);
+char	**append_to_array(char ***array, char *value);
 #endif

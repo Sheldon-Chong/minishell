@@ -38,6 +38,10 @@ void set_fd_out(t_token *current_chunk, t_executor *executor)
 // set the stdin of the current command
 void set_fd_in(t_token *current_chunk, t_executor *executor)
 {
+	if (current_chunk->io_list->heredoc_buffer != NULL)
+	{
+		ft_putstr_fd(current_chunk->io_list->heredoc_buffer, executor->pipefd[0]);
+	}
 	executor->cmd_in = executor->pipefd[0]; // the output of the current command is the input for the next command
 }
 

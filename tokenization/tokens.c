@@ -92,6 +92,9 @@ int	print_tokens(t_token_info *token_info, char format)
 		head2 = head2->next;
 		i2 ++;
 	}
+	printf("%s\n>> IOLIST%s\n", C_BBLUE, C_RESET);
+	
+
 	printf("%s\n>> EXCEVE:\n%s", C_BBLUE, C_RESET);
 	if (!(token_info->cmd_start == NULL))
 		printf("	start at: [%s]\n", token_info->cmd_start->tokens[0]);
