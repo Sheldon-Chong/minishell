@@ -57,7 +57,7 @@ int	main(int ac, char **av, char **env)
 			token_info = process_input(user_input, global_env);
 			token_info->env_arr = env;
 
-			parse_cmd_list_for_io(token_info);
+			//parse_cmd_list_for_io(token_info);
 			print_tokens(token_info, 'l');
 			if (scan_cmd(token_info) && !token_info->has_error)
 				executor(env, token_info); //THIS IS TO BE REPLACED

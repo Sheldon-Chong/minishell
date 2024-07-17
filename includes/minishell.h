@@ -65,6 +65,7 @@ typedef struct s_token
 	char			**tokens;			//token chunk only
 	struct s_token	*start;			//token chunk only
 	char			*heredoc;		//token chunk only
+	char			*heredoc_buffer;
 	t_io			*io_list;		//for token chunk only
 	struct s_token	*next;			//for BOTH tokens and token chunks
 	t_list			*heredocs;
@@ -118,7 +119,7 @@ int				free_TokenList(t_token_info *token_list);
 t_token			*scan_cmd(t_token_info *token_list);
 t_token_info	*process_input(char *str, t_env *env_arr);
 t_token			*tokenize(char *string, t_token_info *token_list);
-char			**tokens2arr(t_token *token_chunk, t_token *str_end);
+char			**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_info);
 t_token			*append_tok(t_token *token, t_token **head);
 t_token			*tok(char *word, char type);
 int				is_token_valid(char *str, t_token_info *token_info);
@@ -156,4 +157,7 @@ void	exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 char	*get_path(char *cmd, char **env);
 void	parse_cmd_list_for_io(t_token_info *token_info);
 char	**append_to_array(char ***array, char *value);
+char *here_doc_input(char *delimiter);
+
+
 #endif

@@ -62,6 +62,7 @@ t_token	*tok(char *word, char type)
 	token->start = NULL;
 	token->heredoc = NULL;
 	token->next = NULL;
+	token->heredoc_buffer = NULL;
 	return (token);
 }
 
@@ -88,7 +89,7 @@ int	print_tokens(t_token_info *token_info, char format)
 		printf("	TOKEN %d: [", i2);
 		while(head2->tokens[++i])
 			printf("\"%s\", ", head2->tokens[i]);
-		printf("] (%c), infile: %s, outfile: %s\n", head2->type, head2->infile, head2->outfile);
+		printf("] (%c), infile: %s, outfile: %s heredoc_buffer %s\n", head2->type, head2->infile, head2->outfile, head2->heredoc_buffer);
 		head2 = head2->next;
 		i2 ++;
 	}

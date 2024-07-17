@@ -38,9 +38,14 @@ void set_fd_out(t_token *current_chunk, t_executor *executor)
 // set the stdin of the current command
 void set_fd_in(t_token *current_chunk, t_executor *executor)
 {
-	if (current_chunk->io_list->heredoc_buffer != NULL)
+	if (current_chunk->heredoc_buffer != NULL)
 	{
-		ft_putstr_fd(current_chunk->io_list->heredoc_buffer, executor->pipefd[0]);
+		int fd[2];
+		pipe(fd);
+		ft_putstr_fd(current_chunk->heredoc_buffer, fd[1]);
+		close(fd[1]);
+		executor->cmd_in = fd[0];
+		return ;
 	}
 	executor->cmd_in = executor->pipefd[0]; // the output of the current command is the input for the next command
 }
@@ -51,6 +56,7 @@ void executor(char **env, t_token_info *token_info)
 	t_token *chunk_list = token_info->token_chunks;
 	t_executor *executor = executor_init();
 
+	set_fd_in(chunk_list, executor);
 	while (chunk_list)
 	{
 		set_fd_out(chunk_list, executor); //set stdout of current command

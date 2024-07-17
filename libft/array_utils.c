@@ -3,7 +3,6 @@
 int get_array_len(char **array)
 {
 	int i = 0;
-
 	while(array[i])
 		i++;
 	return (i);
@@ -20,7 +19,13 @@ char	**append_to_array(char ***array, char *value)
 	current_array = *array;
 	array_len = get_array_len(current_array);
 
-	printf("ARRAY LENGTH: %d\n", array_len);
+	if (current_array[0] == NULL)
+	{
+		new_array = malloc(sizeof(char *) * 2);
+		new_array[0] = ft_strdup(value);
+		new_array[1] = NULL;
+		return (new_array);
+	}
 	new_array = malloc(sizeof(char *) * (array_len + 2));
 	i = -1;
 	while(current_array[++i])

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char *here(char *delimiter)
+char *here_doc_input(char *delimiter)
 {
 	write(STDOUT_FILENO, "> ", 2);
 	char *buffer = get_next_line(STDIN_FILENO);
@@ -23,7 +23,7 @@ int redir_set(char *str, char *filename, t_io *io_list, t_token_info *token_info
 {
 	if (!ft_strncmp(str, "<<", 2))
 	{
-		io_list->heredoc_buffer = here(filename);
+		io_list->heredoc_buffer = here_doc_input(filename);
 		printf("%s\n", expand_env(io_list->heredoc_buffer, token_info));
 	}
 	else if (!ft_strncmp(str, "<", 1))

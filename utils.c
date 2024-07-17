@@ -32,28 +32,33 @@ int	is_token_valid(char *str, t_token_info *token_info)
 	return (0);
 }
 
-char	**tokens2arr(t_token *token_chunk, t_token *str_end)
+char	**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_info)
 {
-	t_token	*token_chunk_nav;
+	t_token	*token;
 	char	**cmds;
 	int		i;
 
-	token_chunk_nav = token_chunk->start;
+	cmds = malloc(1 * sizeof(char *));
+	cmds[0] = NULL;
+	token = token_chunk->start;
 	i = 0;
-	while (token_chunk_nav != str_end)
+	while (token != str_end)
 	{
-		i ++;
-		token_chunk_nav = token_chunk_nav->next;
+		if(str_in_arr(token->word, ">>,>,<<,<"))
+		{
+			if(!ft_strncmp(token->word, "<<", 2))
+			{
+				token_chunk->heredoc_buffer = expand_env(here_doc_input(token->next->word), token_info);
+			}
+			token = token->next->next;
+			continue;
+		}
+		cmds = append_to_array(&cmds,token->word);
+		token = token->next;
 	}
-	cmds = malloc(sizeof(char *) * (i + 1));
-	cmds[i] = NULL;
-	i = 0;
-	token_chunk_nav = token_chunk->start;
-	while (token_chunk_nav != str_end)
-	{
-		cmds[i++] = token_chunk_nav->word;
-		token_chunk_nav = token_chunk_nav->next;
-	}
+	i = -1;
+	while(cmds[++i])
+		printf("%s\n", cmds[i]);
 	return (cmds);
 }
 
