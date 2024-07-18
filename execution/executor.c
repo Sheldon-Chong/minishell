@@ -30,6 +30,16 @@ void set_fd_out(t_token *current_chunk, t_executor *executor)
 		}
 		executor->cmd_out = executor->pipefd[1];
 	}
+	else if (current_chunk->outfile != NULL)
+	{
+		int file_fd = open(current_chunk->outfile, O_WRONLY | O_TRUNC);
+		if (file_fd == -1)
+		{
+			perror("open");
+			exit(EXIT_FAILURE);
+		}
+		executor->cmd_out = file_fd; 
+	}
 	else
 		executor->cmd_out = STDOUT_FILENO; // Last command writes to stdout
 }
@@ -48,6 +58,16 @@ void set_fd_in(t_token *current_chunk, t_executor *executor)
 		ft_putstr_fd(current_chunk->heredoc_buffer, fd[1]);
 		close(fd[1]);
 		executor->cmd_in = fd[0];
+	}
+	else if (current_chunk->infile != NULL)
+	{
+		int file_fd = open(current_chunk->infile, O_RDONLY);
+		if (file_fd == -1)
+		{
+			perror("open");
+			exit(EXIT_FAILURE);
+		}
+		executor->cmd_in = file_fd;
 	}
 	else
 		executor->cmd_in = executor->pipefd[0]; // the output of the previous command is the input for the next command
