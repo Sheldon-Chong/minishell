@@ -23,8 +23,6 @@ int	handle_redir(t_token *head, t_token *token_chunk)
 		}
 		if (!ft_strcmp(head->word, "<"))
 			token_chunk->infile = head->next->word;
-		if (!ft_strcmp(head->word, "<<"))
-			token_chunk->heredoc = head->next->word;
 		head = head->next->next;
 		return (1);
 	}

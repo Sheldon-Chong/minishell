@@ -1,5 +1,10 @@
 #include "minishell.h"
 
+int exit_error(char *error_name)
+{
+	perror("pipe");
+	exit(EXIT_FAILURE);
+}
 
 
 void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out)
@@ -21,6 +26,8 @@ t_executor *executor_init()
 
 void set_fd_out(t_token *current_chunk, t_executor *executor)
 {
+	int	file_fd;
+
 	if (current_chunk->next)
 	{
 		if (pipe(executor->pipefd) == -1)
@@ -30,19 +37,25 @@ void set_fd_out(t_token *current_chunk, t_executor *executor)
 		}
 		executor->cmd_out = executor->pipefd[1];
 	}
-	else if (current_chunk->outfile != NULL)
-	{
-		int file_fd = open(current_chunk->outfile, O_WRONLY | O_TRUNC);
-		if (file_fd == -1)
-		{
-			perror("open");
-			exit(EXIT_FAILURE);
-		}
-		executor->cmd_out = file_fd; 
-	}
 	else
-		executor->cmd_out = STDOUT_FILENO; // Last command writes to stdout
+		executor->cmd_out = STDOUT_FILENO; 
+	
+	if (current_chunk->outfile == NULL)
+		return ;
+	
+	if (current_chunk->outfile_mode == 'a')
+		file_fd = open(current_chunk->outfile, O_WRONLY | O_APPEND);
+	else
+		file_fd = open(current_chunk->outfile, O_WRONLY | O_TRUNC);
+	
+	if (file_fd == -1)
+	{
+		perror("open");
+		exit(EXIT_FAILURE);
+	}
+	executor->cmd_out = file_fd; 
 }
+
 
 // Set the stdin of the current command
 void set_fd_in(t_token *current_chunk, t_executor *executor)
@@ -51,10 +64,7 @@ void set_fd_in(t_token *current_chunk, t_executor *executor)
 	{
 		int fd[2];
 		if (pipe(fd) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
+			exit_error("pipe");
 		ft_putstr_fd(current_chunk->heredoc_buffer, fd[1]);
 		close(fd[1]);
 		executor->cmd_in = fd[0];
@@ -63,10 +73,7 @@ void set_fd_in(t_token *current_chunk, t_executor *executor)
 	{
 		int file_fd = open(current_chunk->infile, O_RDONLY);
 		if (file_fd == -1)
-		{
-			perror("open");
-			exit(EXIT_FAILURE);
-		}
+			exit_error("open");
 		executor->cmd_in = file_fd;
 	}
 	else
@@ -76,14 +83,18 @@ void set_fd_in(t_token *current_chunk, t_executor *executor)
 // Function to run a list of commands with piping
 void executor(char **env, t_token_info *token_info)
 {
-	t_token *chunk_list = token_info->token_chunks;
-	t_executor *executor = executor_init();
-	int prev_pipe_in = STDIN_FILENO;
+	int			prev_pipe_in;
+	t_token		*chunk_list;
+	t_executor	*executor;
+	
+	executor = executor_init();
+	chunk_list = token_info->token_chunks;
+	prev_pipe_in = STDIN_FILENO;
 
 	while (chunk_list)
 	{
-		set_fd_in(chunk_list, executor); // Set the stdin of the current command
-		set_fd_out(chunk_list, executor); // Set the stdout of the current command
+		set_fd_in(chunk_list, executor);
+		set_fd_out(chunk_list, executor);
 
 		run_cmd(chunk_list, env, token_info, executor->cmd_in, executor->cmd_out);
 
@@ -98,7 +109,9 @@ void executor(char **env, t_token_info *token_info)
 	}
 	if (executor->cmd_in != STDIN_FILENO)
 		close(executor->cmd_in);
-	while (wait(&executor->status) > 0);
+		
+	while (wait(&executor->status) > 0)
+		nothing();
 
 	free(executor);
 }

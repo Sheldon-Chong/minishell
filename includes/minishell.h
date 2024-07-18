@@ -64,7 +64,6 @@ typedef struct s_token
 	char			outfile_mode;	//token chunk only
 	char			**tokens;			//token chunk only
 	struct s_token	*start;			//token chunk only
-	char			*heredoc;		//token chunk only
 	char			*heredoc_buffer;
 	t_io			*io_list;		//for token chunk only
 	struct s_token	*next;			//for BOTH tokens and token chunks

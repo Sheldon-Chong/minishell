@@ -60,7 +60,6 @@ t_token	*tok(char *word, char type)
 	token->outfile = NULL;
 	token->outfile_mode = 0;
 	token->start = NULL;
-	token->heredoc = NULL;
 	token->next = NULL;
 	token->heredoc_buffer = NULL;
 	return (token);
