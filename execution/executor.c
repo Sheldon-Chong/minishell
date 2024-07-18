@@ -19,7 +19,6 @@ t_executor *executor_init()
 	return executor;
 }
 
-// set the stdout of the current command
 void set_fd_out(t_token *current_chunk, t_executor *executor)
 {
 	if (current_chunk->next)
@@ -29,25 +28,29 @@ void set_fd_out(t_token *current_chunk, t_executor *executor)
 			perror("pipe");
 			exit(EXIT_FAILURE);
 		}
+		executor->cmd_out = executor->pipefd[1];
 	}
 	else
-		executor->pipefd[1] = STDOUT_FILENO; // Last command writes to stdout
-	executor->cmd_out = executor->pipefd[1];
+		executor->cmd_out = STDOUT_FILENO; // Last command writes to stdout
 }
 
-// set the stdin of the current command
+// Set the stdin of the current command
 void set_fd_in(t_token *current_chunk, t_executor *executor)
 {
 	if (current_chunk->heredoc_buffer != NULL)
 	{
 		int fd[2];
-		pipe(fd);
+		if (pipe(fd) == -1)
+		{
+			perror("pipe");
+			exit(EXIT_FAILURE);
+		}
 		ft_putstr_fd(current_chunk->heredoc_buffer, fd[1]);
 		close(fd[1]);
 		executor->cmd_in = fd[0];
-		return ;
 	}
-	executor->cmd_in = executor->pipefd[0]; // the output of the current command is the input for the next command
+	else
+		executor->cmd_in = executor->pipefd[0]; // the output of the previous command is the input for the next command
 }
 
 // Function to run a list of commands with piping
@@ -55,23 +58,27 @@ void executor(char **env, t_token_info *token_info)
 {
 	t_token *chunk_list = token_info->token_chunks;
 	t_executor *executor = executor_init();
+	int prev_pipe_in = STDIN_FILENO;
 
-	set_fd_in(chunk_list, executor);
 	while (chunk_list)
 	{
-		set_fd_out(chunk_list, executor); //set stdout of current command
-		run_cmd(chunk_list, env, token_info, executor->cmd_in, executor->cmd_out); //run the command
-		if (executor->cmd_in != STDIN_FILENO)
-			close(executor->cmd_in);
+		set_fd_in(chunk_list, executor); // Set the stdin of the current command
+		set_fd_out(chunk_list, executor); // Set the stdout of the current command
+
+		run_cmd(chunk_list, env, token_info, executor->cmd_in, executor->cmd_out);
+
+		if (prev_pipe_in != STDIN_FILENO)
+			close(prev_pipe_in);
+
 		if (executor->cmd_out != STDOUT_FILENO)
 			close(executor->cmd_out);
-		set_fd_in(chunk_list, executor); //set the stdin of the next command
+
+		prev_pipe_in = executor->pipefd[0];
 		chunk_list = chunk_list->next;
 	}
-
 	if (executor->cmd_in != STDIN_FILENO)
 		close(executor->cmd_in);
+	while (wait(&executor->status) > 0);
 
-	while (wait(&executor->status) > 0)
-		nothing();
+	free(executor);
 }
