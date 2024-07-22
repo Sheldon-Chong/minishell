@@ -85,6 +85,7 @@ void executor(char **env, t_token_info *token_info)
 	chunk_list = token_info->token_chunks;
 	prev_pipe_in = STDIN_FILENO;
 
+	
 	while (chunk_list)
 	{
 		set_fd_in(chunk_list, executor);

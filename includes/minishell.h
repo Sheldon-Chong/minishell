@@ -32,6 +32,12 @@
 
 
 
+# define ERR_INVALID_EXIT_ARG 128
+# define ERR_COMMAND_NOT_FOUND 127
+# define ERR_NO_PERMISSIONS 126
+# define ERR_SYNTAX 258
+# define CTRL_C 130
+
 typedef struct s_env
 {
 	char			*name;
@@ -134,7 +140,7 @@ t_env			*new_env(char *name, char *value);
 int				unset_env(char *var_name, t_env **envList, 
 					t_token_info *token_list);
 t_env			*append_env(t_env *env, t_env **envList, char **env_arr);
-int				export(t_token_info *token_info);
+int				export(char **args, t_token_info *token_info);
 
 // quotes
 char			toggle_quote_state(char quote, char c);
@@ -149,7 +155,7 @@ void			chunk_tokens(t_token_info *token_list);
 void			executor(char **env, t_token_info *token_info);
 
 // error printing
-int		print_error(t_error error, t_token_info *token_info);
+int		syntax_error(t_error error, t_token_info *token_info);
 
 int		bash_cmd(char **env, t_token_info *token_info);
 

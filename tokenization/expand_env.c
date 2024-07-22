@@ -23,16 +23,25 @@ static int	expand_env_iter(int *env_end, char *env_start, char **buffer, t_token
 	char	*var_name;
 	char	*brace;
 
+	if (*env_start == '?') //return exit status
+	{	
+		ft_rstrjoin(buffer, ft_itoa(g_exit_status));
+		*env_end = 1;
+		return 0;
+	}
 	if (find_env_end(env_start) < 0)
 		return (ft_rstrjoin(buffer, "$"), 0);
 	*env_end = find_env_end(env_start);
 	if (!ft_isalpha(*env_start))
 		*env_end = 1;
-	var_name = ft_substr(env_start - 1, 0, *env_end + 1);
-	if (get_env_var(var_name + 1, &token_info->global_env))
-		ft_rstrjoin(buffer, get_env_var(var_name + 1,
-				&token_info->global_env)->value);
-	free(var_name);
+	else
+	{
+		var_name = ft_substr(env_start - 1, 0, *env_end + 1);
+		if (get_env_var(var_name + 1, &token_info->global_env))
+			ft_rstrjoin(buffer, get_env_var(var_name + 1,
+					&token_info->global_env)->value);
+		free(var_name);
+	}
 	return (0);
 }
 

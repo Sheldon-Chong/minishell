@@ -58,6 +58,6 @@ int	bash_cmd(char **env, t_token_info *token_info)
 	if (!ft_strcmp(args[0], "unset") && args[1])
 		unset_env(args[1], &token_info->global_env, token_info);
 	if (!ft_strcmp(args[0], "export"))
-		export(token_info);
+		export(args, token_info);
 	return (0);
 }

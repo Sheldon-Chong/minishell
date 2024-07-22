@@ -40,7 +40,6 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 		waitpid(pid, &g_exit_status, 0);
 		if (command[0] != '\0')
 			free(command);
-		printf("EXIT STATUS %d\n", g_exit_status);
 	}
 	else if (pid == 0) //child
 	{

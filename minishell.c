@@ -7,6 +7,7 @@ void	ctrl_c_function(int signum)
 	rl_on_new_line();
 	rl_redisplay();
 	signal(SIGINT, ctrl_c_function);
+	g_exit_status = CTRL_C;
 }
 
 // an initial check to see if commands do exist
@@ -27,6 +28,7 @@ t_token	*scan_cmd(t_token_info *token_info)
 		{
 			printf("bash: %s: command not found\n", list->start->word);
 			token_info->cmd_start = list->next;
+			g_exit_status = ERR_COMMAND_NOT_FOUND;
 		}
 		list = list->next;
 	}
@@ -58,7 +60,7 @@ int	main(int ac, char **av, char **env)
 			token_info->env_arr = env;
 
 			//parse_cmd_list_for_io(token_info);
-			//print_tokens(token_info, 'l');
+			print_tokens(token_info, 'l');
 			if (scan_cmd(token_info) && !token_info->has_error)
 				executor(env, token_info); //THIS IS TO BE REPLACED
 			

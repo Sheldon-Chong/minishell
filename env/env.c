@@ -73,31 +73,33 @@ int	print_env(t_env **env_list, char mode)
 	return (0);
 }
 
-int	export(t_token_info *token_info)
+bool is_valid_identifier(char *str)
 {
-	char	**args;
-	char	*var_name;
+	if (!ft_isalpha(*str) && *str != '_')
+		return (false);
+	while(*(++str))
+	{
+		if (!ft_isalnum(*str) && *str != '_')
+			return (false);
+	}
+	return (true);
+}
 
-	args = token_info->cmd_start->tokens;
-	if (!(token_info->token_list->next))
+int	export(char **args, t_token_info *token_info)
+{
+	char	*var_name;
+	char	**env_split;
+
+	if (!(args[1]))
 		print_env(&token_info->global_env, 'x');
 	else
 	{
-		if (ft_strchr(token_info->token_list->next->word, '='))
-		{
-			var_name = ft_substr(token_info->token_list->next->word, 0,
-					(size_t)(ft_strchr(token_info->token_list->next->word, '=')
-						- token_info->token_list->next->word));
-			if (str_charset(var_name, INVALID_ENV_CHAR, CSET_CONTAINS))
-				newline(printf("'%s' not valid identifier\n", var_name));
-			else
-				append_env(new_env(var_name, \
-					ft_strdup(ft_strchr(\
-						token_info->token_list->next->word, '=') + 1)), \
-						&token_info->global_env, token_info->env_arr);
-		}
-		else if (str_charset(args[1], INVALID_ENV_CHAR, CSET_CONTAINS))
-			newline(printf("'%s' not valid identifier\n", args[1]));
+		env_split = ft_split(args[1], '=');
+
+		printf("IS VALID?: %d\n", is_valid_identifier(args[1]));
+		printf("name: %s\n", env_split[0]);
+		printf("value: %s\n", env_split[1]);
+		
 	}
 	return (0);
 }

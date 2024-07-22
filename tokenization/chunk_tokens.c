@@ -1,34 +1,31 @@
 #include "minishell.h"
 
-int	handle_redir(t_token *head, t_token *token_chunk)
+int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 {
 	int	file;
 
-	if (head->next && head->next->type != T_PIPE)
+	if (str_in_arr(head->word, ">,>>"))
 	{
-		if (str_in_arr(head->word, ">,>>"))
+		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
+		if (file == -1)
 		{
-			file = open(head->next->word, O_CREAT | O_RDWR, 0644);
-			if (file == -1)
-				printf("bash: %s: Permission denied\n", head->next->word);
-			else
-				close(file);
-			if (!ft_strcmp(head->word, ">>"))
-				token_chunk->outfile_mode = 'a';
-			if (token_chunk->heredoc_buffer != NULL)
-			{
-				free(token_chunk->heredoc_buffer); 
-				token_chunk->heredoc_buffer = NULL;
-			}
-			token_chunk->outfile = head->next->word;
+			printf("bash: %s: Permission denied\n", head->next->word);
+			token_info->has_error = true;
 		}
-		if (!ft_strcmp(head->word, "<"))
-			token_chunk->infile = head->next->word;
-		head = head->next->next;
-		return (1);
+		else
+			close(file);
+		if (!ft_strcmp(head->word, ">>"))
+			token_chunk->outfile_mode = 'a';
+		if (token_chunk->heredoc_buffer != NULL)
+		{
+			free(token_chunk->heredoc_buffer); 
+			token_chunk->heredoc_buffer = NULL;
+		}
+		token_chunk->outfile = head->next->word;
 	}
-	else
-		printf("bash: syntax error near unexpected token_chunk `newline'\n");
+	if (!ft_strcmp(head->word, "<"))
+		token_chunk->infile = head->next->word;
+	head = head->next->next;
 	return (0);
 }
 
@@ -43,7 +40,7 @@ void	chunk_tokens(t_token_info *token_info)
 	while (head)
 	{
 		if (str_in_arr(head->word, ">,>>,<<,<")
-			&& (!handle_redir(head, token_chunk)))
+			&& (!handle_redir(head, token_chunk, token_info)))
 		{
 			head = head->next;
 			continue ;
