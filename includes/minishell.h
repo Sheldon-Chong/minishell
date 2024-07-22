@@ -67,6 +67,7 @@ typedef struct s_token
 	char			*heredoc_buffer;
 	t_io			*io_list;		//for token chunk only
 	struct s_token	*next;			//for BOTH tokens and token chunks
+	struct s_token	*prev;
 	t_list			*heredocs;
 }	t_token;
 
@@ -137,7 +138,7 @@ int				export(t_token_info *token_info);
 
 // quotes
 char			toggle_quote_state(char quote, char c);
-char			*split_into_quotes(char *str, t_token *tokens, t_token_info *token_info);
+char			*split_into_quotes(char *str, t_token *tokens, t_token_info *token_info, bool expand_env);
 int				count_outermost_quotes(char *str);
 bool			quote_alternate(char c, char *quote);
 

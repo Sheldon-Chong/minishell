@@ -58,7 +58,7 @@ char	**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_in
 					free(token_chunk->heredoc_buffer);
 					token_chunk->heredoc_buffer = NULL;
 				}
-				token_chunk->heredoc_buffer = expand_env(here_doc_input(token->next->word), token_info);
+				token_chunk->heredoc_buffer = here_doc_input(token->next->word);
 			}
 			token = token->next->next;
 			continue;

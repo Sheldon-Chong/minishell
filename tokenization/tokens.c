@@ -43,9 +43,17 @@ t_token_info	*process_input(char *str, t_env *global_env)
 	tokenize(str, token_info);
 	post_validate(token_info);
 
+	
+
 	if (token_info->has_error)
 		return (token_info);
 	chunk_tokens(token_info);
+	t_token *head = token_info->token_chunks;
+	while(head)
+	{
+		printf("<<%d>>\n", head->outfile_mode);
+		head = head->next;
+	}
 	return (token_info);
 }
 
@@ -58,9 +66,9 @@ t_token	*tok(char *word, char type)
 	token->type = type;
 	token->infile = NULL;
 	token->outfile = NULL;
-	token->outfile_mode = 0;
 	token->start = NULL;
 	token->next = NULL;
+	token->outfile_mode = 0;
 	token->heredoc_buffer = NULL;
 	return (token);
 }
@@ -88,7 +96,7 @@ int	print_tokens(t_token_info *token_info, char format)
 		printf("	TOKEN %d: [", i2);
 		while(head2->tokens[++i])
 			printf("\"%s\", ", head2->tokens[i]);
-		printf("] (%c), infile: %s, outfile: %s heredoc_buffer %s\n", head2->type, head2->infile, head2->outfile, head2->heredoc_buffer);
+		printf("] (%c), infile: %s, outfile: %s mode [%c] heredoc_buffer %s\n", head2->type, head2->infile, head2->outfile, head2->outfile_mode, head2->heredoc_buffer);
 		head2 = head2->next;
 		i2 ++;
 	}
@@ -104,20 +112,22 @@ int	print_tokens(t_token_info *token_info, char format)
 	return (0);
 }
 
-t_token	*append_tok(t_token *token, t_token **head)
+t_token *append_tok(t_token *token, t_token **head)
 {
-	t_token	*nav;
+	t_token *nav;
 
 	if (!(token->word))
 		return (NULL);
 	if (!(*head))
 	{
 		*head = token;
+		token->prev = NULL; // Since it's the first node, prev is NULL
 		return (token);
 	}
 	nav = *head;
 	while (nav && nav->next)
 		nav = nav->next;
 	nav->next = token;
+	token->prev = nav; // Set the prev pointer of the new token
 	return (token);
 }

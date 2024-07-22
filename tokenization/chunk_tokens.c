@@ -13,7 +13,8 @@ int	handle_redir(t_token *head, t_token *token_chunk)
 				printf("bash: %s: Permission denied\n", head->next->word);
 			else
 				close(file);
-			head->outfile_mode = 'a' * (!ft_strcmp(head->word, ">>"));
+			if (!ft_strcmp(head->word, ">>"))
+				token_chunk->outfile_mode = 'a';
 			if (token_chunk->heredoc_buffer != NULL)
 			{
 				free(token_chunk->heredoc_buffer); 
@@ -56,6 +57,7 @@ void	chunk_tokens(t_token_info *token_info)
 		}
 		head = head->next;
 	}
+
 	token_chunk->tokens = tokens2arr(token_chunk, NULL, token_info);
 	append_tok(token_chunk, &(token_info->token_chunks));
 }

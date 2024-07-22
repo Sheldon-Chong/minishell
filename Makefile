@@ -8,20 +8,23 @@ OUTPUT = minishell
 
 SRCS = $(wildcard *.c ./libft/*.c ./tokenization/*.c ./env/*.c ./execution/*.c)
 
-OBJS = $(SRCS:%.c=%.o)
+OBJ_DIR = obj
+
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:%.c=%.o))
 
 all: $(OUTPUT)
 
 $(OUTPUT): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-%.o: %.c
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c "$<" -o "$@"
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 
-fclean:
-	rm -f $(OBJS) $(OUTPUT)
+fclean: clean
+	rm -f $(OUTPUT)
 
-.PHONY: all clean run
+.PHONY: all clean fclean

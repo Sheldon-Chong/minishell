@@ -42,17 +42,10 @@ void set_fd_out(t_token *current_chunk, t_executor *executor)
 	
 	if (current_chunk->outfile == NULL)
 		return ;
-	
 	if (current_chunk->outfile_mode == 'a')
 		file_fd = open(current_chunk->outfile, O_WRONLY | O_APPEND);
 	else
 		file_fd = open(current_chunk->outfile, O_WRONLY | O_TRUNC);
-	
-	if (file_fd == -1)
-	{
-		perror("open");
-		exit(EXIT_FAILURE);
-	}
 	executor->cmd_out = file_fd; 
 }
 
@@ -86,7 +79,7 @@ void executor(char **env, t_token_info *token_info)
 	int			prev_pipe_in;
 	t_token		*chunk_list;
 	t_executor	*executor;
-	
+
 	executor = executor_init();
 	chunk_list = token_info->token_chunks;
 	prev_pipe_in = STDIN_FILENO;

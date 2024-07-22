@@ -41,7 +41,8 @@ static void	process_quote_list(t_token *head, t_token_info *token_info)
 }
 
 // Forms a linkedlist with quotes
-char	*split_into_quotes(char *str, t_token *tokens, t_token_info *token_info)
+char	*split_into_quotes(char *str, t_token *tokens,
+	t_token_info *token_info, bool expand_env)
 {
 	int		i;
 	char	quote;
@@ -80,6 +81,7 @@ char	*split_into_quotes(char *str, t_token *tokens, t_token_info *token_info)
 	if (string[0])
 		append_tok(tok(ft_strdup(string), 'o'), &(tokens));
 	free(string);
-	process_quote_list(tokens, token_info);
+	if (expand_env)
+		process_quote_list(tokens, token_info);
 	return (quote_list2str(tokens));
 }

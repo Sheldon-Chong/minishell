@@ -10,7 +10,13 @@ static char	*process_str(char *str, t_token_info *token_info)
 	ret = str;
 	if (!str[0] || is_token_valid(str, token_info))
 		return (NULL);
-	ret = split_into_quotes(str, quote_list_buffer, token_info);
+	t_token	*head = token_info->token_list;
+	while(head && head->next)
+		head = head->next;
+	if (head && !ft_strncmp(head->word, "<<", 2))
+		ret = split_into_quotes(str, quote_list_buffer, token_info, false);
+	else
+		ret = split_into_quotes(str, quote_list_buffer, token_info, true);
 	free(str);
 	return (ret);
 }
@@ -41,6 +47,7 @@ static int	form_token(char *str, int end, t_token **token_list)
 		end ++;
 	return (end);
 }
+
 
 // Divides words by spaces, and processes each word before appending them to the token_list
 t_token	*tokenize(char *str, t_token_info *token_info)
