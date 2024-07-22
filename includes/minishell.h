@@ -18,7 +18,7 @@
 # define SHELL_MSG "minishell$ "
 # define SPACE_CHAR " \f\v\t\r\n"
 # define INVALID_ENV_CHAR "[]<>!@$%%^-+~/&() "
-# define BASH_CMDS "env,cd,unset,export,exit"
+# define BASH_CMDS "env,cd,unset,export,exit,echo,pwd"
 # define BRACE -125
 # define INVALID_CHARS "{};\\"
 # define SHELL_OPERATORS "|><"
@@ -159,5 +159,6 @@ void	parse_cmd_list_for_io(t_token_info *token_info);
 char	**append_to_array(char ***array, char *value);
 char *here_doc_input(char *delimiter);
 
+int	g_exit_status;
 
 #endif

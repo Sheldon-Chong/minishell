@@ -50,10 +50,7 @@ t_token_info	*process_input(char *str, t_env *global_env)
 	chunk_tokens(token_info);
 	t_token *head = token_info->token_chunks;
 	while(head)
-	{
-		printf("<<%d>>\n", head->outfile_mode);
 		head = head->next;
-	}
 	return (token_info);
 }
 

@@ -6,7 +6,7 @@
 /*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/30 11:50:47 by shechong          #+#    #+#             */
-/*   Updated: 2023/05/09 15:26:56 by shechong         ###   ########.fr       */
+/*   Updated: 2024/07/22 14:15:04 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,3 @@ char	*ft_strnstr(const char *big, const char *small, size_t n)
 	}
 	return (NULL);
 }
-
-/* #include <stdio.h>
-int main()
-{
-	printf("%s", ft_strnstr("aaabcabcd", "aaabc", 5));
-} */

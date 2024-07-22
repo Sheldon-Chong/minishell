@@ -37,9 +37,10 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 			close(cmd_in_fd);
 		if (cmd_out != STDOUT_FILENO)
 			close(cmd_out);
-		waitpid(pid, NULL, 0);
+		waitpid(pid, &g_exit_status, 0);
 		if (command[0] != '\0')
 			free(command);
+		printf("EXIT STATUS %d\n", g_exit_status);
 	}
 	else if (pid == 0) //child
 	{
@@ -53,7 +54,12 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 			dup2(cmd_out, STDOUT_FILENO);
 			close(cmd_out);
 		}
-		if (access(command, F_OK) == 0)
+		if (str_in_arr(cmd[0], "echo,export,pwd"))
+		{
+			bash_cmd(env, token_info);
+			exit(0); // depends on output of bash_cmd
+		}
+		else if (access(command, F_OK) == 0)
 			execve((const char *)command, (char *const *)cmd, env);
 		perror("execve");
 		exit(EXIT_FAILURE);

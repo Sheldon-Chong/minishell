@@ -1,16 +1,28 @@
 #include "minishell.h"
 
+int exit(char **args)
+{
+	
+	int exit_status;
+	
+	
+	ft_isalpha
+
+	exit_status = ft_atoi();
+}
+
 int exit_error(char *error_name)
 {
 	perror("pipe");
 	exit(EXIT_FAILURE);
 }
 
-
 void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out)
 {
-	if (str_in_arr(chunk->start->word, BASH_CMDS))
-		bash_cmd(env, token_info);
+	if (str_in_arr(chunk->start->word, "exit"))
+		exit(0);
+	else if (str_in_arr(chunk->start->word, "cd"))
+		chdir(chunk->tokens[1]);
 	else
 		exec_cmd(chunk->tokens, env, token_info, cmd_in_fd, cmd_out);
 }

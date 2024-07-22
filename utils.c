@@ -66,9 +66,7 @@ char	**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_in
 		cmds = append_to_array(&cmds,token->word);
 		token = token->next;
 	}
-	i = -1;
-	while(cmds[++i])
-		printf("%s\n", cmds[i]);
+	
 	return (cmds);
 }
 
