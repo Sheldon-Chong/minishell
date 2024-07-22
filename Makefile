@@ -1,8 +1,8 @@
 CC = gcc
 
-CFLAGS = -I./includes -I./libft -fsanitize=address -g3
+CFLAGS = -I./includes -I./libft -I/goinfre/jyap/.brew/opt/readline/include -fsanitize=address -g3
 
-LDFLAGS = -lncurses -lreadline
+LDFLAGS = -L/goinfre/jyap/.brew/opt/readline/lib -lncurses -lreadline
 
 OUTPUT = minishell
 

@@ -1,16 +1,5 @@
 #include "minishell.h"
 
-int exit(char **args)
-{
-	
-	int exit_status;
-	
-	
-	ft_isalpha
-
-	exit_status = ft_atoi();
-}
-
 int exit_error(char *error_name)
 {
 	perror("pipe");

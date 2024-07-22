@@ -39,12 +39,8 @@ t_token_info	*process_input(char *str, t_env *global_env)
 	token_info->has_error = false;
 	token_info->env_arr = NULL;
 	token_info->global_env = global_env;
-
 	tokenize(str, token_info);
 	post_validate(token_info);
-
-	
-
 	if (token_info->has_error)
 		return (token_info);
 	chunk_tokens(token_info);
