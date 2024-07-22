@@ -51,7 +51,7 @@ int	bash_cmd(char **env, t_token_info *token_info)
 	if (!ft_strcmp(args[0], "exit"))
 	{
 		free_TokenList(token_info);
-		exit(0);
+		ft_exit(0);
 	}
 	if (!ft_strcmp(args[0], "env"))
 		print_env(&token_info->global_env, 'e');

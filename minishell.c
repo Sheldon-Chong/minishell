@@ -10,6 +10,7 @@ void	ctrl_c_function(int signum)
 	g_exit_status = CTRL_C;
 }
 
+
 // an initial check to see if commands do exist
 t_token	*scan_cmd(t_token_info *token_info)
 {

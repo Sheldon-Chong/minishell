@@ -68,3 +68,22 @@ bool	is_in_strset(char *str, char *strset)
 	ft_free_array((void **)set, 0);
 	return (false);
 }
+
+bool	is_strset(char *str, char *strset)
+{
+	char	**set;
+	int		i;
+
+	set = ft_split(strset, ',');
+	if (!str || !set || !(set[0]))
+		return (false);
+	i = -1;
+	while (set[++i])
+	{
+		if (!ft_strcmp(str, set[i]))
+			return (ft_free_array((void **)set, true));
+	}
+	ft_free_array((void **)set, 0);
+	return (false);
+}
+

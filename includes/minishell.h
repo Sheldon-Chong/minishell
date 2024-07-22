@@ -141,6 +141,7 @@ int				unset_env(char *var_name, t_env **envList,
 					t_token_info *token_list);
 t_env			*append_env(t_env *env, t_env **envList, char **env_arr);
 int				export(char **args, t_token_info *token_info);
+bool			is_strset(char *str, char *strset);
 
 // quotes
 char			toggle_quote_state(char quote, char c);
@@ -164,6 +165,8 @@ char	*get_path(char *cmd, char **env);
 void	parse_cmd_list_for_io(t_token_info *token_info);
 char	**append_to_array(char ***array, char *value);
 char *here_doc_input(char *delimiter);
+
+void	ft_exit(char **arg);
 
 int	g_exit_status;
 

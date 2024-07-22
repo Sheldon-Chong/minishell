@@ -9,7 +9,7 @@ int exit_error(char *error_name)
 void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out)
 {
 	if (str_in_arr(chunk->start->word, "exit"))
-		exit(0);
+		ft_exit(chunk->tokens);
 	else if (str_in_arr(chunk->start->word, "cd"))
 		chdir(chunk->tokens[1]);
 	else
