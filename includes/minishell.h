@@ -77,7 +77,7 @@ typedef struct s_token
 	t_list			*heredocs;
 }	t_token;
 
-
+bool is_echo_n(char *str);
 
 
 typedef struct s_token_info
@@ -158,7 +158,7 @@ void			executor(char **env, t_token_info *token_info);
 // error printing
 int		syntax_error(t_error error, t_token_info *token_info);
 
-int		bash_cmd(char **env, t_token_info *token_info);
+int	bash_cmd(char **env, t_token_info *token_info, char **cmd);
 
 void	exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out);
 char	*get_path(char *cmd, char **env);
@@ -168,6 +168,6 @@ char *here_doc_input(char *delimiter);
 
 void	ft_exit(char **arg);
 
-int	g_exit_status;
+extern int	g_exit_status;
 
 #endif

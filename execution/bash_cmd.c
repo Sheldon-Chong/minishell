@@ -16,12 +16,12 @@ bool is_echo_n(char *str)
 	return (true);
 }
 
-int	bash_cmd(char **env, t_token_info *token_info)
+int	bash_cmd(char **env, t_token_info *token_info, char **cmd)
 {
 	char	**args;
 	int		i;
 
-	args = token_info->cmd_start->tokens;
+	args = cmd;
 	if (!ft_strcmp(args[0], "echo"))
 	{
 		i = 1;
@@ -48,16 +48,16 @@ int	bash_cmd(char **env, t_token_info *token_info)
 		}
 		
 	}
-	if (!ft_strcmp(args[0], "exit"))
+	else if (!ft_strcmp(args[0], "exit"))
 	{
 		free_TokenList(token_info);
 		ft_exit(0);
 	}
-	if (!ft_strcmp(args[0], "env"))
+	else if (!ft_strcmp(args[0], "env"))
 		print_env(&token_info->global_env, 'e');
-	if (!ft_strcmp(args[0], "unset") && args[1])
+	else if (!ft_strcmp(args[0], "unset") && args[1])
 		unset_env(args[1], &token_info->global_env, token_info);
-	if (!ft_strcmp(args[0], "export"))
+	else if (!ft_strcmp(args[0], "export"))
 		export(args, token_info);
 	return (0);
 }

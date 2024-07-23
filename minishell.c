@@ -1,5 +1,7 @@
 #include "includes/minishell.h"
 
+int g_exit_status;
+
 void	ctrl_c_function(int signum)
 {
 	rl_replace_line("", 0);
@@ -21,8 +23,7 @@ t_token	*scan_cmd(t_token_info *token_info)
 	while (list && list->tokens[0])
 	{
 		if (str_in_arr(list->tokens[0], BASH_CMDS))
-		{
-		}
+			nothing();
 		else if (access(get_path(list->tokens[0],
 					token_info->env_arr), F_OK) != 0 \
 					|| !strcmp(list->tokens[0], ""))
@@ -61,7 +62,7 @@ int	main(int ac, char **av, char **env)
 			token_info->env_arr = env;
 
 			//parse_cmd_list_for_io(token_info);
-			print_tokens(token_info, 'l');
+			//print_tokens(token_info, 'l');
 			if (scan_cmd(token_info) && !token_info->has_error)
 				executor(env, token_info); //THIS IS TO BE REPLACED
 			

@@ -70,8 +70,10 @@ void set_fd_in(t_token *current_chunk, t_executor *executor)
 			exit_error("open");
 		executor->cmd_in = file_fd;
 	}
-	else
+	else if (current_chunk->prev)
+	{
 		executor->cmd_in = executor->pipefd[0]; // the output of the previous command is the input for the next command
+	}
 }
 
 // Function to run a list of commands with piping
@@ -84,29 +86,23 @@ void executor(char **env, t_token_info *token_info)
 	executor = executor_init();
 	chunk_list = token_info->token_chunks;
 	prev_pipe_in = STDIN_FILENO;
-
 	
 	while (chunk_list)
 	{
 		set_fd_in(chunk_list, executor);
 		set_fd_out(chunk_list, executor);
-
+		//printf("COMMAND %s, fd-in: %d, fd-out: %d\n", chunk_list->tokens[0], executor->cmd_in, executor->cmd_out);
 		run_cmd(chunk_list, env, token_info, executor->cmd_in, executor->cmd_out);
-
 		if (prev_pipe_in != STDIN_FILENO)
 			close(prev_pipe_in);
-
 		if (executor->cmd_out != STDOUT_FILENO)
 			close(executor->cmd_out);
-
 		prev_pipe_in = executor->pipefd[0];
 		chunk_list = chunk_list->next;
 	}
 	if (executor->cmd_in != STDIN_FILENO)
 		close(executor->cmd_in);
-		
 	while (wait(&executor->status) > 0)
 		nothing();
-
 	free(executor);
 }

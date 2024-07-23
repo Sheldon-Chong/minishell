@@ -55,10 +55,11 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 		}
 		if (str_in_arr(cmd[0], "echo,export,pwd"))
 		{
-			bash_cmd(env, token_info);
+			bash_cmd(env, token_info, cmd);
+			
 			exit(0); // depends on output of bash_cmd
 		}
-		else if (access(command, F_OK) == 0)
+		 if (access(command, F_OK) == 0)
 			execve((const char *)command, (char *const *)cmd, env);
 		perror("execve");
 		exit(EXIT_FAILURE);
