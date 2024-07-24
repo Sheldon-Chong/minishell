@@ -10,10 +10,7 @@ char	*remove_char(char *str, char to_remove)
 	count = 0;
 	i = -1;
 	while (str[++i])
-	{
-		if (str[i] == to_remove)
-			count ++;
-	}
+		count += (str[i] == to_remove);
 	ret = malloc(ft_strlen(str) - count + 1);
 	if (!ret)
 		return (NULL);

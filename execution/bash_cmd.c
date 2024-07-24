@@ -1,9 +1,9 @@
 #include "minishell.h"
 
-bool is_echo_n(char *str)
+bool	is_echo_n(char *str)
 {
 	int	i;
-	
+
 	i = 0;
 	if (str[0] != '-')
 		return (false);
@@ -15,6 +15,8 @@ bool is_echo_n(char *str)
 	}
 	return (true);
 }
+
+
 
 int	bash_cmd(char **env, t_token_info *token_info, char **cmd)
 {
@@ -29,24 +31,18 @@ int	bash_cmd(char **env, t_token_info *token_info, char **cmd)
 			i ++;
 		if (i == 1)
 		{
-			while(args[i])
+			while (args[i])
 			{
 				printf("%s", args[i]);
-				if (args[i+1])
+				if (args[i + 1])
 					printf(" ");
 				i ++;
 			}
 			printf("\n");
 		}
 		else
-		{
-			while(args[i])
-			{
-				printf("%s", args[i]);
-				i ++;
-			}
-		}
-		
+			while (args[i])
+				printf("%s", args[i++]);
 	}
 	else if (!ft_strcmp(args[0], "exit"))
 	{

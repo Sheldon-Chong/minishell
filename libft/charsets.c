@@ -23,7 +23,7 @@ str: string that will be scanned
 charset: set that [str] will be scanned against
 mode = CSET_CONTAINS, CSET_EXCLUDE, CSET_HAS_NEW, CSET_WITHIN
 
-return: returns true/false based on whether the string meets the conditions of [mode]
+return: returns true/false based on if the string meets the conditions of [mode]
 */
 bool	str_charset(char *str, char *charset, int mode)
 {

@@ -158,10 +158,10 @@ int				nothing(void);
 
 char			*c2str(int c);
 
-int	arr_size(void **array);
-int	print_arr(void **array);
-int	arr_append(void ***array, void *item);
+int				arr_size(void **array);
+int				print_arr(void **array);
+int				arr_append(void ***array, void *item);
 
-bool 			str_in_arr(char *str, char	*str_array);
-int		ft_strcmp(const char *s1, const char *s2);
+bool			str_in_arr(char *str, char	*str_array);
+int				ft_strcmp(const char *s1, const char *s2);
 #endif
