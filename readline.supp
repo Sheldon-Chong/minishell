@@ -1,0 +1,6 @@
+{
+  Ignore readline leak
+  Memcheck:Leak
+  ...
+  obj:*readline*
+}
