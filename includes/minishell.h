@@ -169,5 +169,6 @@ char *here_doc_input(char *delimiter);
 void	ft_exit(char **arg);
 
 extern int	g_exit_status;
+int	ft_echo(char **args);
 
 #endif

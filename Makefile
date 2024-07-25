@@ -6,7 +6,7 @@ LDFLAGS = -lncurses -lreadline
 
 OUTPUT = minishell
 
-SRCS = $(wildcard *.c ./libft/*.c ./tokenization/*.c ./env/*.c ./execution/*.c)
+SRCS = $(wildcard *.c ./libft/*.c ./tokenization/*.c ./env/*.c ./execution/*.c ./execution/bash_cmd/*.c)
 
 OBJ_DIR = obj
 

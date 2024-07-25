@@ -18,32 +18,12 @@ bool	is_echo_n(char *str)
 
 
 
-int	bash_cmd(char **env, t_token_info *token_info, char **cmd)
+int	bash_cmd(char **env, t_token_info *token_info, char **args)
 {
-	char	**args;
 	int		i;
 
-	args = cmd;
 	if (!ft_strcmp(args[0], "echo"))
-	{
-		i = 1;
-		while (args[i] && is_echo_n(args[i]))
-			i ++;
-		if (i == 1)
-		{
-			while (args[i])
-			{
-				printf("%s", args[i]);
-				if (args[i + 1])
-					printf(" ");
-				i ++;
-			}
-			printf("\n");
-		}
-		else
-			while (args[i])
-				printf("%s", args[i++]);
-	}
+		ft_echo(args);
 	else if (!ft_strcmp(args[0], "exit"))
 	{
 		free_TokenList(token_info);
