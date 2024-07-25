@@ -156,7 +156,8 @@ void			chunk_tokens(t_token_info *token_list);
 void			executor(char **env, t_token_info *token_info);
 
 // error printing
-int		syntax_error(t_error error, t_token_info *token_info);
+int	syntax_error(char *error, t_token_info *token_info);
+int	err_no_braces(char *subject, t_token_info *token_info);
 
 int	bash_cmd(char **env, t_token_info *token_info, char **cmd);
 

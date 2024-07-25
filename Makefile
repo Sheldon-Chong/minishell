@@ -1,12 +1,12 @@
 CC = gcc
 
-CFLAGS = -I./includes -I./libft #-fsanitize=address -g3
+CFLAGS = -I./includes -I./libft -fsanitize=address -g3
 
 LDFLAGS = -lncurses -lreadline
 
 OUTPUT = minishell
 
-SRCS = $(wildcard *.c ./libft/*.c ./tokenization/*.c ./env/*.c ./execution/*.c ./execution/bash_cmd/*.c)
+SRCS = $(wildcard src/*.c ./libft/*.c ./src/tokenization/*.c ./src/env/*.c ./src/execution/*.c ./src/execution/bash_cmd/*.c ./src/tokenization/*.c)
 
 OBJ_DIR = obj
 

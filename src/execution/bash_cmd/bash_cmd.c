@@ -16,8 +16,6 @@ bool	is_echo_n(char *str)
 	return (true);
 }
 
-
-
 int	bash_cmd(char **env, t_token_info *token_info, char **args)
 {
 	int		i;

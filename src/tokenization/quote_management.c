@@ -29,12 +29,14 @@ static void	process_quote_list(t_token *head, t_token_info *token_info)
 	{
 		if (head->word[0] == '\'')
 		{
-			head->word = ft_rsubstr(&(head->word), 1, ft_strlen(head->word) - 2);
+			head->word = ft_rsubstr(&(head->word), 1,
+					ft_strlen(head->word) - 2);
 			head = head->next;
 			continue ;
 		}
 		else if (head->word[0] == '"')
-			head->word = ft_rsubstr(&(head->word), 1, ft_strlen(head->word) - 2);
+			head->word = ft_rsubstr(&(head->word), 1,
+					ft_strlen(head->word) - 2);
 		head->word = expand_env(head->word, token_info);
 		head = head->next;
 	}

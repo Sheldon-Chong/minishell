@@ -5,13 +5,14 @@ static char	*process_str(char *str, t_token_info *token_info)
 {
 	char	*ret;
 	t_token	*quote_list_buffer;
+	t_token	*head;
 
 	quote_list_buffer = NULL;
 	ret = str;
 	if (!str[0] || is_token_valid(str, token_info))
 		return (NULL);
-	t_token	*head = token_info->token_list;
-	while(head && head->next)
+	head = token_info->token_list;
+	while (head && head->next)
 		head = head->next;
 	if (head && !ft_strncmp(head->word, "<<", 2))
 		ret = split_into_quotes(str, quote_list_buffer, token_info, false);
@@ -21,7 +22,6 @@ static char	*process_str(char *str, t_token_info *token_info)
 	return (ret);
 }
 
-
 // handle cases of shell operators
 static int	shell_operator(char *str, int end, t_token **token_list)
 {
@@ -29,9 +29,11 @@ static int	shell_operator(char *str, int end, t_token **token_list)
 
 	string = str + end;
 	if (is_in_strset(string, ">>,<<"))
-		return (append_tok(tok(ft_substr(str, end, 2), T_REDIR), token_list), 2);
+		return (append_tok(tok(ft_substr(str, end, 2), T_REDIR),
+				token_list), 2);
 	else if (is_in_strset(string, ">,<"))
-		return (append_tok(tok(ft_substr(str, end, 1), T_REDIR), token_list), 1);
+		return (append_tok(tok(ft_substr(str, end, 1), T_REDIR),
+				token_list), 1);
 	else if (!ft_strncmp("><", string, 2) || !ft_strncmp("<>", string, 2))
 		printf("unexpected character\n");
 	else
@@ -48,8 +50,7 @@ static int	form_token(char *str, int end, t_token **token_list)
 	return (end);
 }
 
-
-// Divides words by spaces, and processes each word before appending them to the token_list
+// Divides words by spaces. Processes each word before appending to token_list
 t_token	*tokenize(char *str, t_token_info *token_info)
 {
 	int		str_end;
@@ -57,11 +58,6 @@ t_token	*tokenize(char *str, t_token_info *token_info)
 
 	quote = NOT_WITHIN_QUOTE;
 	str_end = 0;
-	if (count_outermost_quotes(str) % 2 != 0)
-	{
-		token_info->has_error = true;
-		printf("error: no closing quotation\n");
-	}
 	while (*str && str[str_end] && !token_info->has_error)
 	{
 		quote_alternate(str[str_end], &quote);
@@ -79,7 +75,7 @@ t_token	*tokenize(char *str, t_token_info *token_info)
 			str_end ++;
 	}
 	if (!is_in_charset(*str, SPACE_CHAR))
-		append_tok(tok(process_str(ft_substr(str, 0, str_end), token_info), T_CMD), 
-			&(token_info->token_list));
+		append_tok(tok(process_str(ft_substr(str, 0, str_end), \
+			token_info), T_CMD), &(token_info->token_list));
 	return (token_info->token_list);
 }
