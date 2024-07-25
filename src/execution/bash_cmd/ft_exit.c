@@ -42,7 +42,7 @@ static void	handle_exit_errors(char **args, int len)
 	}
 }
 
-void	ft_exit(char **args)
+void	ft_exit(char **args, t_token_info * token_info)
 {
 	int	len;
 
@@ -53,12 +53,14 @@ void	ft_exit(char **args)
 	{
 		printf("exit\n");
 		g_exit_status = 0;
+		free_TokenList(token_info);
 		exit(0);
 	}
 	else if (len == 2 && ft_str_is_digit(args[1]))
 	{
 		printf("exit\n");
 		g_exit_status = ft_atoi(args[1]) % 256;
+		free_TokenList(token_info);
 		exit(g_exit_status);
 	}
 	handle_exit_errors(args, len);

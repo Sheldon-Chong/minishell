@@ -167,7 +167,7 @@ void	parse_cmd_list_for_io(t_token_info *token_info);
 char	**append_to_array(char ***array, char *value);
 char *here_doc_input(char *delimiter);
 
-void	ft_exit(char **arg);
+void	ft_exit(char **arg, t_token_info *token_info);
 
 extern int	g_exit_status;
 int	ft_echo(char **args);

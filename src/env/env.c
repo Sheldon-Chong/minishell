@@ -5,13 +5,15 @@ t_env	*arr2env(char **env, char **env_arr)
 	int		i;
 	t_env	*env_list;
 	char	*var_name;
+	char	*var_value;
 
 	i = -1;
 	env_list = NULL;
 	while (env[++i])
 	{
 		var_name = ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]);
-		append_env(new_env(var_name, ft_strchr(env[i], '=') + 1),
+		var_value = ft_strdup(ft_strchr(env[i], '=') + 1);
+		append_env(new_env(var_name, var_value),
 			&env_list, env_arr);
 	}
 	return (env_list);

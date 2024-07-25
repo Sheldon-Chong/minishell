@@ -66,7 +66,7 @@ int	main(int ac, char **av, char **env)
 			if (scan_cmd(token_info) && !token_info->has_error)
 				executor(env, token_info); //THIS IS TO BE REPLACED
 			
-			free_TokenList(token_info);
+			//free_TokenList(token_info);
 		}
 	}
 	exit(0);
