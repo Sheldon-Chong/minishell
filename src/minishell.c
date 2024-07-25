@@ -48,7 +48,7 @@ int	main(int ac, char **av, char **env)
 	ctrl_c_handler = signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
 	history = history_list();
-	t_env *global_env = arr2env(env, env_list);
+	t_env *global_env = arr2env(env);
 
 	while (1)
 	{
@@ -59,7 +59,6 @@ int	main(int ac, char **av, char **env)
 		{
 			add_history(user_input);
 			token_info = process_input(user_input, global_env);
-			token_info->env_arr = env;
 
 			//parse_cmd_list_for_io(token_info);
 			//print_tokens(token_info, 'l');

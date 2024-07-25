@@ -25,13 +25,13 @@ int	bash_cmd(char **env, t_token_info *token_info, char **args)
 	else if (!ft_strcmp(args[0], "exit"))
 	{
 		free_TokenList(token_info);
-		ft_exit(0);
+		ft_exit(0, token_info);
 	}
 	else if (!ft_strcmp(args[0], "env"))
 		print_env(&token_info->global_env, 'e');
 	else if (!ft_strcmp(args[0], "unset") && args[1])
 		unset_env(args[1], &token_info->global_env, token_info);
 	else if (!ft_strcmp(args[0], "export"))
-		export(args, token_info);
+		ft_export(args, token_info);
 	return (0);
 }

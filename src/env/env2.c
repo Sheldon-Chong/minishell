@@ -11,7 +11,7 @@ t_env	*new_env(char *name, char *value)
 	return (env);
 }
 
-t_env	*append_env(t_env *env, t_env **envList, char **env_arr)
+t_env	*append_env(t_env *env, t_env **envList)
 {
 	t_env	*head;
 

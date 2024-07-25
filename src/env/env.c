@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_env	*arr2env(char **env, char **env_arr)
+t_env	*arr2env(char **env)
 {
 	int		i;
 	t_env	*env_list;
@@ -13,8 +13,7 @@ t_env	*arr2env(char **env, char **env_arr)
 	{
 		var_name = ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]);
 		var_value = ft_strdup(ft_strchr(env[i], '=') + 1);
-		append_env(new_env(var_name, var_value),
-			&env_list, env_arr);
+		append_env(new_env(var_name, var_value), &env_list);
 	}
 	return (env_list);
 }
@@ -36,8 +35,12 @@ char	**env2arr(t_env *env)
 	i = 0;
 	while (env)
 	{
-		env_arr[i++] = ft_strdup(env->name);
+		char *str = ft_strjoin(ft_strdup(env->name), "=");
+		str = ft_strjoin(str, env->value);
+		env_arr[i] = str;
+
 		env = env->next;
+		i ++;
 	}
 	env_arr[i] = NULL;
 	return (env_arr);

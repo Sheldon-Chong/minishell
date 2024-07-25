@@ -131,7 +131,7 @@ t_token			*tok(char *word, char type);
 int				is_token_valid(char *str, t_token_info *token_info);
 
 // environment variables
-t_env			*arr2env(char **env, char **env_arr);
+t_env			*arr2env(char **env);
 t_env			*get_env_var(char *var_name, t_env **env);
 int				print_env(t_env **env_list, char mode);
 char			**env2arr(t_env *env);
@@ -139,7 +139,7 @@ char			*expand_env(char *string, t_token_info *token_info);
 t_env			*new_env(char *name, char *value);
 int				unset_env(char *var_name, t_env **envList, 
 					t_token_info *token_list);
-t_env			*append_env(t_env *env, t_env **envList, char **env_arr);
+t_env	*append_env(t_env *env, t_env **envList);
 int				export(char **args, t_token_info *token_info);
 bool			is_strset(char *str, char *strset);
 
