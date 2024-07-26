@@ -27,7 +27,7 @@ bool	post_validate(t_token_info *token_info)
 	return (true);
 }
 
-t_token_info	*process_input(char *str, t_env *global_env)
+t_token_info	*process_input(char *str, t_env **global_env)
 {
 	t_token_info	*token_info;
 	t_token			*head;
@@ -49,7 +49,7 @@ t_token_info	*process_input(char *str, t_env *global_env)
 		return (token_info);
 	chunk_tokens(token_info);
 	head = token_info->token_chunks;
-	token_info->env_arr = env2arr(token_info->global_env);
+	token_info->env_arr = env2arr(*(token_info->global_env));
 	while (head)
 		head = head->next;
 	return (token_info);

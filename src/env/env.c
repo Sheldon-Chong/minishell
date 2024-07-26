@@ -96,7 +96,7 @@ int	export(char **args, t_token_info *token_info)
 	char	**env_split;
 
 	if (!(args[1]))
-		print_env(&token_info->global_env, 'x');
+		print_env(token_info->global_env, 'x');
 	else
 	{
 		env_split = ft_split(args[1], '=');

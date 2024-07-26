@@ -146,21 +146,8 @@ static void add_new_env(t_token_info *token_info, char *key, char *value, int i)
 	char	**new_env_arr;
 	char	*temp;
 
-	new_env_arr = ft_calloc(i + 2, sizeof(char *));
-	if (value != 0 && value[0] == '\0')
-		new_env_arr[i] = ft_strjoin(key, "=");
-	else if (value == 0)
-		new_env_arr[i] = ft_strdup(key);
-	else
-	{
-		temp = ft_strjoin(key, "=");
-		new_env_arr[i] = ft_strjoin(temp, value);
-		free(temp);
-	}
-	while (--i >= 0)
-		new_env_arr[i] = ft_strdup(token_info->env_arr[i]);
-	ft_free_array((void **)token_info->env_arr, 0);
-	token_info->env_arr = new_env_arr;
+	append_env(new_env("OK", "HI"), (token_info->global_env));
+	
 }
 
 /*
@@ -178,27 +165,31 @@ static void	update_env(t_token_info *token_info, char *args, char *key, char *va
 
 	temp = token_info->env_arr;
 	i = -1;
-	while (temp[++i] != NULL)
-	{
-		if (ft_strncmp(temp[i], key, ft_strlen(key)) == 0
-			&& temp[i][ft_strlen(key)] == '=')
-		{
-			if (ft_strlen(args) == ft_strlen(key))
-				return ;
-			replace_env(&temp[i], key, value);
-			return ;
-		}
-		else if (ft_strncmp(temp[i], key, ft_strlen(key) + 1) == 0)
-		{
-			if (ft_strlen(args) == ft_strlen(key))
-				return ;
-			replace_env(&temp[i], key, value);
-			return ;
-		}
-	}
+	// while (temp[++i] != NULL)
+	// {
+	// 	if (ft_strncmp(temp[i], key, ft_strlen(key)) == 0
+	// 		&& temp[i][ft_strlen(key)] == '=')
+	// 	{
+	// 		if (ft_strlen(args) == ft_strlen(key))
+	// 			return ;
+	// 		replace_env(&temp[i], key, value);
+	// 		return ;
+	// 	}
+	// 	else if (ft_strncmp(temp[i], key, ft_strlen(key) + 1) == 0)
+	// 	{
+	// 		if (ft_strlen(args) == ft_strlen(key))
+	// 			return ;
+	// 		replace_env(&temp[i], key, value);
+	// 		return ;
+	// 	}
+	// }
 	add_new_env(token_info, key, value, i);
-	free_env_list(&token_info->global_env);
-	token_info->global_env = arr2env(token_info->env_arr);
+	t_env *head = *(token_info->global_env);
+	while(head)
+	{
+		printf(">> %s\n", head->name);
+		head = head->next;
+	}
 }
 
 /*
@@ -218,9 +209,10 @@ static int	find_and_add(t_token_info *token_info, char **args)
 	error = 0;
 	while (args[++i] != 0)
 	{
-		split = env_split(args[i]);
+		split = ft_split(args[i], '=');
+		printf(">>[%s]\n", split[1]);
 		if (is_valid_identifier(split[0]))
-			update_env(token_info, args[i], split[0], split[1]);
+			append_env(new_env(ft_strdup(split[0]), ft_strdup(split[1])), (token_info->global_env));
 		else
 		{
 			error = 1;
@@ -242,13 +234,14 @@ int	ft_export(char **args, t_token_info *token_info)
 	char	**arr;
 	
 	if (args[1] == NULL)
-	{
-		arr = env2arr(token_info->global_env);
+	{ 
+		arr = env2arr(*(token_info->global_env));
 		arr = sort_doublearray(arr);
-		token_info->global_env = arr2env(arr);
-		print_env(&token_info->global_env, 'x');
+		*(token_info->global_env) = arr2env(arr);
+		
+		print_env(token_info->global_env, 'x');
 	}
 	else
-		return(find_and_add(token_info, args));
+		find_and_add(token_info, args);
 	return (0);
 }

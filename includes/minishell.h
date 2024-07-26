@@ -90,7 +90,7 @@ typedef struct s_token_info
 	t_token		*cmd_start;
 	char		**env_arr;
 	bool		has_error;
-	t_env		*global_env;
+	t_env		**global_env;
 }	t_token_info;
 
 
@@ -123,7 +123,7 @@ int				free_TokenList(t_token_info *token_list);
 
 // tokenization
 t_token			*scan_cmd(t_token_info *token_list);
-t_token_info	*process_input(char *str, t_env *env_arr);
+t_token_info	*process_input(char *str, t_env **global_env);
 t_token			*tokenize(char *string, t_token_info *token_list);
 char			**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_info);
 t_token			*append_tok(t_token *token, t_token **head);
@@ -142,7 +142,7 @@ int				unset_env(char *var_name, t_env **envList,
 t_env	*append_env(t_env *env, t_env **envList);
 int				export(char **args, t_token_info *token_info);
 bool			is_strset(char *str, char *strset);
-
+bool is_valid_identifier(char *str);
 // quotes
 char			toggle_quote_state(char quote, char c);
 char			*split_into_quotes(char *str, t_token *tokens, t_token_info *token_info, bool expand_env);
@@ -168,6 +168,7 @@ char	**append_to_array(char ***array, char *value);
 char *here_doc_input(char *delimiter);
 
 void	ft_exit(char **arg, t_token_info *token_info);
+int	ft_export(char **args, t_token_info *token_info);
 
 extern int	g_exit_status;
 int	ft_echo(char **args);

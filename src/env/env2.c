@@ -34,6 +34,7 @@ t_env	*append_env(t_env *env, t_env **envList)
 	while (head->next)
 		head = head->next;
 	head->next = env;
+	print_env(envList, 'x');
 	return (env);
 }
 

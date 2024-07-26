@@ -52,13 +52,14 @@ int	main(int ac, char **av, char **env)
 
 	while (1)
 	{
+
 		user_input = readline(SHELL_MSG);
 		if (!user_input) //ctrl + D
 			break ;
 		if (ft_strlen(user_input) > 0)
 		{
 			add_history(user_input);
-			token_info = process_input(user_input, global_env);
+			token_info = process_input(user_input, &global_env);
 
 			//parse_cmd_list_for_io(token_info);
 			//print_tokens(token_info, 'l');

@@ -12,6 +12,8 @@ void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd
 		ft_exit(chunk->tokens, token_info);
 	else if (str_in_arr(chunk->start->word, "cd"))
 		chdir(chunk->tokens[1]);
+	else if (str_in_arr(chunk->start->word, "export") && chunk->tokens[1])
+		ft_export(chunk->tokens, token_info);
 	else
 		exec_cmd(chunk->tokens, env, token_info, cmd_in_fd, cmd_out);
 }
