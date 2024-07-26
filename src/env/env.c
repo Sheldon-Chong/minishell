@@ -11,9 +11,14 @@ t_env	*arr2env(char **env)
 	env_list = NULL;
 	while (env[++i])
 	{
-		var_name = ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]);
-		var_value = ft_strdup(ft_strchr(env[i], '=') + 1);
-		append_env(new_env(var_name, var_value), &env_list);
+		if (ft_strchr(env[i], '=') == NULL)
+			append_env(new_env(env[i], NULL), &env_list);
+		else
+		{
+			var_name = ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]);
+			var_value = ft_strdup(ft_strchr(env[i], '=') + 1);
+			append_env(new_env(var_name, var_value), &env_list);
+		}
 	}
 	return (env_list);
 }
@@ -35,10 +40,15 @@ char	**env2arr(t_env *env)
 	i = 0;
 	while (env)
 	{
-		char *str = ft_strjoin(ft_strdup(env->name), "=");
-		str = ft_strjoin(str, env->value);
+		char *str;
+		if (env->value == NULL)
+			str = ft_strdup(env->name);
+		else
+		{
+			str = ft_strjoin(ft_strdup(env->name), "=");
+			str = ft_strjoin(str, env->value);
+		}
 		env_arr[i] = str;
-
 		env = env->next;
 		i ++;
 	}
@@ -70,7 +80,12 @@ int	print_env(t_env **env_list, char mode)
 	while (head)
 	{
 		if (mode == 'x')
-			printf("declare -x %s=\"%s\"\n", head->name, head->value);
+		{
+			if(head->value == NULL)
+				printf("declare -x %s\n", head->name);
+			else
+				printf("declare -x %s=\"%s\"\n", head->name, head->value);
+		}
 		else if (mode == 'e')
 			printf("%s=%s\n", head->name, head->value);
 		head = head->next;

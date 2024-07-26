@@ -12,6 +12,8 @@ void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd
 		ft_exit(chunk->tokens, token_info);
 	else if (str_in_arr(chunk->start->word, "cd"))
 		chdir(chunk->tokens[1]);
+	else if (str_in_arr(chunk->start->word, "unset"))
+		unset_env(chunk->tokens + 1, token_info->global_env, token_info);
 	else if (str_in_arr(chunk->start->word, "export") && chunk->tokens[1])
 		ft_export(chunk->tokens, token_info);
 	else
@@ -93,7 +95,6 @@ void executor(char **env, t_token_info *token_info)
 	{
 		set_fd_in(chunk_list, executor);
 		set_fd_out(chunk_list, executor);
-		//printf("COMMAND %s, fd-in: %d, fd-out: %d\n", chunk_list->tokens[0], executor->cmd_in, executor->cmd_out);
 		run_cmd(chunk_list, env, token_info, executor->cmd_in, executor->cmd_out);
 		if (prev_pipe_in != STDIN_FILENO)
 			close(prev_pipe_in);

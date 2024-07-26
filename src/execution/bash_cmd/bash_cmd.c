@@ -29,7 +29,7 @@ int	bash_cmd(char **env, t_token_info *token_info, char **args)
 	}
 	else if (!ft_strcmp(args[0], "env"))
 		print_env(token_info->global_env, 'e');
-	else if (!ft_strcmp(args[0], "unset") && args[1])
+	else if (!ft_strcmp(args[0], "unset"))
 		unset_env(args[1], token_info->global_env, token_info);
 	else if (!ft_strcmp(args[0], "export"))
 		ft_export(args, token_info);

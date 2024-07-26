@@ -34,33 +34,42 @@ t_env	*append_env(t_env *env, t_env **envList)
 	while (head->next)
 		head = head->next;
 	head->next = env;
-	print_env(envList, 'x');
 	return (env);
 }
 
-int	unset_env(char *var_name, t_env **envList, t_token_info *token_info)
+int	unset_env(char **var_names, t_env **envList, t_token_info *token_info)
 {
-	t_env	*head;
-	t_env	*next;
-	t_env	*prev;
+    t_env	*head;
+    t_env	*prev;
+    t_env	*temp;
+    int		i;
 
-	head = *envList;
-	while (head)
-	{
-		if (head->next && !ft_strcmp(var_name, head->next->name)) 
-		{
-			prev = head;
-			if (head->next->next) 
-			{
-				next = head->next->next;
-				prev->next = next;
-			}
-			else
-				prev->next = NULL;
-		}
-		head = head->next;
-	}
-	ft_free_array((void **)token_info->env_arr, 0);
-	token_info->env_arr = env2arr(*envList);
-	return (0);
+    i = 0;
+    while (var_names[i])
+    {
+        head = *envList;
+        prev = NULL;
+        while (head)
+        {
+            if (!ft_strcmp(var_names[i], head->name))
+            {
+                if (prev)
+                    prev->next = head->next;
+                else
+                    *envList = head->next;
+                temp = head;
+                head = head->next;
+                free(temp->name);
+                free(temp->value);
+                free(temp);
+                break;
+            }
+            prev = head;
+            head = head->next;
+        }
+        i++;
+    }
+    ft_free_array((void **)token_info->env_arr, 0);
+    token_info->env_arr = env2arr(*envList);
+    return (0);
 }

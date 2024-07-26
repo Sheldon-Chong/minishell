@@ -24,7 +24,9 @@
 		"system_error": "c",
 		"tuple": "c",
 		"type_traits": "c",
-		"vector": "c"
+		"vector": "c",
+		"*.tcc": "c",
+		"utility": "c"
 	},
 	"peacock.color": "#42b883"
 }
