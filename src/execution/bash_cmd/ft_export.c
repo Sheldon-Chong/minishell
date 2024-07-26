@@ -210,7 +210,6 @@ static int	find_and_add(t_token_info *token_info, char **args)
 	while (args[++i] != 0)
 	{
 		split = ft_split(args[i], '=');
-		printf(">>[%s]\n", split[1]);
 		if (is_valid_identifier(split[0]))
 			append_env(new_env(ft_strdup(split[0]), ft_strdup(split[1])), (token_info->global_env));
 		else
@@ -238,7 +237,6 @@ int	ft_export(char **args, t_token_info *token_info)
 		arr = env2arr(*(token_info->global_env));
 		arr = sort_doublearray(arr);
 		*(token_info->global_env) = arr2env(arr);
-		
 		print_env(token_info->global_env, 'x');
 	}
 	else
