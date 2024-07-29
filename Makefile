@@ -1,6 +1,6 @@
 CC = gcc
 
-CFLAGS = -I./includes -I./libft #-fsanitize=address -g3
+CFLAGS = -I./includes -I./libft -fsanitize=address -g3
 
 LDFLAGS = -lncurses -lreadline
 

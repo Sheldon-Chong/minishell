@@ -42,8 +42,6 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 		if (cmd_out != STDOUT_FILENO)
 			close(cmd_out);
 		waitpid(pid, &g_exit_status, 0);
-		if (command[0] != '\0')
-			free(command);
 	}
 	else if (pid == 0) //child
 	{
