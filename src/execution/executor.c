@@ -96,7 +96,7 @@ void executor(char **env, t_token_info *token_info)
 	{
 		set_fd_in(chunk_list, executor);
 		set_fd_out(chunk_list, executor);
-		run_cmd(chunk_list, env, token_info, executor->cmd_in, executor->cmd_out);
+		run_cmd(chunk_list, token_info->env_data->env_list, token_info, executor->cmd_in, executor->cmd_out);
 		if (prev_pipe_in != STDIN_FILENO)
 			close(prev_pipe_in);
 		if (executor->cmd_out != STDOUT_FILENO)

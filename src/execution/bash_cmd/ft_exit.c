@@ -49,6 +49,15 @@ void	ft_exit(char **args, t_token_info * token_info)
 	len = 0;
 	while (args[len])
 		len++;
+	t_env *head = token_info->env_data->env_list;
+	while(head)
+	{
+		t_env *temp = head->next;
+		free(head->name);
+		free(head->value);
+		free(head);
+		head = temp;
+	}
 	if (len == 1)
 	{
 		printf("exit\n");
