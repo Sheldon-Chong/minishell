@@ -87,6 +87,8 @@ int	main(int ac, char **av, char **env)
 		{
 			add_history(user_input);
 			token_info = process_input(user_input, env, env_data);
+			if (!token_info->token_list)
+				continue;
 
 			//print_tokens(token_info, 'l');
 			if (scan_cmd(token_info) && !token_info->has_error)

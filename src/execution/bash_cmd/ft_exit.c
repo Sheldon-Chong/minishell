@@ -36,7 +36,7 @@ static void	handle_exit_errors(char **args, int len)
 	else
 	{
 		printf("exit\n");
-		printf("bash: exit: : too many arguments\n");
+		printf("bash: exit: too many arguments\n");
 		g_exit_status = 1;
 		return ;
 	}
@@ -49,18 +49,6 @@ void	ft_exit(char **args, t_token_info * token_info)
 	len = 0;
 	while (args[len])
 		len++;
-	t_env *head = token_info->env_data->env_list;
-	while(head)
-	{
-		t_env *temp = head->next;
-		free(head->name);
-		free(head->value);
-		free(head);
-		head = temp;
-	}
-	// ft_free_array((void **)token_info->env_data->environ_arr, 0);
-	free(token_info->env_data->environ_arr);
-	// free(token_info->env_data->env_list);
 	if (len == 1)
 	{
 		printf("exit\n");
