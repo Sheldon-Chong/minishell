@@ -37,9 +37,9 @@ static int	expand_env_iter(int *env_end, char *env_start, char **buffer, t_token
 	else
 	{
 		var_name = ft_substr(env_start - 1, 0, *env_end + 1);
-		if (get_env_var(var_name + 1, token_info->global_env))
+		if (get_env_var(var_name + 1, &(token_info->env_data->env_list)))
 			ft_rstrjoin(buffer, get_env_var(var_name + 1,
-					token_info->global_env)->value);
+					&(token_info->env_data->env_list))->value);
 		free(var_name);
 	}
 	return (0);

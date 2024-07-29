@@ -13,7 +13,7 @@ void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd
 	else if (str_in_arr(chunk->start->word, "cd"))
 		chdir(chunk->tokens[1]);
 	else if (str_in_arr(chunk->start->word, "unset"))
-		unset_env(chunk->tokens + 1, token_info->global_env, token_info);
+		unset_env(chunk->tokens + 1, &(token_info->env_data->env_list), token_info);
 	else if (str_in_arr(chunk->start->word, "export") && chunk->tokens[1])
 		ft_export(chunk->tokens, token_info);
 	else

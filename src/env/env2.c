@@ -36,4 +36,3 @@ t_env	*append_env(t_env *env, t_env **envList)
 	head->next = env;
 	return (env);
 }
-

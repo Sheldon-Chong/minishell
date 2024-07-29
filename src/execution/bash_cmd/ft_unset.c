@@ -32,7 +32,7 @@ int	unset_env(char **var_names, t_env **envList, t_token_info *token_info)
 		}
 		i++;
 	}
-	ft_free_array((void **)token_info->env_arr, 0);
-	token_info->env_arr = env2arr(*envList);
+	ft_free_array((void **)token_info->env_data->environ_arr, 0);
+	token_info->env_data->environ_arr = env2arr(*envList);
 	return (0);
 }

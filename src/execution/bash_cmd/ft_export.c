@@ -112,7 +112,7 @@ static int	export_assign(t_token_info *token_info, char **args)
 			printf("': not a valid identifier\n");
 			continue ;
 		}
-		append_env(env, token_info->global_env);
+		append_env(env, &(token_info->env_data->env_list));
 	}
 	return (error);
 }
@@ -124,17 +124,17 @@ int	ft_export(char **args, t_token_info *token_info)
 
 	if (args[1] == NULL)
 	{
-		arr = env2arr(*(token_info->global_env));
+		arr = env2arr(token_info->env_data->env_list);
 		arr = sort_doublearray(arr);
-		t_env *head = *(token_info->global_env);
+		t_env *head = token_info->env_data->env_list;
 		while (head)
 		{
 			free(head->name);
 			free(head->value);
 			head = head->next;
 		}
-		*(token_info->global_env) = arr2env(arr);
-		print_env(token_info->global_env, 'x');
+		token_info->env_data->env_list = arr2env(arr);
+		print_env(&(token_info->env_data->env_list), 'x');
 	}
 	else
 		export_assign(token_info, args);

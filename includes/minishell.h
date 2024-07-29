@@ -80,6 +80,12 @@ typedef struct s_token
 bool is_echo_n(char *str);
 
 
+typedef struct s_env_data
+{
+	t_env	*env_list;
+	char	**environ_arr;
+} t_env_data;
+
 typedef struct s_token_info
 {
 	t_token		*token_list;
@@ -91,13 +97,8 @@ typedef struct s_token_info
 	char		**env_arr;
 	bool		has_error;
 	t_env		**global_env;
+	t_env_data	*env_data;
 }	t_token_info;
-
-typedef struct s_env_data
-{
-	t_env	*env_list;
-	char	**env_arr;
-} t_env_data;
 
 typedef struct s_error
 {
@@ -126,12 +127,13 @@ int				free_TokenList(t_token_info *token_list);
 
 // tokenization
 t_token			*scan_cmd(t_token_info *token_list);
-t_token_info	*process_input(char *str, t_env **global_env);
 t_token			*tokenize(char *string, t_token_info *token_list);
 char			**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_info);
 t_token			*append_tok(t_token *token, t_token **head);
 t_token			*tok(char *word, char type);
 int				is_token_valid(char *str, t_token_info *token_info);
+t_token_info	*process_input(char *str, char **global_env, t_env_data *env_data);
+bool	post_validate(t_token_info *token_info);
 
 // environment variables
 t_env			*arr2env(char **env);
@@ -143,11 +145,13 @@ t_env			*new_env(char *name, char *value);
 int				unset_env(char **var_names, t_env **envList, t_token_info *token_info);
 void			ft_pwd(void);
 
-t_env	*append_env(t_env *env, t_env **envList);
+t_env			*append_env(t_env *env, t_env **envList);
 int				export(char **args, t_token_info *token_info);
 bool			is_strset(char *str, char *strset);
-bool is_valid_identifier(char *str);
-char	**env2arr_names(t_env *env);
+bool			is_valid_identifier(char *str);
+char			**env2arr_names(t_env *env);
+t_env_data		*new_env_data(char **env);
+
 
 // quotes
 char			toggle_quote_state(char quote, char c);

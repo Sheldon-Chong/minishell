@@ -27,34 +27,6 @@ bool	post_validate(t_token_info *token_info)
 	return (true);
 }
 
-t_token_info	*process_input(char *str, t_env **global_env)
-{
-	t_token_info	*token_info;
-	t_token			*head;
-
-	token_info = malloc(sizeof(t_token_info));
-	token_info->token_list = NULL;
-	token_info->cmd_start = NULL;
-	token_info->token_list = NULL;
-	token_info->quote_list_buffer = NULL;
-	token_info->token_chunks = NULL;
-	token_info->has_error = false;
-	token_info->env_arr = NULL;
-	token_info->global_env = global_env;
-	token_info->env_arr = env2arr(*(token_info->global_env));
-	if (count_outermost_quotes(str) % 2 != 0)
-		err_no_braces("", token_info);
-	tokenize(str, token_info);
-	post_validate(token_info);
-	if (token_info->has_error)
-		return (token_info);
-	chunk_tokens(token_info);
-	head = token_info->token_chunks;
-
-	while (head)
-		head = head->next;
-	return (token_info);
-}
 
 t_token	*tok(char *word, char type)
 {
