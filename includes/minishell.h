@@ -138,6 +138,7 @@ char			**env2arr(t_env *env);
 char			*expand_env(char *string, t_token_info *token_info);
 t_env			*new_env(char *name, char *value);
 int				unset_env(char **var_names, t_env **envList, t_token_info *token_info);
+void			ft_pwd(void);
 
 t_env	*append_env(t_env *env, t_env **envList);
 int				export(char **args, t_token_info *token_info);
