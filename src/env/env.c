@@ -30,7 +30,10 @@ int	print_env(t_env **env_list, char mode)
 				printf("declare -x %s=\"%s\"\n", head->name, head->value);
 		}
 		else if (mode == 'e')
-			printf("%s=%s\n", head->name, head->value);
+		{
+			if (head->value != NULL)
+				printf ("%s=%s\n", head->name, head->value);
+		}
 		head = head->next;
 	}
 	return (0);

@@ -76,8 +76,7 @@ t_env	*str2env(char *str)
 
 	if (ft_strchr(str, '=') == NULL)
 	{
-		env = new_env(str, NULL);
-		return (env);
+		return (new_env(ft_strdup(str), NULL));
 	}
 	env_value = ft_strdup(ft_strchr(str, '=') + 1);
 	env_key = ft_substr(str, 0, ft_strlen(str) - ft_strlen(env_value) - 1);

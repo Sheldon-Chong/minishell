@@ -27,6 +27,13 @@ char	*get_path(char *cmd, t_env **env)
 	return ("\0");
 }
 
+void reset_ctrl_c_signal() {
+	if (signal(SIGINT, SIG_DFL) == SIG_ERR) {
+		perror("Failed to reset SIGINT handler");
+	}
+}
+
+
 // execute a command with the given arguments, recieving the cmd_in_fd as input and piping its output to cmd_out
 void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out)
 {
@@ -42,9 +49,16 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 		if (cmd_out != STDOUT_FILENO)
 			close(cmd_out);
 		waitpid(pid, &g_exit_status, 0);
+		if (WIFEXITED(g_exit_status))
+			g_exit_status = WIFEXITED(g_exit_status);
+		else if (WIFSIGNALED(g_exit_status))
+			g_exit_status = WTERMSIG(g_exit_status) + 128;
+		else
+			g_exit_status = 1;
 	}
 	else if (pid == 0) //child
 	{
+		//reset_ctrl_c_signal();
 		if (cmd_in_fd != STDIN_FILENO)
 		{
 			dup2(cmd_in_fd, STDIN_FILENO);
