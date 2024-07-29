@@ -1,15 +1,17 @@
 # include "minishell.h"
 
-char	*get_path(char *cmd, char **env)
+char	*get_path(char *cmd, t_env **env)
 {
 	char	*path;
 	char	*sub;
 	char	*join;
 	char	*pathjoin;
 
-	path = getenv("PATH");
 	if (access(cmd, F_OK) == 0)
         return (cmd);
+	if (!get_env_var("PATH", env))
+		return ("\0");
+	path = get_env_var("PATH", env)->value;
 	while (path && *path)
 	{
 		sub = ft_substr(path, 0, (size_t)(ft_strchr(path, ':') - path));
@@ -31,7 +33,7 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 	char *command;
 	pid_t pid;
 
-	command = get_path(cmd[0], env);
+	command = get_path(cmd[0], &(token_info->env_data->env_list));
 	pid = fork();
 	if (pid != 0) // parent
 	{

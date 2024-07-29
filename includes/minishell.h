@@ -171,7 +171,7 @@ int	err_no_braces(char *subject, t_token_info *token_info);
 int	bash_cmd(char **env, t_token_info *token_info, char **cmd);
 
 void	exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out);
-char	*get_path(char *cmd, char **env);
+char	*get_path(char *cmd, t_env **env);
 void	parse_cmd_list_for_io(t_token_info *token_info);
 char	**append_to_array(char ***array, char *value);
 char *here_doc_input(char *delimiter);
