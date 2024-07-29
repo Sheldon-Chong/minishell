@@ -93,8 +93,11 @@ typedef struct s_token_info
 	t_env		**global_env;
 }	t_token_info;
 
-
-
+typedef struct s_env_data
+{
+	t_env	*env_list;
+	char	**env_arr;
+} t_env_data;
 
 typedef struct s_error
 {

@@ -37,6 +37,15 @@ t_token	*scan_cmd(t_token_info *token_info)
 	return (token_info->cmd_start);
 }
 
+t_env_data *new_env_data(char **env)
+{
+	t_env_data *env_data;
+
+	env_data = malloc(sizeof(t_env_data));
+	env_data->env_list = NULL;
+	env_data->env_arr = arr2env(env);
+}
+
 int	main(int ac, char **av, char **env)
 {
 	void			(*ctrl_c_handler)(int);
@@ -49,10 +58,10 @@ int	main(int ac, char **av, char **env)
 	signal(SIGQUIT, SIG_IGN);
 	history = history_list();
 	t_env *global_env = arr2env(env);
+	t_env_data *env_data = new_env_data(env);
 
 	while (1)
 	{
-
 		user_input = readline(SHELL_MSG);
 		if (!user_input) //ctrl + D
 			break ;
@@ -61,12 +70,10 @@ int	main(int ac, char **av, char **env)
 			add_history(user_input);
 			token_info = process_input(user_input, &global_env);
 
-			//parse_cmd_list_for_io(token_info);
 			//print_tokens(token_info, 'l');
 			if (scan_cmd(token_info) && !token_info->has_error)
-				executor(env, token_info); //THIS IS TO BE REPLACED
-			
-			//free_TokenList(token_info);
+				executor(env, token_info);
+			free_TokenList(token_info);
 		}
 	}
 	exit(0);

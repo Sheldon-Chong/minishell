@@ -8,6 +8,8 @@ char	*get_path(char *cmd, char **env)
 	char	*pathjoin;
 
 	path = getenv("PATH");
+	if (access(cmd, F_OK) == 0)
+        return (cmd);
 	while (path && *path)
 	{
 		sub = ft_substr(path, 0, (size_t)(ft_strchr(path, ':') - path));

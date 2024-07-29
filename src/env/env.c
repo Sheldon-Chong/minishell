@@ -45,8 +45,8 @@ char	**env2arr(t_env *env)
 			str = ft_strdup(env->name);
 		else
 		{
-			str = ft_strjoin(ft_strdup(env->name), "=");
-			str = ft_strjoin(str, env->value);
+			str = ft_strjoin(env->name, "=");
+			ft_rstrjoin(&str, env->value);
 		}
 		env_arr[i] = str;
 		env = env->next;

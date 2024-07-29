@@ -1,47 +1,55 @@
 #include "minishell.h"
 
-char	**dup_doublearray(char **src)
-{
-	char	**output;
-	int		i;
 
-	i = 0;
-	while (src[i] != 0)
-		i++;
-	output = ft_calloc(i + 1, sizeof(char *));
-	output[i] = 0;
-	while (--i >= 0)
-		output[i] = ft_strdup(src[i]);
-	return (output);
+char **dup_doublearray(char **src)
+{
+    char **output;
+    int i = 0;
+
+    while (src[i] != NULL)
+        i++;
+    output = ft_calloc(i + 1, sizeof(char *));
+    if (output == NULL)
+        return NULL; // Handle allocation failure
+    output[i] = NULL;
+    while (--i >= 0)
+    {
+        output[i] = ft_strdup(src[i]);
+        if (output[i] == NULL)
+        {
+            // Free previously allocated memory on failure
+            ft_free_array((void **)output, 0);
+            return NULL;
+        }
+    }
+    return output;
 }
 
-char	**sort_doublearray(char **array)
+char **sort_doublearray(char **array)
 {
-	int		i;
-	int		j;
-	int		max;
-	char	**output;
-	char	*temp;
+    int i, j, max;
+    char **output;
+    char *temp;
 
-	output = dup_doublearray(array);
-	max = 0;
-	while (array[max] != 0)
-		max++;
-	i = -1;
-	while (++i < max)
-	{
-		j = i;
-		while (++j < max)
-		{
-			if (ft_strcmp(output[i], output[j]) > 0)
-			{
-				temp = output[i];
-				output[i] = output[j];
-				output[j] = temp;
-			}
-		}
-	}
-	return (output);
+    output = dup_doublearray(array);
+    if (output == NULL)
+        return NULL; // Handle allocation failure
+    max = 0;
+    while (array[max] != NULL)
+        max++;
+    for (i = 0; i < max; i++)
+    {
+        for (j = i + 1; j < max; j++)
+        {
+            if (ft_strcmp(output[i], output[j]) > 0)
+            {
+                temp = output[i];
+                output[i] = output[j];
+                output[j] = temp;
+            }
+        }
+    }
+    return output;
 }
 
 
@@ -118,6 +126,13 @@ int	ft_export(char **args, t_token_info *token_info)
 	{
 		arr = env2arr(*(token_info->global_env));
 		arr = sort_doublearray(arr);
+		t_env *head = *(token_info->global_env);
+		while (head)
+		{
+			free(head->name);
+			free(head->value);
+			head = head->next;
+		}
 		*(token_info->global_env) = arr2env(arr);
 		print_env(token_info->global_env, 'x');
 	}
