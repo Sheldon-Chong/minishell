@@ -149,7 +149,6 @@ t_env			*append_env(t_env *env, t_env **envList);
 int				export(char **args, t_token_info *token_info);
 bool			is_strset(char *str, char *strset);
 bool			is_valid_identifier(char *str);
-char			**env2arr_names(t_env *env);
 t_env_data		*new_env_data(char **env);
 
 

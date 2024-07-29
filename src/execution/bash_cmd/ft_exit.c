@@ -58,6 +58,9 @@ void	ft_exit(char **args, t_token_info * token_info)
 		free(head);
 		head = temp;
 	}
+	// ft_free_array((void **)token_info->env_data->environ_arr, 0);
+	free(token_info->env_data->environ_arr);
+	// free(token_info->env_data->env_list);
 	if (len == 1)
 	{
 		printf("exit\n");
