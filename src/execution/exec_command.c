@@ -48,7 +48,7 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 			close(cmd_in_fd);
 		if (cmd_out != STDOUT_FILENO)
 			close(cmd_out);
-		waitpid(pid, &g_exit_status, 0);
+		waitpid(pid, &g_exit_status, 0); // might have to remove this lines
 		if (WIFEXITED(g_exit_status))
 			g_exit_status = WIFEXITED(g_exit_status);
 		else if (WIFSIGNALED(g_exit_status))
