@@ -53,12 +53,12 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 			dup2(cmd_out, STDOUT_FILENO);
 			close(cmd_out);
 		}
-		if (str_in_arr(cmd[0], "echo,export,pwd,unset"))
+		if (str_in_arr(cmd[0], "echo,export,pwd,unset,env"))
 		{
 			bash_cmd(env, token_info, cmd);
 			exit(0);
 		}
-		 if (access(command, F_OK) == 0)
+		if (access(command, F_OK) == 0)
 			execve((const char *)command, (char *const *)cmd, env);
 		perror("execve");
 		exit(EXIT_FAILURE);

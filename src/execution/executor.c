@@ -22,14 +22,16 @@ void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd
 
 t_executor *executor_init()
 {
-	t_executor *executor = malloc(sizeof(t_executor));
+	t_executor	*executor;
+
+	executor = malloc(sizeof(t_executor));
 	executor->cmd_in = STDIN_FILENO;
 	executor->cmd_out = STDOUT_FILENO;
 	executor->status = 0;
-	return executor;
+	return (executor);
 }
 
-void set_fd_out(t_token *current_chunk, t_executor *executor)
+void	set_fd_out(t_token *current_chunk, t_executor *executor)
 {
 	int	file_fd;
 
@@ -43,24 +45,23 @@ void set_fd_out(t_token *current_chunk, t_executor *executor)
 		executor->cmd_out = executor->pipefd[1];
 	}
 	else
-		executor->cmd_out = STDOUT_FILENO; 
-	
+		executor->cmd_out = STDOUT_FILENO;
 	if (current_chunk->outfile == NULL)
 		return ;
 	if (current_chunk->outfile_mode == 'a')
 		file_fd = open(current_chunk->outfile, O_WRONLY | O_APPEND);
 	else
 		file_fd = open(current_chunk->outfile, O_WRONLY | O_TRUNC);
-	executor->cmd_out = file_fd; 
+	executor->cmd_out = file_fd;
 }
 
 
 // Set the stdin of the current command
-void set_fd_in(t_token *current_chunk, t_executor *executor)
+void	set_fd_in(t_token *current_chunk, t_executor *executor)
 {
 	if (current_chunk->heredoc_buffer != NULL)
 	{
-		int fd[2];
+		int	fd[2];
 		if (pipe(fd) == -1)
 			exit_error("pipe");
 		ft_putstr_fd(current_chunk->heredoc_buffer, fd[1]);
@@ -69,7 +70,7 @@ void set_fd_in(t_token *current_chunk, t_executor *executor)
 	}
 	else if (current_chunk->infile != NULL)
 	{
-		int file_fd = open(current_chunk->infile, O_RDONLY);
+		int	file_fd = open(current_chunk->infile, O_RDONLY);
 		if (file_fd == -1)
 			exit_error("open");
 		executor->cmd_in = file_fd;
@@ -90,7 +91,7 @@ void executor(char **env, t_token_info *token_info)
 	executor = executor_init();
 	chunk_list = token_info->token_chunks;
 	prev_pipe_in = STDIN_FILENO;
-	
+
 	while (chunk_list)
 	{
 		set_fd_in(chunk_list, executor);

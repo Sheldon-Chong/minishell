@@ -40,7 +40,7 @@ char	**env2arr(t_env *env)
 	i = 0;
 	while (env)
 	{
-		char *str;
+		char	*str;
 		if (env->value == NULL)
 			str = ft_strdup(env->name);
 		else
@@ -70,8 +70,6 @@ t_env	*get_env_var(char *var_name, t_env **env)
 	return (NULL);
 }
 
-
-
 int	print_env(t_env **env_list, char mode)
 {
 	t_env	*head;
@@ -81,7 +79,7 @@ int	print_env(t_env **env_list, char mode)
 	{
 		if (mode == 'x')
 		{
-			if(head->value == NULL)
+			if (head->value == NULL)
 				printf("declare -x %s\n", head->name);
 			else
 				printf("declare -x %s=\"%s\"\n", head->name, head->value);
@@ -93,33 +91,14 @@ int	print_env(t_env **env_list, char mode)
 	return (0);
 }
 
-bool is_valid_identifier(char *str)
+bool	is_valid_identifier(char *str)
 {
 	if (!ft_isalpha(*str) && *str != '_')
 		return (false);
-	while(*(++str))
+	while (*(++str))
 	{
 		if (!ft_isalnum(*str) && *str != '_')
 			return (false);
 	}
 	return (true);
 }
-
-// int	export(char **args, t_token_info *token_info)
-// {
-// 	char	*var_name;
-// 	char	**env_split;
-
-// 	if (!(args[1]))
-// 		print_env(token_info->global_env, 'x');
-// 	else
-// 	{
-// 		env_split = ft_split(args[1], '=');
-
-// 		printf("IS VALID?: %d\n", is_valid_identifier(args[1]));
-// 		printf("name: %s\n", env_split[0]);
-// 		printf("value: %s\n", env_split[1]);
-		
-// 	}
-// 	return (0);
-// }

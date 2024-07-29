@@ -21,4 +21,5 @@ int	ft_echo(char **args)
 	else
 		while (args[i])
 			printf("%s", args[i++]);
+	return (0);
 }

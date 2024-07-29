@@ -60,8 +60,7 @@ char	*ft_strndup(const char *str, size_t n)
 	return (output);
 }
 
-
-t_env *str2env(char *str)
+t_env	*str2env(char *str)
 {
 	t_env	*env;
 	char	*env_key;
@@ -75,25 +74,16 @@ t_env *str2env(char *str)
 	env_value = ft_strdup(ft_strchr(str, '=') + 1);
 	env_key = ft_substr(str, 0, ft_strlen(str) - ft_strlen(env_value) - 1);
 
-	if(ft_strlen(env_value) == 0)
+	if (ft_strlen(env_value) == 0)
 	{
 		free(env_value);
-		env_value=ft_strdup("");
+		env_value = ft_strdup("");
 	}
-
-	printf("%s, %s\n", env_key, env_value);
 	env = new_env(env_key, env_value);
 
 	return (env);
 }
 
-/*
-split argument into key and value
-check key is valid identifier, if not print error message
-if valid, update env
-free split before going to next argument
-return error = 1 if any of the arguments were not valid identifer 
-*/
 static int	export_assign(t_token_info *token_info, char **args)
 {
 	int		i;
@@ -106,29 +96,26 @@ static int	export_assign(t_token_info *token_info, char **args)
 	while (args[++i] != 0)
 	{
 		env = str2env(args[i]);
-		if (is_valid_identifier(env->name))
-		{
-			append_env(env, token_info->global_env);
-		}
-		else
+		if (!is_valid_identifier(env->name))
 		{
 			error = 1;
 			printf("-bash: export: '");
 			printf("%s", args[i]);
 			printf("': not a valid identifier\n");
+			continue ;
 		}
+		append_env(env, token_info->global_env);
 	}
 	return (error);
 }
 
 
-
 int	ft_export(char **args, t_token_info *token_info)
 {
-	char **arr;
+	char	**arr;
+
 	if (args[1] == NULL)
 	{
-		printf("EXPORT\n");
 		arr = env2arr(*(token_info->global_env));
 		arr = sort_doublearray(arr);
 		*(token_info->global_env) = arr2env(arr);
