@@ -42,15 +42,16 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 
 	command = get_path(cmd[0], &(token_info->env_data->env_list));
 	pid = fork();
+	g_exit_status = 0;
 	if (pid != 0) // parent
 	{
 		if (cmd_in_fd != STDIN_FILENO)
 			close(cmd_in_fd);
 		if (cmd_out != STDOUT_FILENO)
 			close(cmd_out);
-		waitpid(pid, &g_exit_status, 0); // might have to remove this lines
+		waitpid(pid, &g_exit_status, 0);
 		if (WIFEXITED(g_exit_status))
-			g_exit_status = WIFEXITED(g_exit_status);
+			g_exit_status = WEXITSTATUS(g_exit_status);
 		else if (WIFSIGNALED(g_exit_status))
 			g_exit_status = WTERMSIG(g_exit_status) + 128;
 		else

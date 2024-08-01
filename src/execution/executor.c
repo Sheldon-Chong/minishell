@@ -114,7 +114,8 @@ void executor(char **env, t_token_info *token_info) {
 					close(pipefd[0]);
 				}
 				run_cmd(chunk_list, env, token_info, STDIN_FILENO, STDOUT_FILENO);
-				exit(EXIT_SUCCESS);
+				printf(">> %d\n", g_exit_status);
+				exit(g_exit_status);
 			} 
 			else
 			{
@@ -146,7 +147,9 @@ void executor(char **env, t_token_info *token_info) {
 		}
 		chunk_list = chunk_list->next;
 	}
-
-	while (wait(NULL) > 0);
+	while (wait(&g_exit_status) > 0)
+	{
+		printf("EXIT STATUS: %d\n", g_exit_status);
+	}
 	free(executor);
 }
