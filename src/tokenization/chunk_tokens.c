@@ -34,7 +34,7 @@ void	chunk_tokens(t_token_info *token_info)
 	t_token		*head;
 	t_token		*token_chunk;
 
-	head = (token_info->token_list);
+	head = token_info->token_list;
 	token_chunk = tok("", 'g');
 	token_chunk->start = token_info->token_list;
 	while (head)

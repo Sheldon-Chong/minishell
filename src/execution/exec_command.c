@@ -59,7 +59,8 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 	}
 	else if (pid == 0) //child
 	{
-		//reset_ctrl_c_signal();
+		signal(SIGTERM, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		if (cmd_in_fd != STDIN_FILENO)
 		{
 			dup2(cmd_in_fd, STDIN_FILENO);

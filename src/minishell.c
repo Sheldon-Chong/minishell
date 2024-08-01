@@ -8,7 +8,6 @@ void	ctrl_c_function(int signum)
 	printf("\n");
 	rl_on_new_line();
 	rl_redisplay();
-	signal(SIGINT, ctrl_c_function);
 	g_exit_status = CTRL_C;
 }
 
@@ -37,7 +36,7 @@ t_token	*scan_cmd(t_token_info *token_info)
 	return (token_info->cmd_start);
 }
 
-t_token_info	*process_input(char *str, char **global_env, t_env_data *env_data)
+t_token_info	*process_input(char *str, t_env_data *env_data)
 {
 	t_token_info	*token_info;
 	t_token			*head;
@@ -45,7 +44,6 @@ t_token_info	*process_input(char *str, char **global_env, t_env_data *env_data)
 	token_info = malloc(sizeof(t_token_info));
 	token_info->token_list = NULL;
 	token_info->cmd_start = NULL;
-	token_info->token_list = NULL;
 	token_info->quote_list_buffer = NULL;
 	token_info->token_chunks = NULL;
 	token_info->has_error = false;
@@ -66,16 +64,11 @@ t_token_info	*process_input(char *str, char **global_env, t_env_data *env_data)
 
 int	main(int ac, char **av, char **env)
 {
-	void			(*ctrl_c_handler)(int);
 	t_token_info	*token_info;
-	char			**env_list;
-	HIST_ENTRY		**history;
 	char			*user_input;
 
-	ctrl_c_handler = signal(SIGINT, ctrl_c_function);
+	signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
-	history = history_list();
-	t_env *global_env = arr2env(env);
 	t_env_data *env_data = new_env_data(env);
 
 	while (1)
@@ -86,7 +79,7 @@ int	main(int ac, char **av, char **env)
 		if (ft_strlen(user_input) > 0)
 		{
 			add_history(user_input);
-			token_info = process_input(user_input, env, env_data);
+			token_info = process_input(user_input, env_data);
 			if (!token_info->token_list)
 				continue;
 

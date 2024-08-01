@@ -2,8 +2,6 @@
 
 char	*here_doc_input(char *delimiter)
 {
-	void			(*ctrl_c_handler)(int);
-	bool			is_cancelled;
 	char			*buffer;
 	char			*str;
 

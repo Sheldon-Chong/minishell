@@ -100,6 +100,8 @@ void executor(char **env, t_token_info *token_info) {
 			if (pid == 0)
 			{
 				// Child process 
+				signal(SIGTERM, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
 				if (executor->cmd_in != STDIN_FILENO) 
 				{
 					dup2(executor->cmd_in, STDIN_FILENO);
@@ -149,6 +151,7 @@ void executor(char **env, t_token_info *token_info) {
 	}
 	while (wait(&g_exit_status) > 0)
 	{
+		g_exit_status = WEXITSTATUS(g_exit_status);
 		printf("EXIT STATUS: %d\n", g_exit_status);
 	}
 	free(executor);

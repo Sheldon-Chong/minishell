@@ -132,7 +132,7 @@ char			**tokens2arr(t_token *token_chunk, t_token *str_end, t_token_info *token_
 t_token			*append_tok(t_token *token, t_token **head);
 t_token			*tok(char *word, char type);
 int				is_token_valid(char *str, t_token_info *token_info);
-t_token_info	*process_input(char *str, char **global_env, t_env_data *env_data);
+t_token_info	*process_input(char *str, t_env_data *env_data);
 bool	post_validate(t_token_info *token_info);
 
 // environment variables
