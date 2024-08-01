@@ -34,82 +34,110 @@ t_executor *executor_init()
 	return (executor);
 }
 
-void	set_fd_out(t_token *current_chunk, t_executor *executor)
-{
-	int	file_fd;
 
-	if (current_chunk->next)
-	{
-		if (pipe(executor->pipefd) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
-		executor->cmd_out = executor->pipefd[1];
-	}
-	else
-		executor->cmd_out = STDOUT_FILENO;
-	if (current_chunk->outfile == NULL)
-		return ;
-	if (current_chunk->outfile_mode == 'a')
-		file_fd = open(current_chunk->outfile, O_WRONLY | O_APPEND);
-	else
-		file_fd = open(current_chunk->outfile, O_WRONLY | O_TRUNC);
-	executor->cmd_out = file_fd;
-}
+void executor(char **env, t_token_info *token_info) {
+	t_token *chunk_list = token_info->token_chunks;
+	t_executor *executor = executor_init();
+	int pipefd[2];
 
-
-// Set the stdin of the current command
-void	set_fd_in(t_token *current_chunk, t_executor *executor)
-{
-	if (current_chunk->heredoc_buffer != NULL)
+	if (chunk_list->infile != NULL)
 	{
-		int	fd[2];
-		if (pipe(fd) == -1)
-			exit_error("pipe");
-		ft_putstr_fd(current_chunk->heredoc_buffer, fd[1]);
-		close(fd[1]);
-		executor->cmd_in = fd[0];
-	}
-	else if (current_chunk->infile != NULL)
-	{
-		int	file_fd = open(current_chunk->infile, O_RDONLY);
+		int	file_fd = open(chunk_list->infile, O_RDONLY);
+		printf("OPENED\n");
 		if (file_fd == -1)
 			exit_error("open");
 		executor->cmd_in = file_fd;
 	}
-	else if (current_chunk->prev)
+	else if (chunk_list->prev)
 	{
 		executor->cmd_in = executor->pipefd[0]; // the output of the previous command is the input for the next command
 	}
-}
-
-// Function to run a list of commands with piping
-void executor(char **env, t_token_info *token_info)
-{
-	int			prev_pipe_in;
-	t_token		*chunk_list;
-	t_executor	*executor;
-
-	executor = executor_init();
-	chunk_list = token_info->token_chunks;
-	prev_pipe_in = STDIN_FILENO;
 
 	while (chunk_list)
 	{
-		set_fd_in(chunk_list, executor);
-		set_fd_out(chunk_list, executor);
-		run_cmd(chunk_list, token_info->env_data->environ_arr, token_info, executor->cmd_in, executor->cmd_out);
-		if (prev_pipe_in != STDIN_FILENO)
-			close(prev_pipe_in);
-		if (executor->cmd_out != STDOUT_FILENO)
-			close(executor->cmd_out);
-		prev_pipe_in = executor->pipefd[0];
+		if (chunk_list->outfile)
+		{
+			int file_fd;
+			if (chunk_list->outfile_mode == 'a')
+				file_fd = open(chunk_list->outfile, O_WRONLY | O_APPEND);
+			else
+				file_fd = open(chunk_list->outfile, O_WRONLY | O_TRUNC);
+			executor->cmd_out = file_fd;
+		}
+		else if (chunk_list->next)
+		{
+			if (pipe(pipefd) == -1) 
+			{
+				perror("pipe");
+				exit(EXIT_FAILURE);
+			}
+			executor->cmd_out = pipefd[1];
+		} 
+		else
+			executor->cmd_out = STDOUT_FILENO;
+
+		
+		pid_t pid;
+		
+		if (!str_in_arr(chunk_list->tokens[0], "exit,unset,export,cd") || (!ft_strcmp(chunk_list->tokens[0], "export") && !chunk_list->tokens[1]))
+		{
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork");
+				exit(EXIT_FAILURE);
+			}
+			if (pid == 0)
+			{
+				// Child process 
+				if (executor->cmd_in != STDIN_FILENO) 
+				{
+					dup2(executor->cmd_in, STDIN_FILENO);
+					close(executor->cmd_in);
+				}
+				if (executor->cmd_out != STDOUT_FILENO) 
+				{
+					dup2(executor->cmd_out, STDOUT_FILENO);
+					close(executor->cmd_out);
+				}
+				if (chunk_list->next) {
+					close(pipefd[0]);
+				}
+				run_cmd(chunk_list, env, token_info, STDIN_FILENO, STDOUT_FILENO);
+				exit(EXIT_SUCCESS);
+			} 
+			else
+			{
+				// Parent process
+				if (executor->cmd_in != STDIN_FILENO)
+					close(executor->cmd_in);
+				if (executor->cmd_out != STDOUT_FILENO)
+					close(executor->cmd_out);
+				if (chunk_list->next)
+				{
+					executor->cmd_in = pipefd[0];
+					close(pipefd[1]);
+				}
+				
+			}
+		}
+		else
+		{
+			if (!strcmp(chunk_list->tokens[0], "exit"))
+				ft_exit(chunk_list->tokens, token_info);
+			else if (!strcmp(chunk_list->tokens[0], "cd"))
+			{
+				if (chdir(chunk_list->tokens[1]) == -1)
+					perror("chdir");
+			}
+			else if (!strcmp(chunk_list->tokens[0], "unset"))
+				unset_env(chunk_list->tokens + 1, &(token_info->env_data->env_list), token_info);
+			else if (!strcmp(chunk_list->tokens[0], "export"))
+				ft_export(chunk_list->tokens, token_info);
+		}
 		chunk_list = chunk_list->next;
 	}
-	if (executor->cmd_in != STDIN_FILENO)
-		close(executor->cmd_in);
-	while (wait(&executor->status) > 0)
-		nothing();
+
+	while (wait(NULL) > 0);
 	free(executor);
 }

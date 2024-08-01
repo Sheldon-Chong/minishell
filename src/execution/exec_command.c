@@ -80,3 +80,4 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 		exit(EXIT_FAILURE);
 	}
 }
+ 
