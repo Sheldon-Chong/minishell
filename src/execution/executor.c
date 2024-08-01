@@ -13,7 +13,7 @@ void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd
 	else if (str_in_arr(chunk->start->word, "cd"))
 	{
 		if (chdir(chunk->tokens[1]) == -1)
-            perror("chdir");
+			perror("chdir");
 	}
 	else if (str_in_arr(chunk->start->word, "unset"))
 		unset_env(chunk->tokens + 1, &(token_info->env_data->env_list), token_info);
@@ -40,28 +40,19 @@ void executor(char **env, t_token_info *token_info) {
 	t_executor *executor = executor_init();
 	int pipefd[2];
 
-	if (chunk_list->infile != NULL)
-	{
-		int	file_fd = open(chunk_list->infile, O_RDONLY);
-		printf("OPENED\n");
-		if (file_fd == -1)
-			exit_error("open");
-		executor->cmd_in = file_fd;
-	}
-	else if (chunk_list->prev)
-	{
-		executor->cmd_in = executor->pipefd[0]; // the output of the previous command is the input for the next command
-	}
-
 	while (chunk_list)
 	{
 		if (chunk_list->outfile)
 		{
 			int file_fd;
 			if (chunk_list->outfile_mode == 'a')
-				file_fd = open(chunk_list->outfile, O_WRONLY | O_APPEND);
+				file_fd = open(chunk_list->outfile, O_WRONLY | O_APPEND | O_CREAT, 0644);
 			else
-				file_fd = open(chunk_list->outfile, O_WRONLY | O_TRUNC);
+				file_fd = open(chunk_list->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+			if (file_fd == -1) {
+				perror("open outfile");
+				exit(EXIT_FAILURE);
+			}
 			executor->cmd_out = file_fd;
 		}
 		else if (chunk_list->next)
@@ -76,7 +67,26 @@ void executor(char **env, t_token_info *token_info) {
 		else
 			executor->cmd_out = STDOUT_FILENO;
 
-		
+		if (chunk_list->infile)
+		{
+			int file_fd = open(chunk_list->infile, O_RDONLY);
+			if (file_fd == -1)
+			{
+				perror("open infile");
+				exit(EXIT_FAILURE);
+			}
+			executor->cmd_in = file_fd;
+		}
+		else if (chunk_list->heredoc_buffer != NULL)
+		{
+			int fd[2];
+			if (pipe(fd) == -1)
+				exit_error("open");
+			ft_putstr_fd(chunk_list->heredoc_buffer, fd[1]);
+			close(fd[1]);
+			executor->cmd_in = fd[0];
+		}
+
 		pid_t pid;
 		
 		if (!str_in_arr(chunk_list->tokens[0], "exit,unset,export,cd") || (!ft_strcmp(chunk_list->tokens[0], "export") && !chunk_list->tokens[1]))
@@ -118,7 +128,6 @@ void executor(char **env, t_token_info *token_info) {
 					executor->cmd_in = pipefd[0];
 					close(pipefd[1]);
 				}
-				
 			}
 		}
 		else
