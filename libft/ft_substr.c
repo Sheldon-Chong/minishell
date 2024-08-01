@@ -31,8 +31,10 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 char	*ft_rsubstr(char **s1, unsigned int start, size_t len)
 {
-	char *temp = ft_substr(*s1, start, len);
+	char	*temp;
+
+	temp = ft_substr(*s1, start, len);
 	free(*s1);
 	*s1 = temp;
-	return(*s1);
+	return (*s1);
 }

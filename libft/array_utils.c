@@ -1,13 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   array_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/30 11:47:36 by shechong          #+#    #+#             */
+/*   Updated: 2023/04/30 14:16:18 by shechong         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "libft.h"
+#include <stdio.h>
 
-int get_array_len(char **array)
+int	get_array_len(char **array)
 {
-	int i = 0;
-	while(array[i])
+	int	i;
+
+	i = 0;
+	while (array[i])
 		i++;
 	return (i);
 }
-#include <stdio.h>
 
 char	**append_to_array(char ***array, char *value)
 {
@@ -27,10 +40,10 @@ char	**append_to_array(char ***array, char *value)
 	}
 	new_array = malloc(sizeof(char *) * (array_len + 2));
 	i = -1;
-	while(current_array[++i])
+	while (current_array[++i])
 		new_array[i] = ft_strdup(current_array[i]);
 	new_array[i] = ft_strdup(value);
 	new_array[i + 1] = NULL;
 	ft_free_array((void **)current_array, 0);
-	return new_array;
+	return (new_array);
 }

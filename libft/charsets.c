@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   charsets.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/30 11:47:36 by shechong          #+#    #+#             */
+/*   Updated: 2023/04/30 14:16:18 by shechong         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "libft.h"
 
 /*
@@ -34,7 +45,6 @@ bool	str_charset(char *str, char *charset, int mode)
 	ret = true;
 	if (mode == CSET_CONTAINS || mode == CSET_HAS_NEW)
 		ret = false;
-
 	while (str[i])
 	{
 		if (!is_in_charset(str[i], charset) && mode == CSET_WITHIN)
@@ -49,7 +59,6 @@ bool	str_charset(char *str, char *charset, int mode)
 	}
 	return (ret);
 }
-
 
 bool	is_in_strset(char *str, char *strset)
 {
@@ -86,4 +95,3 @@ bool	is_strset(char *str, char *strset)
 	ft_free_array((void **)set, 0);
 	return (false);
 }
-

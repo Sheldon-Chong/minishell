@@ -69,7 +69,6 @@ str_charset("", "", CSET_CONTAINS) = false
 */
 # define CSET_HAS_NEW 3
 
-
 typedef struct s_list
 {
 	void			*content;
