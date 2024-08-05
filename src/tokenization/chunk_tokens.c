@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   chunk_tokens.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 09:17:44 by jyap              #+#    #+#             */
+/*   Updated: 2024/08/05 09:17:44 by jyap             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
@@ -18,7 +30,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 			token_chunk->outfile_mode = 'a';
 		if (token_chunk->heredoc_buffer != NULL)
 		{
-			free(token_chunk->heredoc_buffer); 
+			free(token_chunk->heredoc_buffer);
 			token_chunk->heredoc_buffer = NULL;
 		}
 		token_chunk->outfile = head->next->word;
@@ -54,7 +66,6 @@ void	chunk_tokens(t_token_info *token_info)
 		}
 		head = head->next;
 	}
-
 	token_chunk->tokens = tokens2arr(token_chunk, NULL, token_info);
 	append_tok(token_chunk, &(token_info->token_chunks));
 }

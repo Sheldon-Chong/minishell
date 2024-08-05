@@ -174,4 +174,6 @@ extern int		g_exit_status;
 int				ft_echo(char **args);
 bool			is_echo_n(char *str);
 
+char			*ft_strndup(const char *str, size_t n);
+
 #endif

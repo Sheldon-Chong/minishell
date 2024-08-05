@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokens.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 09:17:53 by jyap              #+#    #+#             */
+/*   Updated: 2024/08/05 09:17:53 by jyap             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
@@ -26,7 +38,6 @@ bool	post_validate(t_token_info *token_info)
 	}
 	return (true);
 }
-
 
 t_token	*tok(char *word, char type)
 {

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 09:17:26 by jyap              #+#    #+#             */
+/*   Updated: 2024/08/05 09:17:26 by jyap             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 bool	ft_str_is_digit(char *str)
@@ -42,7 +54,7 @@ static void	handle_exit_errors(char **args, int len)
 	}
 }
 
-void	ft_exit(char **args, t_token_info * token_info)
+void	ft_exit(char **args, t_token_info *token_info)
 {
 	int	len;
 

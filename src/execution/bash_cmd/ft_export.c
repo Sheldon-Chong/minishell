@@ -1,70 +1,67 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 09:17:29 by jyap              #+#    #+#             */
+/*   Updated: 2024/08/05 10:06:57 by jyap             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-
-char **dup_doublearray(char **src)
+char	**dup_doublearray(char **src)
 {
-    char **output;
-    int i = 0;
+	char	**output;
+	int		i;
 
-    while (src[i] != NULL)
-        i++;
-    output = ft_calloc(i + 1, sizeof(char *));
-    if (output == NULL)
-        return NULL; // Handle allocation failure
-    output[i] = NULL;
-    while (--i >= 0)
-    {
-        output[i] = ft_strdup(src[i]);
-        if (output[i] == NULL)
-        {
-            // Free previously allocated memory on failure
-            ft_free_array((void **)output, 0);
-            return NULL;
-        }
-    }
-    return output;
-}
-
-char **sort_doublearray(char **array)
-{
-    int i, j, max;
-    char **output;
-    char *temp;
-
-    output = dup_doublearray(array);
-    if (output == NULL)
-        return NULL; // Handle allocation failure
-    max = 0;
-    while (array[max] != NULL)
-        max++;
-    for (i = 0; i < max; i++)
-    {
-        for (j = i + 1; j < max; j++)
-        {
-            if (ft_strcmp(output[i], output[j]) > 0)
-            {
-                temp = output[i];
-                output[i] = output[j];
-                output[j] = temp;
-            }
-        }
-    }
-    return output;
-}
-
-
-char	*ft_strndup(const char *str, size_t n)
-{
-	size_t	i;
-	char	*output;
-
-	output = malloc(sizeof(char) * n + 1);
+	i = 0;
+	while (src[i] != NULL)
+		i++;
+	output = ft_calloc(i + 1, sizeof(char *));
 	if (output == NULL)
 		return (NULL);
+	output[i] = NULL;
+	while (--i >= 0)
+	{
+		output[i] = ft_strdup(src[i]);
+		if (output[i] == NULL)
+		{
+			ft_free_array((void **)output, 0);
+			return (NULL);
+		}
+	}
+	return (output);
+}
+
+char	**sort_doublearray(char **array)
+{
+	int		i;
+	int		j;
+	int		max;
+	char	**output;
+	char	*temp;
+
+	output = dup_doublearray(array);
+	max = 0;
+	while (array[max] != 0)
+		max++;
 	i = -1;
-	while (++i < n)
-		output[i] = str[i];
-	output[i] = '\0';
+	while (++i < max)
+	{
+		j = i;
+		while (++j < max)
+		{
+			if (ft_strcmp(output[i], output[j]) > 0)
+			{
+				temp = output[i];
+				output[i] = output[j];
+				output[j] = temp;
+			}
+		}
+	}
 	return (output);
 }
 
@@ -80,14 +77,12 @@ t_env	*str2env(char *str)
 	}
 	env_value = ft_strdup(ft_strchr(str, '=') + 1);
 	env_key = ft_substr(str, 0, ft_strlen(str) - ft_strlen(env_value) - 1);
-
 	if (ft_strlen(env_value) == 0)
 	{
 		free(env_value);
 		env_value = ft_strdup("");
 	}
 	env = new_env(env_key, env_value);
-
 	return (env);
 }
 
@@ -116,16 +111,18 @@ static int	export_assign(t_token_info *token_info, char **args)
 	return (error);
 }
 
-
 int	ft_export(char **args, t_token_info *token_info)
 {
 	char	**arr;
+	t_env	*head;
 
+	head = token_info->env_data->env_list;
 	if (args[1] == NULL)
 	{
 		arr = env2arr(token_info->env_data->env_list);
+		if (arr == NULL)
+			return (0);
 		arr = sort_doublearray(arr);
-		t_env *head = token_info->env_data->env_list;
 		while (head)
 		{
 			free(head->name);

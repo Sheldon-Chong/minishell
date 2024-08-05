@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_env.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 09:17:46 by jyap              #+#    #+#             */
+/*   Updated: 2024/08/05 09:17:46 by jyap             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	find_env_end(char *env_start)
@@ -18,16 +30,17 @@ static int	find_env_end(char *env_start)
 	return (i);
 }
 
-static int	expand_env_iter(int *env_end, char *env_start, char **buffer, t_token_info *token_info)
+static int	expand_env_iter(int *env_end, char *env_start,
+				char **buffer, t_token_info *token_info)
 {
 	char	*var_name;
 	char	*brace;
 
-	if (*env_start == '?') //return exit status
-	{	
+	if (*env_start == '?')
+	{
 		ft_rstrjoin(buffer, ft_itoa(g_exit_status));
 		*env_end = 1;
-		return 0;
+		return (0);
 	}
 	if (find_env_end(env_start) < 0)
 		return (ft_rstrjoin(buffer, "$"), 0);
