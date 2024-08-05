@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int g_exit_status;
+int	g_exit_status;
 
 void	ctrl_c_function(int signum)
 {
@@ -22,7 +22,6 @@ void	ctrl_c_function(int signum)
 	rl_redisplay();
 	g_exit_status = CTRL_C;
 }
-
 
 // an initial check to see if commands do exist
 t_token	*scan_cmd(t_token_info *token_info)
@@ -68,7 +67,6 @@ t_token_info	*process_input(char *str, t_env_data *env_data)
 		return (token_info);
 	chunk_tokens(token_info);
 	head = token_info->token_chunks;
-
 	while (head)
 		head = head->next;
 	return (token_info);
@@ -78,29 +76,26 @@ int	main(int ac, char **av, char **env)
 {
 	t_token_info	*token_info;
 	char			*user_input;
+	t_env_data		*env_data;
 
 	signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
-	t_env_data *env_data = new_env_data(env);
-
+	env_data = new_env_data(env);
 	while (1)
 	{
 		user_input = readline(SHELL_MSG);
-		if (!user_input) //ctrl + D
+		if (!user_input)
 			break ;
 		if (ft_strlen(user_input) > 0)
 		{
 			add_history(user_input);
 			token_info = process_input(user_input, env_data);
 			if (!token_info->token_list)
-				continue;
-
-			//print_tokens(token_info, 'l');
+				continue ;
 			if (scan_cmd(token_info) && !token_info->has_error)
 				executor(env, token_info);
-			free_TokenList(token_info);
+			free_tokenlist(token_info);
 		}
 	}
 	exit(0);
 }
-

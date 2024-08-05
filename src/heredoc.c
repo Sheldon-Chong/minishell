@@ -20,7 +20,6 @@ char	*here_doc_input(char *delimiter)
 	write(STDOUT_FILENO, "> ", 2);
 	buffer = get_next_line(STDIN_FILENO);
 	str = ft_strdup("");
-
 	while (buffer)
 	{
 		if (!ft_strncmp(delimiter, buffer, ft_strlen(delimiter))

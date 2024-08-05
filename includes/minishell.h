@@ -111,7 +111,7 @@ int				newline(int var);
 int				print_tokens(t_token_info *token_list, char format);
 
 // free utils
-int				free_TokenList(t_token_info *token_list);
+int				free_tokenlist(t_token_info *token_list);
 
 // tokenization
 t_token			*scan_cmd(t_token_info *token_list);
