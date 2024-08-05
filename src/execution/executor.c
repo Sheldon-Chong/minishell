@@ -133,7 +133,7 @@ void	executor(char **env, t_token_info *token_info)
 				if (chunk_list->next)
 					close(pipefd[0]);
 				run_cmd(chunk_list, token_info, STDIN_FILENO, STDOUT_FILENO);
-				printf(">> %d\n", g_exit_status);
+				
 				exit(g_exit_status);
 			}
 			else
@@ -152,7 +152,10 @@ void	executor(char **env, t_token_info *token_info)
 		else
 		{
 			if (!strcmp(chunk_list->tokens[0], "exit"))
+			{
+				free(executor);
 				ft_exit(chunk_list->tokens, token_info);
+			}
 			else if (!strcmp(chunk_list->tokens[0], "cd"))
 			{
 				if (chdir(chunk_list->tokens[1]) == -1)
@@ -169,7 +172,6 @@ void	executor(char **env, t_token_info *token_info)
 	while (wait(&g_exit_status) > 0)
 	{
 		g_exit_status = WEXITSTATUS(g_exit_status);
-		printf("EXIT STATUS: %d\n", g_exit_status);
 	}
 	free(executor);
 }

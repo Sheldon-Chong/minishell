@@ -65,8 +65,9 @@ char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info)
 	t_token	*token;
 	char	**cmds;
 
-	cmds = calloc(1, sizeof(char *));
+	cmds = calloc(1, 2 * sizeof(char *));
 	token = chunk->start;
+	
 	while (token != str_end)
 	{
 		if (str_in_arr(token->word, ">>,>,<<,<"))

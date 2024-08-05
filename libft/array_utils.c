@@ -34,6 +34,7 @@ char	**append_to_array(char ***array, char *value)
 	if (current_array[0] == NULL)
 	{
 		new_array = malloc(sizeof(char *) * 2);
+		free(*array);
 		new_array[0] = ft_strdup(value);
 		new_array[1] = NULL;
 		return (new_array);
@@ -45,5 +46,7 @@ char	**append_to_array(char ***array, char *value)
 	new_array[i] = ft_strdup(value);
 	new_array[i + 1] = NULL;
 	ft_free_array((void **)current_array, 0);
+	free(**array);
+	free(*array);
 	return (new_array);
 }

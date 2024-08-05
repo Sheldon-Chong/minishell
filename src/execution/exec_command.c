@@ -21,7 +21,7 @@ char	*get_path(char *cmd, t_env **env)
 	if (access(cmd, F_OK) == 0)
 		return (cmd);
 	if (!get_env_var("PATH", env))
-		return ("\0");
+		return (NULL);
 	path = get_env_var("PATH", env)->value;
 	while (path && *path)
 	{
@@ -35,7 +35,7 @@ char	*get_path(char *cmd, t_env **env)
 		if (path)
 			path ++;
 	}
-	return ("\0");
+	return (NULL);
 }
 
 void	reset_signal(void)
@@ -81,18 +81,19 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 	char	*command;
 	pid_t	pid;
 
-	command = get_path(cmd[0], &(token_info->env_data->env_list));
+	
 	g_exit_status = 0;
 	pid = fork();
 	if (pid == 0)
 	{
 		reset_signal();
 		dup_fd_for_child(cmd_in_fd, cmd_out);
-		if (str_in_arr(cmd[0], "echo,export,pwd,unset,env"))
+		if (str_in_arr(cmd[0], "echo,export,pwd"))
 		{
 			bash_cmd(token_info, cmd);
 			exit(0);
 		}
+		command = get_path(cmd[0], &(token_info->env_data->env_list));
 		if (access(command, F_OK) == 0)
 			execve((const char *)command, (char *const *)cmd,
 				token_info->env_data->environ_arr);

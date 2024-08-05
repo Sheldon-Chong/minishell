@@ -27,21 +27,25 @@ void	ctrl_c_function(int signum)
 t_token	*scan_cmd(t_token_info *token_info)
 {
 	t_token		*list;
+	char *path;
 
 	list = token_info->token_chunks;
 	token_info->cmd_start = token_info->token_chunks;
 	while (list && list->tokens[0])
 	{
+		path = get_path(list->tokens[0],
+					&(token_info->env_data->env_list));
 		if (str_in_arr(list->tokens[0], BASH_CMDS))
 			nothing();
-		else if (access(get_path(list->tokens[0],
-					&(token_info->env_data->env_list)), F_OK) != 0 \
+		else if (access(path, F_OK) != 0 \
 					|| !strcmp(list->tokens[0], ""))
 		{
 			printf("bash: %s: command not found\n", list->start->word);
 			token_info->cmd_start = list->next;
 			g_exit_status = ERR_COMMAND_NOT_FOUND;
 		}
+		if (path)
+			free(path);
 		list = list->next;
 	}
 	return (token_info->cmd_start);
@@ -78,6 +82,7 @@ int	main(int ac, char **av, char **env)
 	char			*user_input;
 	t_env_data		*env_data;
 
+	
 	signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
 	env_data = new_env_data(env);

@@ -63,16 +63,29 @@ void	ft_exit(char **args, t_token_info *token_info)
 		len++;
 	if (len == 1)
 	{
-		printf("exit\n");
 		g_exit_status = 0;
+
+		t_env *head = token_info->env_data->env_list;
+		while(head)
+		{
+			t_env *tmp = head;
+			free(head->name);
+			free(head->value);
+			head = head->next;
+			free(tmp);
+		}
+		ft_free_array((void**)(token_info->env_data->environ_arr), 0);
+
+		free(token_info->env_data);
 		free_tokenlist(token_info);
+		
 		exit(0);
 	}
 	else if (len == 2 && ft_str_is_digit(args[1]))
 	{
-		printf("exit\n");
 		g_exit_status = ft_atoi(args[1]) % 256;
 		free_tokenlist(token_info);
+		
 		exit(g_exit_status);
 	}
 	handle_exit_errors(args, len);
