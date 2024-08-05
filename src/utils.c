@@ -32,14 +32,14 @@ int	is_token_valid(char *str, t_token_info *token_info)
 		if (!quote && is_in_charset(str[i], INVALID_CHARS))
 		{
 			token_info->has_error = true;
-			return (printf("bash: syntax error near unexpected token `%c'\n",
+			return (printf("minishell: syntax error near unexpected token `%c'\n",
 					str[i]));
 		}
 	}
 	if (quote)
 	{
 		token_info->has_error = true;
-		printf("bash: syntax error near unexpected token `%c'\n", str[i]);
+		printf("minishell: syntax error near unexpected token `%c'\n", str[i]);
 		rl_on_new_line();
 		return (1);
 	}

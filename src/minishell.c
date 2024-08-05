@@ -40,7 +40,7 @@ t_token	*scan_cmd(t_token_info *token_info)
 		else if (access(path, F_OK) != 0 \
 					|| !strcmp(list->tokens[0], ""))
 		{
-			printf("bash: %s: command not found\n", list->start->word);
+			printf("minishell: %s: command not found\n", list->start->word);
 			token_info->cmd_start = list->next;
 			g_exit_status = ERR_COMMAND_NOT_FOUND;
 		}

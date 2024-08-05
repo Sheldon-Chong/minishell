@@ -46,7 +46,5 @@ char	**append_to_array(char ***array, char *value)
 	new_array[i] = ft_strdup(value);
 	new_array[i + 1] = NULL;
 	ft_free_array((void **)current_array, 0);
-	free(**array);
-	free(*array);
 	return (new_array);
 }

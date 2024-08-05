@@ -21,7 +21,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
 		if (file == -1)
 		{
-			printf("bash: %s: Permission denied\n", head->next->word);
+			printf("minishell: %s: Permission denied\n", head->next->word);
 			token_info->has_error = true;
 		}
 		else
