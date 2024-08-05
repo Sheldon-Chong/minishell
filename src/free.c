@@ -31,7 +31,7 @@ int	free_tokenlist(t_token_info *token_info)
 	{
 		temp = head->next;
 		ft_free_array((void **)head->tokens, 0);
-		
+		free(head->heredoc_buffer);
 		free(head);
 		head = temp;
 	}

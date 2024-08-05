@@ -30,5 +30,6 @@ char	*here_doc_input(char *delimiter)
 		write(STDOUT_FILENO, "> ", 2);
 		buffer = get_next_line(STDIN_FILENO);
 	}
-	return (free(buffer), str);
+	free(buffer);
+	return (str);
 }

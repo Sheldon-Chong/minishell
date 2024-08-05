@@ -75,6 +75,15 @@ typedef struct s_env_data
 	char	**environ_arr;
 }	t_env_data;
 
+typedef struct s_executor
+{
+	int		pipefd[2];
+	int		cmd_in;
+	int		cmd_out;
+	int		status;
+}	t_executor;
+
+
 typedef struct s_token_info
 {
 	t_token		*token_list;
@@ -87,6 +96,7 @@ typedef struct s_token_info
 	bool		has_error;
 	t_env		**global_env;
 	t_env_data	*env_data;
+	t_executor	*executor;
 }	t_token_info;
 
 typedef struct s_error
@@ -95,13 +105,6 @@ typedef struct s_error
 	char	*subject;
 }	t_error;
 
-typedef struct s_executor
-{
-	int		pipefd[2];
-	int		cmd_in;
-	int		cmd_out;
-	int		status;
-}	t_executor;
 
 // utils
 int				get_length_of_list(t_token *head);

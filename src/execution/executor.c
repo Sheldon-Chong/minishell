@@ -51,7 +51,6 @@ t_executor	*executor_init(void)
 void	executor(char **env, t_token_info *token_info)
 {
 	t_token		*chunk_list;
-	t_executor	*executor;
 	int			pipefd[2];
 	int			file_fd_in;
 	int			file_fd_out;
@@ -59,7 +58,7 @@ void	executor(char **env, t_token_info *token_info)
 	int			heredoc_fd[2];
 
 	chunk_list = token_info->token_chunks;
-	executor = executor_init();
+	token_info->executor = executor_init();
 	while (chunk_list)
 	{
 		if (chunk_list->outfile)
@@ -75,7 +74,7 @@ void	executor(char **env, t_token_info *token_info)
 				perror("open outfile");
 				exit(EXIT_FAILURE);
 			}
-			executor->cmd_out = file_fd_out;
+			token_info->executor->cmd_out = file_fd_out;
 		}
 		else if (chunk_list->next)
 		{
@@ -84,10 +83,10 @@ void	executor(char **env, t_token_info *token_info)
 				perror("pipe");
 				exit(EXIT_FAILURE);
 			}
-			executor->cmd_out = pipefd[1];
+			token_info->executor->cmd_out = pipefd[1];
 		}
 		else
-			executor->cmd_out = STDOUT_FILENO;
+			token_info->executor->cmd_out = STDOUT_FILENO;
 		if (chunk_list->infile)
 		{
 			file_fd_in = open(chunk_list->infile, O_RDONLY);
@@ -96,7 +95,7 @@ void	executor(char **env, t_token_info *token_info)
 				perror("open infile");
 				exit(EXIT_FAILURE);
 			}
-			executor->cmd_in = file_fd_in;
+			token_info->executor->cmd_in = file_fd_in;
 		}
 		else if (chunk_list->heredoc_buffer != NULL)
 		{
@@ -104,7 +103,7 @@ void	executor(char **env, t_token_info *token_info)
 				exit_error("open");
 			ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
 			close(heredoc_fd[1]);
-			executor->cmd_in = heredoc_fd[0];
+			token_info->executor->cmd_in = heredoc_fd[0];
 		}
 		if (!str_in_arr(chunk_list->tokens[0], "exit,unset,export,cd")
 			|| (!ft_strcmp(chunk_list->tokens[0], "export")
@@ -120,15 +119,15 @@ void	executor(char **env, t_token_info *token_info)
 			{
 				signal(SIGTERM, SIG_DFL);
 				signal(SIGQUIT, SIG_DFL);
-				if (executor->cmd_in != STDIN_FILENO)
+				if (token_info->executor->cmd_in != STDIN_FILENO)
 				{
-					dup2(executor->cmd_in, STDIN_FILENO);
-					close(executor->cmd_in);
+					dup2(token_info->executor->cmd_in, STDIN_FILENO);
+					close(token_info->executor->cmd_in);
 				}
-				if (executor->cmd_out != STDOUT_FILENO)
+				if (token_info->executor->cmd_out != STDOUT_FILENO)
 				{
-					dup2(executor->cmd_out, STDOUT_FILENO);
-					close(executor->cmd_out);
+					dup2(token_info->executor->cmd_out, STDOUT_FILENO);
+					close(token_info->executor->cmd_out);
 				}
 				if (chunk_list->next)
 					close(pipefd[0]);
@@ -138,13 +137,13 @@ void	executor(char **env, t_token_info *token_info)
 			}
 			else
 			{
-				if (executor->cmd_in != STDIN_FILENO)
-					close(executor->cmd_in);
-				if (executor->cmd_out != STDOUT_FILENO)
-					close(executor->cmd_out);
+				if (token_info->executor->cmd_in != STDIN_FILENO)
+					close(token_info->executor->cmd_in);
+				if (token_info->executor->cmd_out != STDOUT_FILENO)
+					close(token_info->executor->cmd_out);
 				if (chunk_list->next)
 				{
-					executor->cmd_in = pipefd[0];
+					token_info->executor->cmd_in = pipefd[0];
 					close(pipefd[1]);
 				}
 			}
@@ -153,7 +152,6 @@ void	executor(char **env, t_token_info *token_info)
 		{
 			if (!strcmp(chunk_list->tokens[0], "exit"))
 			{
-				free(executor);
 				ft_exit(chunk_list->tokens, token_info);
 			}
 			else if (!strcmp(chunk_list->tokens[0], "cd"))
@@ -173,5 +171,5 @@ void	executor(char **env, t_token_info *token_info)
 	{
 		g_exit_status = WEXITSTATUS(g_exit_status);
 	}
-	free(executor);
+	free(token_info->executor);
 }

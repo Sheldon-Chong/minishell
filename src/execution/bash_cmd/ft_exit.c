@@ -49,6 +49,7 @@ static void	handle_exit_errors(char **args, int len, t_token_info *token_info)
 		printf("exit\n");
 		printf("minishell: exit: : numeric argument required\n");
 		g_exit_status = 255;
+		free(token_info->executor);
 		free_env_data(token_info->env_data);
 		free_tokenlist(token_info);
 		exit(255);
@@ -61,6 +62,7 @@ static void	handle_exit_errors(char **args, int len, t_token_info *token_info)
 		printf(": numeric argument required\n");
 		g_exit_status = 255;
 		free_env_data(token_info->env_data);
+		free(token_info->executor);
 		free_tokenlist(token_info);
 		exit(255);
 	}
@@ -85,6 +87,7 @@ void	ft_exit(char **args, t_token_info *token_info)
 	if (len == 1)
 	{
 		g_exit_status = 0;
+		free(token_info->executor);
 		free_env_data(token_info->env_data);
 		free_tokenlist(token_info);
 		exit(0);
@@ -92,6 +95,7 @@ void	ft_exit(char **args, t_token_info *token_info)
 	else if (len == 2 && ft_str_is_digit(args[1]))
 	{
 		g_exit_status = ft_atoi(args[1]) % 256;
+		free(token_info->executor);
 		free_env_data(token_info->env_data);
 		free_tokenlist(token_info);
 		exit(g_exit_status);
