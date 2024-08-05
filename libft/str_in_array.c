@@ -16,7 +16,7 @@ bool	str_in_arr(char *str, char	*str_array)
 	char	**array;
 	int		i;
 
-	arrat = ft_split(str_array, ',');
+	array = ft_split(str_array, ',');
 	i = -1;
 	if (!str || !array || !(array[0]))
 		return (false);
