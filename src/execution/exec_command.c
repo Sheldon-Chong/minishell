@@ -35,7 +35,7 @@ void reset_ctrl_c_signal() {
 
 
 // execute a command with the given arguments, recieving the cmd_in_fd as input and piping its output to cmd_out
-void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out)
+void exec_cmd(char **cmd, t_token_info *token_info, int cmd_in_fd, int cmd_out)
 {
 	char *command;
 	pid_t pid;
@@ -73,11 +73,12 @@ void exec_cmd(char **cmd, char **env, t_token_info *token_info, int cmd_in_fd, i
 		}
 		if (str_in_arr(cmd[0], "echo,export,pwd,unset,env"))
 		{
-			bash_cmd(env, token_info, cmd);
+			bash_cmd(token_info, cmd);
 			exit(0);
 		}
 		if (access(command, F_OK) == 0)
-			execve((const char *)command, (char *const *)cmd, env);
+			execve((const char *)command, (char *const *)cmd,
+				token_info->env_data->environ_arr);
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}

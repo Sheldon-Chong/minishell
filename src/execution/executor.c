@@ -6,7 +6,7 @@ int exit_error(char *error_name)
 	exit(EXIT_FAILURE);
 }
 
-void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd, int cmd_out)
+void run_cmd(t_token *chunk, t_token_info *token_info, int cmd_in_fd, int cmd_out)
 {
 	if (str_in_arr(chunk->start->word, "exit"))
 		ft_exit(chunk->tokens, token_info);
@@ -20,7 +20,7 @@ void run_cmd(t_token *chunk, char **env, t_token_info *token_info, int cmd_in_fd
 	else if (str_in_arr(chunk->start->word, "export") && chunk->tokens[1])
 		ft_export(chunk->tokens, token_info);
 	else
-		exec_cmd(chunk->tokens, env, token_info, cmd_in_fd, cmd_out);
+		exec_cmd(chunk->tokens, token_info, cmd_in_fd, cmd_out);
 }
 
 t_executor *executor_init()
@@ -115,7 +115,7 @@ void executor(char **env, t_token_info *token_info) {
 				if (chunk_list->next) {
 					close(pipefd[0]);
 				}
-				run_cmd(chunk_list, env, token_info, STDIN_FILENO, STDOUT_FILENO);
+				run_cmd(chunk_list, token_info, STDIN_FILENO, STDOUT_FILENO);
 				printf(">> %d\n", g_exit_status);
 				exit(g_exit_status);
 			} 
