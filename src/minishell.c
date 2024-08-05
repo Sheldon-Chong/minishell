@@ -83,11 +83,12 @@ int	main(int ac, char **av, char **env)
 	t_env_data		*env_data;
 
 	
-	signal(SIGINT, ctrl_c_function);
-	signal(SIGQUIT, SIG_IGN);
+	
 	env_data = new_env_data(env);
 	while (1)
 	{
+		signal(SIGINT, ctrl_c_function);
+		signal(SIGQUIT, SIG_IGN);
 		user_input = readline(SHELL_MSG);
 		if (!user_input)
 			break ;
