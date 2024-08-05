@@ -6,7 +6,7 @@
 /*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:46:40 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/05 10:47:22 by jyap             ###   ########.fr       */
+/*   Updated: 2024/08/05 12:17:05 by jyap             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,16 @@ char	*ft_strndup(const char *str, size_t n)
 		output[i] = str[i];
 	output[i] = '\0';
 	return (output);
+}
+
+int	add_substr_to_toklist(const char *str, int start,
+		int len, t_token **tokens)
+{
+	char	*string;
+
+	string = ft_substr(str, start, len);
+	if (string[0])
+		append_tok(tok(ft_strdup(string), 0), tokens);
+	free(string);
+	return (start + len);
 }

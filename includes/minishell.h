@@ -175,5 +175,6 @@ int				ft_echo(char **args);
 bool			is_echo_n(char *str);
 
 char			*ft_strndup(const char *str, size_t n);
-
+int				add_substr_to_toklist(const char *str, int start,
+					int len, t_token **tokens);
 #endif
