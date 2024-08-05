@@ -13,14 +13,14 @@
 #include "minishell.h"
 
 //returns true if it encounters an alternate outermost quote
-bool quote_alternate(char c, char *quote)
+bool	quote_alternate(char c, char *quote)
 {
 	if (is_in_charset(c, "\"'") && (!(*quote) || c == *quote))
 	{
 		*quote = ((!(*quote)) * c);
-		return true;
+		return (true);
 	}
-	return false;
+	return (false);
 }
 
 char	toggle_quote_state(char quote, char c)
