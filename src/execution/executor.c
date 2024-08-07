@@ -37,15 +37,40 @@ void	run_cmd(t_token *chunk, t_token_info *token_info,
 		exec_cmd(chunk->tokens, token_info, cmd_in_fd, cmd_out);
 }
 
-t_executor	*executor_init(void)
-{
-	t_executor	*executor;
 
-	executor = malloc(sizeof(t_executor));
-	executor->cmd_in = STDIN_FILENO;
-	executor->cmd_out = STDOUT_FILENO;
-	executor->status = 0;
-	return (executor);
+void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
+{
+	int	fd;
+
+	if (chunk_list->outfile)
+	{
+		if (chunk_list->outfile_mode == 'a')
+			fd = open(chunk_list->outfile, O_WRONLY | O_APPEND | O_CREAT, 0644);
+		else
+			fd = open(chunk_list->outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+		exe->cmd_out = fd;
+	}
+	else if (chunk_list->next)
+	{
+		if (pipe(pipefd) == -1)
+		{
+			perror("pipe");
+			exit(EXIT_FAILURE);
+		}
+		exe->cmd_out = pipefd[1];
+	}
+	else
+		exe->cmd_out = STDOUT_FILENO;
+}
+
+
+void heredoc(int *heredoc_fd, t_token_info *token_info, t_token *chunk_list)
+{
+	if (pipe(heredoc_fd) == -1)
+		exit_error("open");
+	ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
+	close(heredoc_fd[1]);
+	token_info->executor->cmd_in = heredoc_fd[0];
 }
 
 void	executor(char **env, t_token_info *token_info)
@@ -61,49 +86,17 @@ void	executor(char **env, t_token_info *token_info)
 	token_info->executor = executor_init();
 	while (chunk_list)
 	{
-		if (chunk_list->outfile)
-		{
-			if (chunk_list->outfile_mode == 'a')
-				file_fd_out = open(chunk_list->outfile,
-						O_WRONLY | O_APPEND | O_CREAT, 0644);
-			else
-				file_fd_out = open(chunk_list->outfile,
-						O_WRONLY | O_TRUNC | O_CREAT, 0644);
-			if (file_fd_out == -1)
-			{
-				perror("open outfile");
-				exit(EXIT_FAILURE);
-			}
-			token_info->executor->cmd_out = file_fd_out;
-		}
-		else if (chunk_list->next)
-		{
-			if (pipe(pipefd) == -1)
-			{
-				perror("pipe");
-				exit(EXIT_FAILURE);
-			}
-			token_info->executor->cmd_out = pipefd[1];
-		}
-		else
-			token_info->executor->cmd_out = STDOUT_FILENO;
+		set_outf(chunk_list, token_info->executor, pipefd);
 		if (chunk_list->infile)
 		{
 			file_fd_in = open(chunk_list->infile, O_RDONLY);
 			if (file_fd_in == -1)
-			{
-				perror("open infile");
-				exit(EXIT_FAILURE);
-			}
+				exit_error("open infile");
 			token_info->executor->cmd_in = file_fd_in;
 		}
 		else if (chunk_list->heredoc_buffer != NULL)
 		{
-			if (pipe(heredoc_fd) == -1)
-				exit_error("open");
-			ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
-			close(heredoc_fd[1]);
-			token_info->executor->cmd_in = heredoc_fd[0];
+			heredoc(heredoc_fd, token_info, chunk_list);
 		}
 		if (!str_in_arr(chunk_list->tokens[0], "exit,unset,export,cd")
 			|| (!ft_strcmp(chunk_list->tokens[0], "export")

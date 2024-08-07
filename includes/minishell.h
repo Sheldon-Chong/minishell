@@ -67,6 +67,7 @@ typedef struct s_token
 	struct s_token	*next;			//for BOTH tokens and token chunks
 	struct s_token	*prev;
 	t_list			*heredocs;
+	int				heredoc_fd[2];
 }	t_token;
 
 typedef struct s_env_data
@@ -81,6 +82,7 @@ typedef struct s_executor
 	int		cmd_in;
 	int		cmd_out;
 	int		status;
+	int		heredoc_fd[2];
 }	t_executor;
 
 
@@ -180,4 +182,8 @@ bool			is_echo_n(char *str);
 char			*ft_strndup(const char *str, size_t n);
 int				add_substr_to_toklist(const char *str, int start,
 					int len, t_token **tokens);
+
+int	exit_error(char *error_name);
+t_executor	*executor_init(void);
+
 #endif
