@@ -21,19 +21,19 @@ int	free_tokenlist(t_token_info *token_info)
 	head = token_info->token_list;
 	while (head)
 	{
-		temp = head->next;
-		free(head->word);
-		free(head);
-		head = temp;
+		temp = head;
+		head = head->next;
+		free(temp->word);
+		free(temp);
 	}
 	head = token_info->token_chunks;
 	while (head)
 	{
-		temp = head->next;
-		ft_free_array((void **)head->tokens, 0);
-		free(head->heredoc_buffer);
-		free(head);
-		head = temp;
+		temp = head;
+		head = head->next;
+		ft_free_array((void **)temp->tokens, 0);
+		free(temp->heredoc_buffer);
+		free(temp);
 	}
 	free(token_info);
 	return (0);

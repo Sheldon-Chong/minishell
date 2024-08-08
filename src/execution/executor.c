@@ -26,7 +26,11 @@ void	run_cmd(t_token *chunk, t_token_info *token_info,
 	else if (str_in_arr(chunk->start->word, "cd"))
 	{
 		if (chdir(chunk->tokens[1]) == -1)
-			perror("chdir");
+		{
+			ft_putstr_fd("minishell: cd: ", 2);
+			perror(chunk->tokens[1]);
+			g_exit_status = 1;
+		}
 	}
 	else if (str_in_arr(chunk->start->word, "unset"))
 		unset_env(chunk->tokens + 1,
@@ -51,26 +55,9 @@ void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
 		exe->cmd_out = fd;
 	}
 	else if (chunk_list->next)
-	{
-		if (pipe(pipefd) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
 		exe->cmd_out = pipefd[1];
-	}
 	else
 		exe->cmd_out = STDOUT_FILENO;
-}
-
-
-void heredoc(int *heredoc_fd, t_token_info *token_info, t_token *chunk_list)
-{
-	if (pipe(heredoc_fd) == -1)
-		exit_error("open");
-	ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
-	close(heredoc_fd[1]);
-	token_info->executor->cmd_in = heredoc_fd[0];
 }
 
 void	executor(char **env, t_token_info *token_info)
@@ -86,6 +73,11 @@ void	executor(char **env, t_token_info *token_info)
 	token_info->executor = executor_init();
 	while (chunk_list)
 	{
+		if (pipe(pipefd) == -1)
+		{
+			perror("pipe");
+			exit(EXIT_FAILURE);
+		}
 		set_outf(chunk_list, token_info->executor, pipefd);
 		if (chunk_list->infile)
 		{
@@ -96,7 +88,11 @@ void	executor(char **env, t_token_info *token_info)
 		}
 		else if (chunk_list->heredoc_buffer != NULL)
 		{
-			heredoc(heredoc_fd, token_info, chunk_list);
+			if (pipe(heredoc_fd) == -1)
+				exit_error("pipe");
+			ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
+			close(heredoc_fd[1]);
+			token_info->executor->cmd_in = heredoc_fd[0];
 		}
 		if (!str_in_arr(chunk_list->tokens[0], "exit,unset,export,cd")
 			|| (!ft_strcmp(chunk_list->tokens[0], "export")
@@ -108,7 +104,7 @@ void	executor(char **env, t_token_info *token_info)
 				perror("fork");
 				exit(EXIT_FAILURE);
 			}
-			if (pid == 0)
+			if (pid == 0) // child
 			{
 				signal(SIGTERM, SIG_DFL);
 				signal(SIGQUIT, SIG_DFL);
@@ -120,37 +116,44 @@ void	executor(char **env, t_token_info *token_info)
 				if (token_info->executor->cmd_out != STDOUT_FILENO)
 				{
 					dup2(token_info->executor->cmd_out, STDOUT_FILENO);
-					close(token_info->executor->cmd_out);
+					if (token_info->executor->cmd_out != pipefd[1])
+						close(token_info->executor->cmd_out);
 				}
-				if (chunk_list->next)
-					close(pipefd[0]);
+				close(pipefd[1]);
+				close(pipefd[0]);
 				run_cmd(chunk_list, token_info, STDIN_FILENO, STDOUT_FILENO);
-				
 				exit(g_exit_status);
 			}
-			else
+			else // parent
 			{
 				if (token_info->executor->cmd_in != STDIN_FILENO)
 					close(token_info->executor->cmd_in);
-				if (token_info->executor->cmd_out != STDOUT_FILENO)
+				if (token_info->executor->cmd_out != STDOUT_FILENO && token_info->executor->cmd_out != pipefd[1])
 					close(token_info->executor->cmd_out);
 				if (chunk_list->next)
 				{
 					token_info->executor->cmd_in = pipefd[0];
 					close(pipefd[1]);
 				}
+				else
+				{
+					close(pipefd[1]);
+					close(pipefd[0]);
+				}
 			}
 		}
 		else
 		{
 			if (!strcmp(chunk_list->tokens[0], "exit"))
-			{
 				ft_exit(chunk_list->tokens, token_info);
-			}
 			else if (!strcmp(chunk_list->tokens[0], "cd"))
 			{
 				if (chdir(chunk_list->tokens[1]) == -1)
-					perror("chdir");
+				{
+					ft_putstr_fd("minishell: cd: ", 2);
+					perror(chunk_list->tokens[1]);
+					g_exit_status = 1;
+				}
 			}
 			else if (!strcmp(chunk_list->tokens[0], "unset"))
 				unset_env(chunk_list->tokens + 1,
@@ -161,8 +164,6 @@ void	executor(char **env, t_token_info *token_info)
 		chunk_list = chunk_list->next;
 	}
 	while (wait(&g_exit_status) > 0)
-	{
 		g_exit_status = WEXITSTATUS(g_exit_status);
-	}
 	free(token_info->executor);
 }

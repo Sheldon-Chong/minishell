@@ -67,7 +67,6 @@ typedef struct s_token
 	struct s_token	*next;			//for BOTH tokens and token chunks
 	struct s_token	*prev;
 	t_list			*heredocs;
-	int				heredoc_fd[2];
 }	t_token;
 
 typedef struct s_env_data
@@ -82,9 +81,7 @@ typedef struct s_executor
 	int		cmd_in;
 	int		cmd_out;
 	int		status;
-	int		heredoc_fd[2];
 }	t_executor;
-
 
 typedef struct s_token_info
 {
@@ -106,7 +103,6 @@ typedef struct s_error
 	char	error_type;
 	char	*subject;
 }	t_error;
-
 
 // utils
 int				get_length_of_list(t_token *head);
@@ -182,8 +178,12 @@ bool			is_echo_n(char *str);
 char			*ft_strndup(const char *str, size_t n);
 int				add_substr_to_toklist(const char *str, int start,
 					int len, t_token **tokens);
-
-int	exit_error(char *error_name);
-t_executor	*executor_init(void);
+t_executor		*executor_init(void);
+void			set_infile(t_token *chunk_list, t_executor *exe);
+void			set_outfile(t_token *chunk_list, t_executor *exe, int *pipefd);
+int				exit_error(char *error_name);
+void			reset_signal(void);
+void			dup_fd_for_child(int cmd_in_fd, int cmd_out);
+void			close_fds(int cmd_in_fd, int cmd_out);
 
 #endif

@@ -32,8 +32,9 @@ int	is_token_valid(char *str, t_token_info *token_info)
 		if (!quote && is_in_charset(str[i], INVALID_CHARS))
 		{
 			token_info->has_error = true;
-			return (printf("minishell: syntax error near unexpected token `%c'\n",
-					str[i]));
+			printf("minishell: syntax error near unexpected token `%c'\n",
+				str[i]);
+			return (1);
 		}
 	}
 	if (quote)
@@ -50,7 +51,7 @@ void	clear_heredoc_buffer(t_token *chunk)
 {
 	if (chunk->infile != NULL)
 	{
-		free(chunk->infile);
+		//free(chunk->infile);
 		chunk->infile = NULL;
 	}
 	if (chunk->heredoc_buffer != NULL)
@@ -67,7 +68,6 @@ char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info)
 
 	cmds = calloc(1, 2 * sizeof(char *));
 	token = chunk->start;
-	
 	while (token != str_end)
 	{
 		if (str_in_arr(token->word, ">>,>,<<,<"))

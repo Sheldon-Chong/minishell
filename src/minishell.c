@@ -27,18 +27,18 @@ void	ctrl_c_function(int signum)
 t_token	*scan_cmd(t_token_info *token_info)
 {
 	t_token		*list;
-	char *path;
+	char		*path;
 
 	list = token_info->token_chunks;
 	token_info->cmd_start = token_info->token_chunks;
 	while (list && list->tokens[0])
 	{
 		path = get_path(list->tokens[0],
-					&(token_info->env_data->env_list));
+				&(token_info->env_data->env_list));
 		if (str_in_arr(list->tokens[0], BASH_CMDS))
 			nothing();
 		else if (access(path, F_OK) != 0 \
-					|| !strcmp(list->tokens[0], ""))
+					|| !ft_strcmp(list->tokens[0], ""))
 		{
 			printf("minishell: %s: command not found\n", list->start->word);
 			token_info->cmd_start = list->next;
@@ -82,8 +82,6 @@ int	main(int ac, char **av, char **env)
 	char			*user_input;
 	t_env_data		*env_data;
 
-	
-	
 	env_data = new_env_data(env);
 	while (1)
 	{
@@ -99,7 +97,7 @@ int	main(int ac, char **av, char **env)
 			if (!token_info->token_list)
 				continue ;
 			if (scan_cmd(token_info) && !token_info->has_error)
-				executor(env, token_info);
+				executor(env_data->environ_arr, token_info);
 			free_tokenlist(token_info);
 		}
 	}

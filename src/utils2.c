@@ -6,7 +6,7 @@
 /*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:46:40 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/05 12:17:05 by jyap             ###   ########.fr       */
+/*   Updated: 2024/08/05 18:18:28 by jyap             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,26 @@ int	add_substr_to_toklist(const char *str, int start,
 		append_tok(tok(ft_strdup(string), 0), tokens);
 	free(string);
 	return (start + len);
+}
+
+void	dup_fd_for_child(int cmd_in_fd, int cmd_out)
+{
+	if (cmd_in_fd != STDIN_FILENO)
+	{
+		dup2(cmd_in_fd, STDIN_FILENO);
+		close(cmd_in_fd);
+	}
+	if (cmd_out != STDOUT_FILENO)
+	{
+		dup2(cmd_out, STDOUT_FILENO);
+		close(cmd_out);
+	}
+}
+
+void	close_fds(int cmd_in_fd, int cmd_out)
+{
+	if (cmd_in_fd != STDIN_FILENO)
+		close(cmd_in_fd);
+	if (cmd_out != STDOUT_FILENO)
+		close(cmd_out);
 }

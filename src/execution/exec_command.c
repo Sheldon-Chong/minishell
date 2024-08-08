@@ -48,20 +48,6 @@ void	reset_signal(void)
 		perror("Failed to reset SIGQUIT handler");
 }
 
-void	dup_fd_for_child(int cmd_in_fd, int cmd_out)
-{
-	if (cmd_in_fd != STDIN_FILENO)
-	{
-		dup2(cmd_in_fd, STDIN_FILENO);
-		close(cmd_in_fd);
-	}
-	if (cmd_out != STDOUT_FILENO)
-	{
-		dup2(cmd_out, STDOUT_FILENO);
-		close(cmd_out);
-	}
-}
-
 void	close_fds_and_wait(int cmd_in_fd, int cmd_out, pid_t pid)
 {
 	if (cmd_in_fd != STDIN_FILENO)
@@ -81,7 +67,6 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 	char	*command;
 	pid_t	pid;
 
-	
 	g_exit_status = 0;
 	pid = fork();
 	if (pid == 0)
@@ -100,5 +85,8 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}
-	close_fds_and_wait(cmd_in_fd, cmd_out, pid);
+	close_fds(cmd_in_fd, cmd_out);
+	waitpid(pid, &g_exit_status, 0);
+	if (WEXITSTATUS(g_exit_status))
+		g_exit_status = WEXITSTATUS(g_exit_status);
 }

@@ -18,7 +18,9 @@ bool	ft_str_is_digit(char *str)
 
 	if (!str || !str[0])
 		return (false);
-	i = -1;
+	if (!ft_isdigit(str[0]) && str[0] != '+' && str[0] != '-')
+		return (false);
+	i = 0;
 	while (str[++i])
 	{
 		if (!ft_isdigit(str[i]))
@@ -27,18 +29,21 @@ bool	ft_str_is_digit(char *str)
 	return (true);
 }
 
-void free_env_data (t_env_data *env_data)
+void	free_env_data(t_env_data *env_data)
 {
-	t_env *head = (env_data)->env_list;
-	while(head)
+	t_env	*head;
+	t_env	*tmp;
+
+	head = env_data->env_list;
+	while (head)
 	{
-		t_env *tmp = head;
+		tmp = head;
 		free(head->name);
 		free(head->value);
 		head = head->next;
 		free(tmp);
 	}
-	ft_free_array((void**)((env_data)->environ_arr), 0);
+	ft_free_array((void **)((env_data)->environ_arr), 0);
 	free(env_data);
 }
 
@@ -46,8 +51,7 @@ static void	handle_exit_errors(char **args, int len, t_token_info *token_info)
 {
 	if (len == 2 && ft_strlen(args[1]) == 0)
 	{
-		printf("exit\n");
-		printf("minishell: exit: : numeric argument required\n");
+		ft_putstr_fd("exit\nminishell: exit: : numeric argument required\n", 2);
 		g_exit_status = 255;
 		free(token_info->executor);
 		free_env_data(token_info->env_data);
@@ -56,26 +60,19 @@ static void	handle_exit_errors(char **args, int len, t_token_info *token_info)
 	}
 	else if (!ft_str_is_digit(args[1]))
 	{
-		printf("exit\n");
-		printf("minishell: exit: ");
-		printf("%s", args[1]);
-		printf(": numeric argument required\n");
+		ft_putstr_fd("exit\nminishell: exit: ", 2);
+		ft_putstr_fd(args[1], 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
 		g_exit_status = 255;
 		free_env_data(token_info->env_data);
 		free(token_info->executor);
 		free_tokenlist(token_info);
 		exit(255);
 	}
-	else
-	{
-		printf("exit\n");
-		printf("minishell: exit: too many arguments\n");
-		g_exit_status = 1;
-		return ;
-	}
+	ft_putstr_fd("exit\nminishell: exit: too many arguments\n", 2);
+	g_exit_status = 1;
+	return ;
 }
-
-
 
 void	ft_exit(char **args, t_token_info *token_info)
 {

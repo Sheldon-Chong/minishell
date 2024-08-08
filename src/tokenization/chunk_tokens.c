@@ -21,8 +21,12 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
 		if (file == -1)
 		{
-			printf("minishell: %s: Permission denied\n", head->next->word);
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(head->next->word, 2);
+			ft_putstr_fd(": Permission denied\n", 2);
 			token_info->has_error = true;
+			g_exit_status = 1;
+			exit(1);
 		}
 		else
 			close(file);
@@ -36,7 +40,19 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 		token_chunk->outfile = head->next->word;
 	}
 	if (!ft_strcmp(head->word, "<"))
+	{
 		token_chunk->infile = head->next->word;
+		file = open(token_chunk->infile, O_RDONLY);
+		if (file == -1)
+		{
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(head->next->word, 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+			token_info->has_error = true;
+			g_exit_status = 1;
+			exit(1);
+		}
+	}
 	head = head->next->next;
 	return (0);
 }

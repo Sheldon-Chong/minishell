@@ -6,7 +6,7 @@
 /*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:29 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/05 10:06:57 by jyap             ###   ########.fr       */
+/*   Updated: 2024/08/08 11:41:25 by jyap             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,10 @@ static int	export_assign(t_token_info *token_info, char **args)
 		if (!is_valid_identifier(env->name))
 		{
 			error = 1;
-			printf("-bash: export: '");
-			printf("%s", args[i]);
-			printf("': not a valid identifier\n");
+			g_exit_status = 1;
+			ft_putstr_fd("minishell: export: '", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
 			continue ;
 		}
 		append_env(env, &(token_info->env_data->env_list));
