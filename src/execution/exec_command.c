@@ -76,7 +76,7 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 		if (str_in_arr(cmd[0], "echo,export,pwd"))
 		{
 			bash_cmd(token_info, cmd);
-			exit(0);
+			exit(g_exit_status);
 		}
 		command = get_path(cmd[0], &(token_info->env_data->env_list));
 		if (access(command, F_OK) == 0)
