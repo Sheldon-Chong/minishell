@@ -56,6 +56,7 @@ t_token_info	*process_input(char *str, t_env_data *env_data)
 	t_token_info	*token_info;
 
 	token_info = malloc(sizeof(t_token_info));
+	token_info->start_pos = 0;
 	token_info->token_list = NULL;
 	token_info->cmd_start = NULL;
 	token_info->quote_list_buffer = NULL;
@@ -94,7 +95,7 @@ int	main(int ac, char **av, char **env)
 				continue ;
 			if (scan_cmd(token_info) && !token_info->has_error)
 				executor(env_data->environ_arr, token_info);
-			print_tokens(token_info, 'l');
+			//print_tokens(token_info, 'l');
 			free_tokenlist(token_info);
 		}
 	}

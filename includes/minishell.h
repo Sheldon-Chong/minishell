@@ -71,6 +71,7 @@ typedef struct s_token
 	struct s_token	*start;			//token chunk only
 	char			*heredoc_buffer;
 	struct s_token	*next;			//for BOTH tokens and token chunks
+	bool			hasError;
 	struct s_token	*prev;
 	t_list			*heredocs;
 }	t_token;
@@ -102,6 +103,7 @@ typedef struct s_token_info
 	t_env		**global_env;
 	t_env_data	*env_data;
 	t_executor	*executor;
+	int			start_pos;
 }	t_token_info;
 
 typedef struct s_error

@@ -43,6 +43,7 @@ int	print_tokens(t_token_info *token_info, char format)
 	}
 	printf("%s\n>> TOKEN CHUNK: \n%sGroup tokens into arrays, based on '|' characters\n%scmd_array\n", C_BBLUE, C_GREEN, C_RESET);
 	head2 = token_info->token_chunks;
+	printf("starting position index: %d\n", token_info->start_pos);
 	i2 = 0;
 	while (head2)
 	{

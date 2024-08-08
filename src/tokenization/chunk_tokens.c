@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
+int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, int num)
 {
 	int	file;
 
@@ -42,12 +42,13 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 	{
 		token_chunk->infile = head->next->word;
 		file = open(token_chunk->infile, O_RDONLY);
-		if (file == -1)
+		if (file == -1 && token_chunk->hasError == false)
 		{
 			ft_putstr_fd("minishell: ", 2);
 			ft_putstr_fd(head->next->word, 2);
 			ft_putstr_fd(": No such file or directory\n", 2);
-			token_info->has_error = true;
+			token_info->start_pos = num + 1;
+			token_chunk->hasError = true;
 			g_exit_status = 1;
 		}
 	}
@@ -59,14 +60,15 @@ void	chunk_tokens(t_token_info *token_info)
 {
 	t_token		*head;
 	t_token		*token_chunk;
-
+	int			chunk_num = 0;
+	
 	head = token_info->token_list;
 	token_chunk = tok("", 'g');
 	token_chunk->start = token_info->token_list;
 	while (head)
 	{
 		if (head->type >= SH_WRITE && head->type <= SH_HEREDOC
-			&& (!handle_redir(head, token_chunk, token_info)))
+			&& (!handle_redir(head, token_chunk, token_info, chunk_num)))
 		{
 			head = head->next;
 			continue ;
@@ -77,6 +79,7 @@ void	chunk_tokens(t_token_info *token_info)
 			append_tok(token_chunk, &(token_info->token_chunks));
 			token_chunk = tok("", 'g');
 			token_chunk->start = head->next;
+			chunk_num++;
 		}
 		head = head->next;
 	}

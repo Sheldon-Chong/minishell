@@ -54,6 +54,7 @@ t_token	*tok(char *word, char type)
 	token->word = word;
 	token->type = type;
 	token->infile = NULL;
+	token->hasError = false;
 	token->outfile = NULL;
 	token->start = NULL;
 	token->next = NULL;
