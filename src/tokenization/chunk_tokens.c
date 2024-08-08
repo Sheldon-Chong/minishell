@@ -26,7 +26,6 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 			ft_putstr_fd(": Permission denied\n", 2);
 			token_info->has_error = true;
 			g_exit_status = 1;
-			exit(1);
 		}
 		else
 			close(file);
@@ -50,7 +49,6 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 			ft_putstr_fd(": No such file or directory\n", 2);
 			token_info->has_error = true;
 			g_exit_status = 1;
-			exit(1);
 		}
 	}
 	head = head->next->next;

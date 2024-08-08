@@ -31,4 +31,6 @@ clean:
 fclean: clean
 	rm -f $(OUTPUT)
 
+re: fclean all
+
 .PHONY: all clean fclean

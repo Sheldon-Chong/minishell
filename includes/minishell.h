@@ -35,10 +35,6 @@
 # define INVALID_CHARS "{};\\"
 # define SHELL_OPERATORS "|><"
 
-# define T_PIPE 'p'
-# define T_CMD 'c'
-# define T_REDIR 'r'
-
 # define NOT_WITHIN_QUOTE '\0'
 
 # define ERR_INVALID_EXIT_ARG 128

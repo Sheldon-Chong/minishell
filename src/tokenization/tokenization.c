@@ -91,7 +91,7 @@ t_token	*tokenize(char *str, t_token_info *token_info)
 		{
 			if (str_end != 0)
 				append_tok(tok(process_str(\
-				ft_substr(str, 0, str_end), token_info), T_CMD), \
+				ft_substr(str, 0, str_end), token_info), 'c'), \
 				&(token_info->token_list));
 			str += form_token(str, str_end, &(token_info->token_list));
 			str_end = 0;
@@ -101,6 +101,6 @@ t_token	*tokenize(char *str, t_token_info *token_info)
 	}
 	if (!is_in_charset(*str, SPACE_CHAR))
 		append_tok(tok(process_str(ft_substr(str, 0, str_end), \
-			token_info), T_CMD), &(token_info->token_list));
+			token_info), 'c'), &(token_info->token_list));
 	return (token_info->token_list);
 }

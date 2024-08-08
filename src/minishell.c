@@ -54,7 +54,6 @@ t_token	*scan_cmd(t_token_info *token_info)
 t_token_info	*process_input(char *str, t_env_data *env_data)
 {
 	t_token_info	*token_info;
-	t_token			*head;
 
 	token_info = malloc(sizeof(t_token_info));
 	token_info->token_list = NULL;
@@ -70,9 +69,6 @@ t_token_info	*process_input(char *str, t_env_data *env_data)
 	if (token_info->has_error)
 		return (token_info);
 	chunk_tokens(token_info);
-	head = token_info->token_chunks;
-	while (head)
-		head = head->next;
 	return (token_info);
 }
 
