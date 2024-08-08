@@ -26,7 +26,18 @@ int	print_tokens(t_token_info *token_info, char format)
 		C_BBLUE, C_GREEN, C_RESET);
 	while (head2)
 	{
-		printf("	TOKEN %d [%s]: %c\n", i2, head2->word, head2->type);
+		printf("	TOKEN %d [%s]: ", i2, head2->word);
+		if (head2->type == SH_APPEND)
+			printf("APPEND");
+		else if (head2->type == SH_WRITE)
+			printf("WRITE TO");
+		else if (head2->type == SH_HEREDOC)
+			printf("HEREDOC");
+		else if (head2->type == SH_READ)
+			printf("READ FROM");
+		else
+			printf("(none) %d", head2->type);
+		printf("\n");
 		head2 = head2->next;
 		i2++;
 	}

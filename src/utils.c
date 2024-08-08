@@ -70,9 +70,9 @@ char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info)
 	token = chunk->start;
 	while (token != str_end)
 	{
-		if (str_in_arr(token->word, ">>,>,<<,<"))
+		if (token->type >= SH_WRITE && token->type <= SH_HEREDOC)
 		{
-			if (!ft_strncmp(token->word, "<<", 2))
+			if (token->type == SH_HEREDOC)
 			{
 				clear_heredoc_buffer(chunk);
 				chunk->heredoc_buffer = here_doc_input(token->next->word);

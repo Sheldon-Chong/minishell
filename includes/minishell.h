@@ -47,6 +47,16 @@
 # define ERR_SYNTAX 258
 # define CTRL_C 130
 
+
+
+# define SH_STR 0
+# define SH_PIPE 1
+# define SH_WRITE 2
+# define SH_APPEND 3
+# define SH_READ 4 
+# define SH_HEREDOC 5
+
+
 typedef struct s_env
 {
 	char			*name;

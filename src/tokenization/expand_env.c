@@ -42,7 +42,7 @@ static int	expand_env_iter(int *env_end, char *env_start,
 		*env_end = 1;
 		return (0);
 	}
-	if (find_env_end(env_start) < 0)
+	if (find_env_end(env_start) < 1)
 		return (ft_rstrjoin(buffer, "$"), 0);
 	*env_end = find_env_end(env_start);
 	if (!ft_isalpha(*env_start))

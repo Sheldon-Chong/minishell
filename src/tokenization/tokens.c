@@ -12,15 +12,22 @@
 
 #include "minishell.h"
 
+bool	is_shell_opp(int shell_operator_id)
+{
+	if (shell_operator_id >= SH_PIPE && shell_operator_id <= SH_HEREDOC)
+		return (true);
+	return (false);
+}
+
 bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
 {
-	if (is_strset(pattern_start->word, "|,>,>>,<,<<") && (!pattern_start->next))
+	if (is_shell_opp(pattern_start->type) && (!pattern_start->next))
 		return (syntax_error("newline", token_info), true);
 	if (!pattern_start->next)
 		return (false);
-	if (is_strset(pattern_start->word, "|,>,>>,<,<<"))
+	if (is_shell_opp(pattern_start->type))
 	{
-		if (is_strset(pattern_start->next->word, "|,>,>>,<,<<"))
+		if (is_shell_opp(pattern_start->next->type))
 			return (syntax_error(pattern_start->next->word, token_info), true);
 	}
 	return (false);

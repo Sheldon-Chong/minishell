@@ -16,7 +16,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 {
 	int	file;
 
-	if (str_in_arr(head->word, ">,>>"))
+	if (head->type == SH_APPEND || head->type == SH_WRITE)
 	{
 		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
 		if (file == -1)
@@ -30,7 +30,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 		}
 		else
 			close(file);
-		if (!ft_strcmp(head->word, ">>"))
+		if (head->type == SH_APPEND)
 			token_chunk->outfile_mode = 'a';
 		if (token_chunk->heredoc_buffer != NULL)
 		{
@@ -39,7 +39,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info)
 		}
 		token_chunk->outfile = head->next->word;
 	}
-	if (!ft_strcmp(head->word, "<"))
+	if (head->type == SH_READ)
 	{
 		token_chunk->infile = head->next->word;
 		file = open(token_chunk->infile, O_RDONLY);
@@ -67,13 +67,13 @@ void	chunk_tokens(t_token_info *token_info)
 	token_chunk->start = token_info->token_list;
 	while (head)
 	{
-		if (str_in_arr(head->word, ">,>>,<<,<")
+		if (head->type >= SH_WRITE && head->type <= SH_HEREDOC
 			&& (!handle_redir(head, token_chunk, token_info)))
 		{
 			head = head->next;
 			continue ;
 		}
-		else if (head->type == T_PIPE)
+		else if (head->type == SH_PIPE)
 		{
 			token_chunk->tokens = tokens2arr(token_chunk, head, token_info);
 			append_tok(token_chunk, &(token_info->token_chunks));

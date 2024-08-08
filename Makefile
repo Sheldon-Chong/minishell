@@ -1,12 +1,12 @@
 CC = gcc
 
-#CFLAGS = -I./includes -I./libft #-fsanitize=address -g3
+CFLAGS = -I./includes -I./libft #-fsanitize=address -g3
 
-#LDFLAGS = -lncurses -lreadline
+LDFLAGS = -lncurses -lreadline
 
-CFLAGS = -I./includes -I./libft -I/goinfre/jyap/.brew/opt/readline/include -fsanitize=address -g3
+# CFLAGS = -I./includes -I./libft -I/goinfre/jyap/.brew/opt/readline/include -fsanitize=address -g3
 
-LDFLAGS = -lncurses -L/goinfre/jyap/.brew/opt/readline/lib -lreadline
+# LDFLAGS = -lncurses -L/goinfre/jyap/.brew/opt/readline/lib -lreadline
 
 OUTPUT = minishell
 

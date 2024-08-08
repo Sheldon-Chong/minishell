@@ -26,12 +26,27 @@ static char	*process_str(char *str, t_token_info *token_info)
 	head = token_info->token_list;
 	while (head && head->next)
 		head = head->next;
-	if (head && !ft_strncmp(head->word, "<<", 2))
+	if (head && head->type == SH_HEREDOC)
 		ret = split_into_quotes(str, quote_list_buffer, token_info, false);
 	else
 		ret = split_into_quotes(str, quote_list_buffer, token_info, true);
 	free(str);
 	return (ret);
+}
+
+static int get_shell_opp_type(char *str)
+{
+	if (!strncmp(str, ">>", 2))
+		return SH_APPEND;
+	else if (!strncmp(str, ">", 1))
+		return SH_WRITE;
+	else if (!strncmp(str, "<", 1))
+		return SH_READ;
+	else if (!strncmp(str, "<<", 2))
+		return SH_HEREDOC;
+	else if (!strncmp(str, "|", 1))
+		return SH_PIPE;
+	return (-1);
 }
 
 // handle cases of shell operators
@@ -41,15 +56,13 @@ static int	shell_operator(char *str, int end, t_token **token_list)
 
 	string = str + end;
 	if (is_in_strset(string, ">>,<<"))
-		return (append_tok(tok(ft_substr(str, end, 2), T_REDIR),
-				token_list), 2);
+		return (append_tok(tok(ft_substr(str, end, 2), get_shell_opp_type(string)), token_list), 2);
 	else if (is_in_strset(string, ">,<"))
-		return (append_tok(tok(ft_substr(str, end, 1), T_REDIR),
-				token_list), 1);
+		return (append_tok(tok(ft_substr(str, end, 1), get_shell_opp_type(string)), token_list), 1);
 	else if (!ft_strncmp("><", string, 2) || !ft_strncmp("<>", string, 2))
 		printf("unexpected character\n");
 	else
-		return (append_tok(tok(c2str(str[end]), T_PIPE), token_list), 1);
+		return (append_tok(tok(c2str(str[end]), get_shell_opp_type(string)), token_list), 1);
 	return (0);
 }
 
