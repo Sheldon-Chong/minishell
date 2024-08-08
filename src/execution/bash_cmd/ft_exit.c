@@ -51,7 +51,7 @@ static void	handle_exit_errors(char **args, int len, t_token_info *token_info)
 {
 	if (len == 2 && ft_strlen(args[1]) == 0)
 	{
-		ft_putstr_fd("exit\nminishell: exit: : numeric argument required\n", 2);
+		ft_putstr_fd("minishell: exit: : numeric argument required\n", 2);
 		g_exit_status = 255;
 		free(token_info->executor);
 		free_env_data(token_info->env_data);

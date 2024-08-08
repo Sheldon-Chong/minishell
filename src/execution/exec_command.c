@@ -73,7 +73,7 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 	{
 		reset_signal();
 		dup_fd_for_child(cmd_in_fd, cmd_out);
-		if (str_in_arr(cmd[0], "echo,export,pwd"))
+		if (str_in_arr(cmd[0], "echo,export,pwd,unset"))
 		{
 			bash_cmd(token_info, cmd);
 			exit(g_exit_status);

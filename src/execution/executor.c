@@ -123,75 +123,58 @@ void	executor(char **env, t_token_info *token_info)
             close(empty_pipe[1]);
         }
 
-        if (!str_in_arr(chunk_list->tokens[0], "exit,unset,export,cd")
-            || (!ft_strcmp(chunk_list->tokens[0], "export")
-                && !chunk_list->tokens[1]))
-        {
-            pid = fork();
-            if (pid == -1)
-            {
-                perror("fork");
-                exit(EXIT_FAILURE);
-            }
-            if (pid == 0) // child
-            {
-                signal(SIGTERM, SIG_DFL);
-                signal(SIGQUIT, SIG_DFL);
-                if (token_info->executor->cmd_in != STDIN_FILENO)
-                {
-                    dup2(token_info->executor->cmd_in, STDIN_FILENO);
-                    close(token_info->executor->cmd_in);
-                }
-                if (token_info->executor->cmd_out != STDOUT_FILENO)
-                {
-                    dup2(token_info->executor->cmd_out, STDOUT_FILENO);
-                    if (token_info->executor->cmd_out != pipefd[1])
-                        close(token_info->executor->cmd_out);
-                }
-                close(pipefd[1]);
-                close(pipefd[0]);
-                run_cmd(chunk_list, token_info, STDIN_FILENO, STDOUT_FILENO);
-                exit(g_exit_status);
-            }
-            else // parent
-            {
-                if (token_info->executor->cmd_in != STDIN_FILENO)
-                    close(token_info->executor->cmd_in);
-                if (token_info->executor->cmd_out != STDOUT_FILENO && token_info->executor->cmd_out != pipefd[1])
-                    close(token_info->executor->cmd_out);
-                if (chunk_list->next)
-                {
-                    token_info->executor->cmd_in = pipefd[0];
-                    close(pipefd[1]);
-                }
-                else
-                {
-                    close(pipefd[1]);
-                    close(pipefd[0]);
-                }
-            }
-        }
-        else
-        {
-            if (!strcmp(chunk_list->tokens[0], "exit"))
-                ft_exit(chunk_list->tokens, token_info);
-            else if (!strcmp(chunk_list->tokens[0], "cd"))
-            {
-                if (chdir(chunk_list->tokens[1]) == -1)
-                {
-                    ft_putstr_fd("minishell: cd: ", 2);
-                    perror(chunk_list->tokens[1]);
-                    g_exit_status = 1;
-                }
-            }
-            else if (!strcmp(chunk_list->tokens[0], "unset"))
-                unset_env(chunk_list->tokens + 1,
-                    &(token_info->env_data->env_list), token_info);
-            else if (!strcmp(chunk_list->tokens[0], "export"))
-                ft_export(chunk_list->tokens, token_info);
-        }
-        chunk_list = chunk_list->next;
-        i++;
+		if (!chunk_list->next)
+		{
+			run_cmd(chunk_list, token_info, token_info->executor->cmd_in, token_info->executor->cmd_out);
+		}
+		else
+		{
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork");
+				exit(EXIT_FAILURE);
+			}
+			if (pid == 0) // child
+			{
+				signal(SIGTERM, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
+				if (token_info->executor->cmd_in != STDIN_FILENO)
+				{
+					dup2(token_info->executor->cmd_in, STDIN_FILENO);
+					close(token_info->executor->cmd_in);
+				}
+				if (token_info->executor->cmd_out != STDOUT_FILENO)
+				{
+					dup2(token_info->executor->cmd_out, STDOUT_FILENO);
+					if (token_info->executor->cmd_out != pipefd[1])
+						close(token_info->executor->cmd_out);
+				}
+				close(pipefd[1]);
+				close(pipefd[0]);
+				run_cmd(chunk_list, token_info, STDIN_FILENO, STDOUT_FILENO);
+				exit(g_exit_status);
+			}
+			else // parent
+			{
+				if (token_info->executor->cmd_in != STDIN_FILENO)
+					close(token_info->executor->cmd_in);
+				if (token_info->executor->cmd_out != STDOUT_FILENO && token_info->executor->cmd_out != pipefd[1])
+					close(token_info->executor->cmd_out);
+				if (chunk_list->next)
+				{
+					token_info->executor->cmd_in = pipefd[0];
+					close(pipefd[1]);
+				}
+				else
+				{
+					close(pipefd[1]);
+					close(pipefd[0]);
+				}
+			}
+			i++;
+		}
+		chunk_list = chunk_list->next;
     }
     while (wait(&g_exit_status) > 0)
         g_exit_status = WEXITSTATUS(g_exit_status);
