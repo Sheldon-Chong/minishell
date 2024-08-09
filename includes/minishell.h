@@ -127,8 +127,8 @@ int				free_tokenlist(t_token_info *token_list);
 // tokenization
 t_token			*scan_cmd(t_token_info *token_list);
 t_token			*tokenize(char *string, t_token_info *token_list);
-char			**tokens2arr(t_token *token_chunk, t_token *str_end,
-					t_token_info *token_info);
+char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info, int num);
+
 t_token			*append_tok(t_token *token, t_token **head);
 t_token			*tok(char *word, char type);
 int				is_token_valid(char *str, t_token_info *token_info);

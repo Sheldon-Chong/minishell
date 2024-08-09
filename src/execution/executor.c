@@ -88,6 +88,7 @@ void	executor(char **env, t_token_info *token_info)
     if (!chunk_list)
         return ;
 
+	
     // Create an empty pipe
     if (pipe(empty_pipe) == -1)
     {
@@ -186,5 +187,7 @@ void	executor(char **env, t_token_info *token_info)
     }
     while (wait(&g_exit_status) > 0)
         g_exit_status = WEXITSTATUS(g_exit_status);
-    free(token_info->executor);
+    if (g_exit_status == 13)
+		g_exit_status = 0;
+	free(token_info->executor);
 }

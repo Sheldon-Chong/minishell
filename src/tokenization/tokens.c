@@ -27,6 +27,8 @@ bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
 		return (false);
 	if (is_shell_opp(pattern_start->type))
 	{
+		if (pattern_start->type == SH_PIPE && pattern_start->next->type >= SH_WRITE && pattern_start->next->type <= SH_HEREDOC)
+			return(false);
 		if (is_shell_opp(pattern_start->next->type))
 			return (syntax_error(pattern_start->next->word, token_info), true);
 	}

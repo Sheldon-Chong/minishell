@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:29 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/08 11:41:25 by jyap             ###   ########.fr       */
+/*   Updated: 2024/08/09 18:10:15 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ static int	export_assign(t_token_info *token_info, char **args)
 		env = str2env(args[i]);
 		if (!is_valid_identifier(env->name))
 		{
-			error = general_error("export:, $subject,: not a valid identifier", args[i], 1);
+			error = general_error("export:, $SUBJECT,: not a valid identifier", args[i], 1);
 			continue ;
 		}
 		append_env(env, &(token_info->env_data->env_list));

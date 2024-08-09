@@ -61,7 +61,46 @@ void	clear_heredoc_buffer(t_token *chunk)
 	}
 }
 
-char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info)
+int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, int num)
+{
+	int	file;
+
+	if (head->type == SH_APPEND || head->type == SH_WRITE)
+	{
+		
+		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
+		char *error_message = strerror(errno);
+		if (file == -1)
+		{
+			token_info->start_pos = num + general_error("$SUBJECT,: Permission denied", head->next->word, 1);
+			return -1;
+		}
+		else
+			close(file);
+		if (head->type == SH_APPEND)
+			token_chunk->outfile_mode = 'a';
+		if (token_chunk->heredoc_buffer != NULL)
+		{
+			free(token_chunk->heredoc_buffer);
+			token_chunk->heredoc_buffer = NULL;
+		}
+		token_chunk->outfile = head->next->word;
+	}
+	if (head->type == SH_READ)
+	{
+		token_chunk->infile = head->next->word;
+		file = open(token_chunk->infile, O_RDONLY);
+		if (file == -1 && g_exit_status == 0)
+		{
+			token_info->start_pos = num + general_error("$SUBJECT,: No such file or directory", head->next->word, 1);
+			return -1;
+		}
+	}
+	return (0);
+}
+
+
+char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info, int num)
 {
 	t_token	*token;
 	char	**cmds;
@@ -72,6 +111,8 @@ char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info)
 	{
 		if (token->type >= SH_WRITE && token->type <= SH_HEREDOC)
 		{
+			if (handle_redir(token, chunk, token_info, num) == -1)
+				break;
 			if (token->type == SH_HEREDOC)
 			{
 				clear_heredoc_buffer(chunk);

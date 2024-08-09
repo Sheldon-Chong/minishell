@@ -12,37 +12,6 @@
 
 #include "minishell.h"
 
-int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, int num)
-{
-	int	file;
-
-	if (head->type == SH_APPEND || head->type == SH_WRITE)
-	{
-		
-		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
-		char *error_message = strerror(errno);
-		if (file == -1)
-			token_info->has_error = general_error("$subject,: Permission denied\n", head->next->word, 1);
-		else
-			close(file);
-		if (head->type == SH_APPEND)
-			token_chunk->outfile_mode = 'a';
-		if (token_chunk->heredoc_buffer != NULL)
-		{
-			free(token_chunk->heredoc_buffer);
-			token_chunk->heredoc_buffer = NULL;
-		}
-		token_chunk->outfile = head->next->word;
-	}
-	if (head->type == SH_READ)
-	{
-		token_chunk->infile = head->next->word;
-		file = open(token_chunk->infile, O_RDONLY);
-		if (file == -1 && g_exit_status == 0)
-			token_info->start_pos = num + general_error("$SUBJECT,: No such file or directory", head->next->word, 1);
-	}
-	return (0);
-}
 
 
 #include <sys/stat.h>
@@ -72,6 +41,12 @@ int is_dir(char *path) {
         return 1;
     }
 
+	
+	int fd = open(path, O_RDWR);
+	if (fd == -1)
+	{
+		return 3;
+	}
     // Path exists but is not a directory
     return 0;
 }
@@ -88,12 +63,9 @@ void	chunk_tokens(t_token_info *token_info)
 	g_exit_status = 0;
 	while (head)
 	{
-		if (head->type >= SH_WRITE && head->type <= SH_HEREDOC
-			&& (!handle_redir(head, token_chunk, token_info, chunk_num)))
-			nothing();
 		if (head->type == SH_PIPE)
 		{
-			token_chunk->tokens = tokens2arr(token_chunk, head, token_info);
+			token_chunk->tokens = tokens2arr(token_chunk, head, token_info, chunk_num);
 			append_tok(token_chunk, &(token_info->token_chunks));
 			token_chunk = tok("", 'g');
 			token_chunk->start = head->next;
@@ -102,7 +74,7 @@ void	chunk_tokens(t_token_info *token_info)
 		}			
 		head = head->next;
 	}
-	token_chunk->tokens = tokens2arr(token_chunk, NULL, token_info);
+	token_chunk->tokens = tokens2arr(token_chunk, NULL, token_info, chunk_num);
 	append_tok(token_chunk, &(token_info->token_chunks));
 
 	head = token_info->token_chunks;
@@ -119,6 +91,11 @@ void	chunk_tokens(t_token_info *token_info)
 		else if (status == 2)
 		{
 			general_error("$SUBJECT,: No such file or directory", head->tokens[0], 127);
+			token_info->start_pos = chunk_num + 1;
+		}
+		else if (status == 3)
+		{
+			general_error("$SUBJECT,: Permission denied", head->tokens[0], 126);
 			token_info->start_pos = chunk_num + 1;
 		}
 		chunk_num ++;
