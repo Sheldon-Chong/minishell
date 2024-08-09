@@ -156,6 +156,7 @@ char			*split_into_quotes(char *str, t_token *tokens,
 					t_token_info *token_info, bool expand_env);
 int				count_outermost_quotes(char *str);
 bool			quote_alternate(char c, char *quote);
+int general_error(char *error, char *subject, int exit_status);
 
 //chunking
 void			chunk_tokens(t_token_info *token_list);

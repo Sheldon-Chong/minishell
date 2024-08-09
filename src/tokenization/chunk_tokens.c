@@ -20,13 +20,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, 
 	{
 		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
 		if (file == -1)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(head->next->word, 2);
-			ft_putstr_fd(": Permission denied\n", 2);
-			token_info->has_error = true;
-			g_exit_status = 1;
-		}
+			token_info->has_error = general_error("$subject,: Permission denied\n", head->next->word, 1);
 		else
 			close(file);
 		if (head->type == SH_APPEND)
@@ -42,17 +36,9 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, 
 	{
 		token_chunk->infile = head->next->word;
 		file = open(token_chunk->infile, O_RDONLY);
-		if (file == -1 && token_chunk->hasError == false)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(head->next->word, 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-			token_info->start_pos = num + 1;
-			token_chunk->hasError = true;
-			g_exit_status = 1;
-		}
+		if (file == -1 && g_exit_status == 0)
+			token_info->start_pos = num + general_error("$SUBJECT,: No such file or directory", head->next->word, 1);
 	}
-	head = head->next->next;
 	return (0);
 }
 
@@ -64,15 +50,13 @@ void	chunk_tokens(t_token_info *token_info)
 	
 	head = token_info->token_list;
 	token_chunk = tok("", 'g');
-	token_chunk->start = token_info->token_list;
+	token_chunk->start = token_info->token_list; 
+	g_exit_status = 0;
 	while (head)
 	{
 		if (head->type >= SH_WRITE && head->type <= SH_HEREDOC
 			&& (!handle_redir(head, token_chunk, token_info, chunk_num)))
-		{
-			head = head->next;
-			continue ;
-		}
+			nothing();
 		else if (head->type == SH_PIPE)
 		{
 			token_chunk->tokens = tokens2arr(token_chunk, head, token_info);
@@ -80,6 +64,7 @@ void	chunk_tokens(t_token_info *token_info)
 			token_chunk = tok("", 'g');
 			token_chunk->start = head->next;
 			chunk_num++;
+			g_exit_status = 0;
 		}
 		head = head->next;
 	}

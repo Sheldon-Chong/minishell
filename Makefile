@@ -8,7 +8,7 @@ LDFLAGS = -lncurses -lreadline
 
 # LDFLAGS = -lncurses -L/goinfre/jyap/.brew/opt/readline/lib -lreadline
 
-OUTPUT = minishell
+OUTPUT = bin/minishell
 
 SRCS = $(wildcard src/*.c ./libft/*.c ./src/tokenization/*.c ./src/env/*.c ./src/execution/*.c ./src/execution/bash_cmd/*.c ./src/tokenization/*.c)
 

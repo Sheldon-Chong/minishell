@@ -47,7 +47,7 @@ void	free_env_data(t_env_data *env_data)
 	free(env_data);
 }
 
-static void	handle_exit_errors(char **args, int len, t_token_info *token_info)
+static int	handle_exit_errors(char **args, int len, t_token_info *token_info)
 {
 	if (len == 2 && ft_strlen(args[1]) == 0)
 	{
@@ -60,18 +60,14 @@ static void	handle_exit_errors(char **args, int len, t_token_info *token_info)
 	}
 	else if (!ft_str_is_digit(args[1]))
 	{
-		ft_putstr_fd("exit\nminishell: exit: ", 2);
-		ft_putstr_fd(args[1], 2);
-		ft_putstr_fd(": numeric argument required\n", 2);
+		general_error("exit: ,$SUBJECT,: numeric argument required", args[1], 255);
 		g_exit_status = 255;
 		free_env_data(token_info->env_data);
 		free(token_info->executor);
 		free_tokenlist(token_info);
 		exit(255);
 	}
-	ft_putstr_fd("exit\nminishell: exit: too many arguments\n", 2);
-	g_exit_status = 1;
-	return ;
+	return (general_error("exit: too many arguments", NULL, 1));
 }
 
 void	ft_exit(char **args, t_token_info *token_info)

@@ -45,7 +45,7 @@ int	bash_cmd(t_token_info *token_info, char **args)
 	else if (!ft_strcmp(args[0], "pwd"))
 	{
 		if (args[1])
-			ft_putstr_fd("minishell: pwd: too many arguments\n", 2);
+			general_error("pwd: too many arguments", NULL, 1);
 		else
 			ft_pwd();
 	}

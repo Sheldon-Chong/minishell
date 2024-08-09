@@ -18,13 +18,16 @@ int	exit_error(char *error_name)
 	exit(EXIT_FAILURE);
 }
 
-void	run_cmd(t_token *chunk, t_token_info *token_info,
+int	run_cmd(t_token *chunk, t_token_info *token_info,
 			int cmd_in_fd, int cmd_out)
 {
 	if (str_in_arr(chunk->start->word, "exit"))
 		ft_exit(chunk->tokens, token_info);
 	else if (str_in_arr(chunk->start->word, "cd"))
 	{
+		if (chunk->tokens[2])
+			return(general_error("cd: too many arguments", NULL, 1));
+
 		if (chdir(chunk->tokens[1]) == -1)
 		{
 			ft_putstr_fd("minishell: cd: ", 2);

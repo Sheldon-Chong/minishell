@@ -100,11 +100,7 @@ static int	export_assign(t_token_info *token_info, char **args)
 		env = str2env(args[i]);
 		if (!is_valid_identifier(env->name))
 		{
-			error = 1;
-			g_exit_status = 1;
-			ft_putstr_fd("minishell: export: '", 2);
-			ft_putstr_fd(args[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
+			error = general_error("export:, $subject,: not a valid identifier", args[i], 1);
 			continue ;
 		}
 		append_env(env, &(token_info->env_data->env_list));
