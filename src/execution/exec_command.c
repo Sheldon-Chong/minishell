@@ -81,7 +81,6 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 			exit(g_exit_status);
 		}
 		command = get_path(cmd[0], &(token_info->env_data->env_list));
-		printf(">>> %s\n", command);
 		if (access(command, F_OK) == 0)
 		{
 			execve((const char *)command, (char *const *)cmd,
