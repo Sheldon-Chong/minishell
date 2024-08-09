@@ -25,6 +25,7 @@
 # include <dirent.h>
 # include <stdbool.h>
 # include <stdarg.h>
+#include <errno.h>
 # include <fcntl.h>
 
 # define SHELL_MSG "minishell$ "

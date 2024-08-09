@@ -37,8 +37,8 @@ t_token	*scan_cmd(t_token_info *token_info)
 				&(token_info->env_data->env_list));
 		if (str_in_arr(list->tokens[0], BASH_CMDS))
 			nothing();
-		else if (access(path, F_OK) != 0 \
-					|| !ft_strcmp(list->tokens[0], ""))
+		else if (ft_strlen(list->tokens[0]) && (access(path, F_OK) != 0 \
+					|| !ft_strcmp(list->tokens[0], "")))
 		{
 			general_error("$SUBJECT, : command not found", list->start->word, ERR_COMMAND_NOT_FOUND);
 			token_info->cmd_start = list->next;

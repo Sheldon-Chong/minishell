@@ -94,7 +94,7 @@ void	executor(char **env, t_token_info *token_info)
         perror("pipe");
         exit(EXIT_FAILURE);
     }
-
+	
     token_info->executor = executor_init();
 
     while (chunk_list)
@@ -128,9 +128,10 @@ void	executor(char **env, t_token_info *token_info)
             token_info->executor->cmd_in = empty_pipe[0];
             close(empty_pipe[1]);
         }
-
+		
 		if (!chunk_list->next)
 		{
+			
 			run_cmd(chunk_list, token_info, token_info->executor->cmd_in, token_info->executor->cmd_out);
 		}
 		else

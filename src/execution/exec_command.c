@@ -67,6 +67,8 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 	char	*command;
 	pid_t	pid;
 
+	if(cmd[0][0] == 0)
+		return;
 	g_exit_status = 0;
 	pid = fork();
 	if (pid == 0)
@@ -79,10 +81,12 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 			exit(g_exit_status);
 		}
 		command = get_path(cmd[0], &(token_info->env_data->env_list));
+		printf(">>> %s\n", command);
 		if (access(command, F_OK) == 0)
+		{
 			execve((const char *)command, (char *const *)cmd,
-				token_info->env_data->environ_arr);
-		perror("execve");
+			token_info->env_data->environ_arr);
+		} // get error type
 		exit(EXIT_FAILURE);
 	}
 	close_fds(cmd_in_fd, cmd_out);

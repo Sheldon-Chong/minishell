@@ -18,7 +18,9 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, 
 
 	if (head->type == SH_APPEND || head->type == SH_WRITE)
 	{
+		
 		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
+		char *error_message = strerror(errno);
 		if (file == -1)
 			token_info->has_error = general_error("$subject,: Permission denied\n", head->next->word, 1);
 		else
@@ -88,7 +90,7 @@ void	chunk_tokens(t_token_info *token_info)
 	{
 		if (head->tokens && is_directory(head->tokens[0]))
 		{
-			general_error("$SUBJECT,: is a directory", head->tokens[0], 1);
+			general_error("$SUBJECT,: is a directory", head->tokens[0], 126);
 			token_info->start_pos = chunk_num + 1;
 		}
 		chunk_num ++;
