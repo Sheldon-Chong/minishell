@@ -36,7 +36,7 @@ int general_error(char *error, char *subject, int exit_status)
 	ft_putstr_fd("minishell: ", 2);
 	while(error_splitted[++i])
 	{
-		if (!strcmp(error_splitted[i], "$SUBJECT"))
+		if (!ft_strcmp(error_splitted[i], "$SUBJECT"))
 			ft_putstr_fd(subject, 2);
 		else
 			ft_putstr_fd(error_splitted[i], 2);

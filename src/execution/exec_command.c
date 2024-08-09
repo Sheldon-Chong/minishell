@@ -85,7 +85,8 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 		{
 			execve((const char *)command, (char *const *)cmd,
 			token_info->env_data->environ_arr);
-		} // get error type
+		}
+		perror("execve");
 		exit(EXIT_FAILURE);
 	}
 	close_fds(cmd_in_fd, cmd_out);
