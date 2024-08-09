@@ -26,8 +26,10 @@ int	run_cmd(t_token *chunk, t_token_info *token_info,
 	else if (str_in_arr(chunk->start->word, "cd"))
 	{
 		if (chunk->tokens[2])
-			return(general_error("cd: too many arguments", NULL, 1));
-
+		{
+			g_exit_status = 0;
+			return 0;
+		}
 		if (chdir(chunk->tokens[1]) == -1)
 		{
 			ft_putstr_fd("minishell: cd: ", 2);
@@ -42,6 +44,7 @@ int	run_cmd(t_token *chunk, t_token_info *token_info,
 		ft_export(chunk->tokens, token_info);
 	else
 		exec_cmd(chunk->tokens, token_info, cmd_in_fd, cmd_out);
+	return 0;
 }
 
 

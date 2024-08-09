@@ -33,6 +33,8 @@ bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
 	return (false);
 }
 
+
+
 bool	post_validate(t_token_info *token_info)
 {
 	t_token	*head;
@@ -57,6 +59,7 @@ t_token	*tok(char *word, char type)
 	token->outfile = NULL;
 	token->start = NULL;
 	token->next = NULL;
+	token->tokens = NULL;
 	token->outfile_mode = 0;
 	token->heredoc_buffer = NULL;
 	return (token);

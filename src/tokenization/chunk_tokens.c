@@ -42,6 +42,16 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, 
 	return (0);
 }
 
+
+#include <sys/stat.h>
+int is_directory(const char *path) {
+	struct stat path_stat;
+	if (stat(path, &path_stat) != 0) {
+		return 0;
+	}
+	return S_ISDIR(path_stat.st_mode);
+}
+
 void	chunk_tokens(t_token_info *token_info)
 {
 	t_token		*head;
@@ -65,9 +75,23 @@ void	chunk_tokens(t_token_info *token_info)
 			token_chunk->start = head->next;
 			chunk_num++;
 			g_exit_status = 0;
-		}
+		}			
 		head = head->next;
 	}
 	token_chunk->tokens = tokens2arr(token_chunk, NULL, token_info);
 	append_tok(token_chunk, &(token_info->token_chunks));
+
+	head = token_info->token_chunks;
+
+	chunk_num = 0;
+	while (head)
+	{
+		if (head->tokens && is_directory(head->tokens[0]))
+		{
+			general_error("$SUBJECT,: is a directory", head->tokens[0], 1);
+			token_info->start_pos = chunk_num + 1;
+		}
+		chunk_num ++;
+		head = head->next;
+	}
 }

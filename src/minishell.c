@@ -40,12 +40,9 @@ t_token	*scan_cmd(t_token_info *token_info)
 		else if (access(path, F_OK) != 0 \
 					|| !ft_strcmp(list->tokens[0], ""))
 		{
-			printf("minishell: %s: command not found\n", list->start->word);
+			general_error("$SUBJECT, : command not found", list->start->word, ERR_COMMAND_NOT_FOUND);
 			token_info->cmd_start = list->next;
-			g_exit_status = ERR_COMMAND_NOT_FOUND;
 		}
-		if (path)
-			free(path);
 		list = list->next;
 	}
 	return (token_info->cmd_start);
