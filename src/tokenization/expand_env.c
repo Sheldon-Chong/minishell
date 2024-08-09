@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int	find_env_end(char *env_start)
+int	find_env_end(char *env_start)
 {
 	int	i;
 

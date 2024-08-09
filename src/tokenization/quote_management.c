@@ -54,6 +54,7 @@ static void	process_quote_list(t_token *head, t_token_info *token_info)
 	}
 }
 
+
 void	split_into_quotes_sub(char *str, t_token **tokens)
 {
 	int		i;

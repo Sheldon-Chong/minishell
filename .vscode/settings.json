@@ -27,7 +27,19 @@
 		"vector": "c",
 		"*.tcc": "c",
 		"utility": "c",
-		"ft_pwd": "c"
+		"ft_pwd": "c",
+		"signal.h": "c",
+		"wait.h": "c",
+		"history.h": "c",
+		"colors.h": "c",
+		"stdlib.h": "c",
+		"unistd.h": "c",
+		"stdbool.h": "c",
+		"errno.h": "c",
+		"stdarg.h": "c",
+		"fcntl.h": "c",
+		"dirent.h": "c",
+		"readline.h": "c"
 	},
 	"peacock.color": "#a37d60",
 	"workbench.colorCustomizations": {

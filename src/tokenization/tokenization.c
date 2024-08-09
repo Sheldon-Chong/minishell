@@ -12,6 +12,36 @@
 
 #include "minishell.h"
 
+bool is_pure_env(char *str)
+{
+
+	if (str[0] != '$')
+		return false;
+	if (ft_strchr(str, '\'') || ft_strchr(str, '"'))
+		return false;
+	
+	int i = 0;
+	char *ref = str;
+	while(1)
+	{
+		str+=1;
+		str += find_env_end(str);
+		if (find_env_end(str) == 0)
+		{
+			if (str - ref == ft_strlen(ref))
+				return true;
+			else
+				return false;
+			break;
+		}
+		else if (str[1] == '$')
+			return false;
+	}
+	return true;
+}
+
+
+
 // expands braces, remove quotes
 static char	*process_str(char *str, t_token_info *token_info)
 {
@@ -30,6 +60,11 @@ static char	*process_str(char *str, t_token_info *token_info)
 		ret = split_into_quotes(str, quote_list_buffer, token_info, false);
 	else
 		ret = split_into_quotes(str, quote_list_buffer, token_info, true);
+	if (ft_strlen(ret) == 0 && is_pure_env(str))
+	{
+		free(str);
+		return NULL;
+	}
 	free(str);
 	return (ret);
 }

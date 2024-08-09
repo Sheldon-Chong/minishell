@@ -197,4 +197,6 @@ void			reset_signal(void);
 void			dup_fd_for_child(int cmd_in_fd, int cmd_out);
 void			close_fds(int cmd_in_fd, int cmd_out);
 
+int	find_env_end(char *env_start);
+
 #endif

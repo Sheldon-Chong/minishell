@@ -72,7 +72,6 @@ t_token_info	*process_input(char *str, t_env_data *env_data)
 
 
 
-
 int	main(int ac, char **av, char **env)
 {
 	t_token_info	*token_info;

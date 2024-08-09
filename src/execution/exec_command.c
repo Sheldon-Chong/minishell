@@ -67,8 +67,6 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 	char	*command;
 	pid_t	pid;
 
-	if(cmd[0][0] == 0)
-		return;
 	g_exit_status = 0;
 	pid = fork();
 	if (pid == 0)
