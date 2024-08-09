@@ -44,7 +44,7 @@ int	run_cmd(t_token *chunk, t_token_info *token_info,
 		ft_export(chunk->tokens, token_info);
 	else
 		exec_cmd(chunk->tokens, token_info, cmd_in_fd, cmd_out);
-	return 0;
+	return 1;
 }
 
 
@@ -99,6 +99,7 @@ void	executor(char **env, t_token_info *token_info)
 
     while (chunk_list)
     {
+		
         if (pipe(pipefd) == -1)
         {
             perror("pipe");
@@ -129,9 +130,8 @@ void	executor(char **env, t_token_info *token_info)
             close(empty_pipe[1]);
         }
 		
-		if (!chunk_list->next)
+		if (!token_info->token_chunks->next)
 		{
-			
 			run_cmd(chunk_list, token_info, token_info->executor->cmd_in, token_info->executor->cmd_out);
 		}
 		else
@@ -159,6 +159,7 @@ void	executor(char **env, t_token_info *token_info)
 				}
 				close(pipefd[1]);
 				close(pipefd[0]);
+
 				run_cmd(chunk_list, token_info, STDIN_FILENO, STDOUT_FILENO);
 				exit(g_exit_status);
 			}

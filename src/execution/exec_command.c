@@ -18,7 +18,7 @@ char	*get_path(char *cmd, t_env **env)
 	char	*join;
 	char	*pathjoin;
 
-	if (access(cmd, F_OK) == 0)
+	if (access(cmd, X_OK) == 0)
 		return (cmd);
 	if (!get_env_var("PATH", env))
 		return (NULL);
@@ -81,11 +81,9 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 			exit(g_exit_status);
 		}
 		command = get_path(cmd[0], &(token_info->env_data->env_list));
-		if (access(command, F_OK) == 0)
-		{
-			execve((const char *)command, (char *const *)cmd,
+		printf(">>>> %s", command);
+		execve((const char *)command, (char *const *)cmd,
 			token_info->env_data->environ_arr);
-		}
 		perror("execve");
 		exit(EXIT_FAILURE);
 	}

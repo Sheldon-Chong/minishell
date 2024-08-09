@@ -43,12 +43,7 @@ int	bash_cmd(t_token_info *token_info, char **args)
 	else if (!ft_strcmp(args[0], "unset"))
 		unset_env(args + 1, &(token_info->env_data->env_list), token_info);
 	else if (!ft_strcmp(args[0], "pwd"))
-	{
-		if (args[1])
-			general_error("pwd: too many arguments", NULL, 1);
-		else
-			ft_pwd();
-	}
+		ft_pwd();
 	else if (!ft_strcmp(args[0], "export"))
 		ft_export(args, token_info);
 	return (0);
