@@ -56,6 +56,26 @@ int is_directory(const char *path) {
     }
 }
 
+int is_dir(char *path) {
+    struct stat statbuf;
+    
+	if (!ft_strchr(path, '/'))
+		return 0;
+
+	// Check if the path exists
+    if (stat(path, &statbuf) != 0) {
+        return 2;
+    }
+
+    // Check if the path is a directory
+    if (S_ISDIR(statbuf.st_mode)) {
+        return 1;
+    }
+
+    // Path exists but is not a directory
+    return 0;
+}
+
 void	chunk_tokens(t_token_info *token_info)
 {
 	t_token		*head;
@@ -71,7 +91,7 @@ void	chunk_tokens(t_token_info *token_info)
 		if (head->type >= SH_WRITE && head->type <= SH_HEREDOC
 			&& (!handle_redir(head, token_chunk, token_info, chunk_num)))
 			nothing();
-		else if (head->type == SH_PIPE)
+		if (head->type == SH_PIPE)
 		{
 			token_chunk->tokens = tokens2arr(token_chunk, head, token_info);
 			append_tok(token_chunk, &(token_info->token_chunks));
@@ -90,11 +110,16 @@ void	chunk_tokens(t_token_info *token_info)
 	chunk_num = 0;
 	while (head)
 	{
-		if (str_charset(head->tokens[0] , "/", CSET_CONTAINS))
+		int status = is_dir(head->tokens[0]);
+		if (status == 1)
 		{
 			general_error("$SUBJECT,: is a directory", head->tokens[0], 126);
 			token_info->start_pos = chunk_num + 1;
-			printf(" starting : %d", token_info->start_pos);
+		}
+		else if (status == 2)
+		{
+			general_error("$SUBJECT,: No such file or directory", head->tokens[0], 127);
+			token_info->start_pos = chunk_num + 1;
 		}
 		chunk_num ++;
 		head = head->next;

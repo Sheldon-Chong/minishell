@@ -81,8 +81,6 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 			exit(g_exit_status);
 		}
 		command = get_path(cmd[0], &(token_info->env_data->env_list));
-		if (!command)
-			exit(127);
 		execve((const char *)command, (char *const *)cmd,
 			token_info->env_data->environ_arr);
 		general_error("$SUBJECT, : command not found", cmd[0], ERR_COMMAND_NOT_FOUND);
