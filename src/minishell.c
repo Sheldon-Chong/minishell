@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-int	g_exit_status;
+volatile sig_atomic_t	g_exit_status;
+
 
 void	ctrl_c_function(int signum)
 {
@@ -37,12 +38,6 @@ t_token	*scan_cmd(t_token_info *token_info)
 				&(token_info->env_data->env_list));
 		if (str_in_arr(list->tokens[0], BASH_CMDS))
 			nothing();
-		// else if (ft_strlen(list->tokens[0]) && (access(path, F_OK) != 0 \
-		// 			|| !ft_strcmp(list->tokens[0], "")))
-		// {
-		// 	general_error("$SUBJECT, : command not found", list->start->word, ERR_COMMAND_NOT_FOUND);
-		// 	token_info->cmd_start = list->next;
-		// }
 		list = list->next;
 	}
 	return (token_info->cmd_start);
@@ -84,6 +79,7 @@ int	main(int ac, char **av, char **env)
 		signal(SIGINT, ctrl_c_function);
 		signal(SIGQUIT, SIG_IGN);
 		user_input = readline(SHELL_MSG);
+		
 		if (!user_input)
 			break ;
 		if (ft_strlen(user_input) > 0)

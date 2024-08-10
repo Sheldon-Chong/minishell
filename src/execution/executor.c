@@ -66,6 +66,12 @@ void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
 		exe->cmd_out = STDOUT_FILENO;
 }
 
+void handle_sigint(int signum)
+{
+	// Do nothing, just catch the signal to prevent termination
+}
+
+
 void	executor(char **env, t_token_info *token_info)
 {
     t_token		*chunk_list;
@@ -98,6 +104,8 @@ void	executor(char **env, t_token_info *token_info)
 	
     token_info->executor = executor_init();
 
+	signal(SIGINT, handle_sigint); 
+				
     while (chunk_list)
     {
 		
@@ -145,6 +153,7 @@ void	executor(char **env, t_token_info *token_info)
 			}
 			if (pid == 0) // child
 			{
+				
 				signal(SIGTERM, SIG_DFL);
 				signal(SIGQUIT, SIG_DFL);
 				if (token_info->executor->cmd_in != STDIN_FILENO)
@@ -187,6 +196,7 @@ void	executor(char **env, t_token_info *token_info)
     }
     while (wait(&g_exit_status) > 0)
         g_exit_status = WEXITSTATUS(g_exit_status);
+	signal(SIGINT, ctrl_c_function);
     if (g_exit_status == 13)
 		g_exit_status = 0;
 	free(token_info->executor);

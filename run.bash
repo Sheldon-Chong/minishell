@@ -5,4 +5,4 @@ valgrind --leak-check=full \
          --verbose \
          --log-file=valgrind-out.txt \
          --suppressions=readline.supp \
-         ./minishell
+         ./bin/minishell

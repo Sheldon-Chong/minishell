@@ -35,8 +35,6 @@ bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
 	return (false);
 }
 
-
-
 bool	post_validate(t_token_info *token_info)
 {
 	t_token	*head;

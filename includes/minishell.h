@@ -181,8 +181,7 @@ char			*here_doc_input(char *delimiter);
 
 void			ft_exit(char **arg, t_token_info *token_info);
 int				ft_export(char **args, t_token_info *token_info);
-
-extern int		g_exit_status;
+extern volatile sig_atomic_t g_exit_status;
 int				ft_echo(char **args);
 bool			is_echo_n(char *str);
 
@@ -196,7 +195,7 @@ int				exit_error(char *error_name);
 void			reset_signal(void);
 void			dup_fd_for_child(int cmd_in_fd, int cmd_out);
 void			close_fds(int cmd_in_fd, int cmd_out);
-
+void	ctrl_c_function(int signum);
 int	find_env_end(char *env_start);
 
 #endif
