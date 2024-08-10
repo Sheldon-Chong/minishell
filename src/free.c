@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-int	free_tokenlist(t_token_info *token_info)
+int	free_tokenlist(t_shell_data *shell_data)
 {
 	int		i;
 	t_token	*head;
 	t_token	*temp;
 
-	head = token_info->token_list;
+	head = shell_data->token_list;
 	while (head)
 	{
 		temp = head;
@@ -26,7 +26,7 @@ int	free_tokenlist(t_token_info *token_info)
 		free(temp->word);
 		free(temp);
 	}
-	head = token_info->token_chunks;
+	head = shell_data->token_chunks;
 	while (head)
 	{
 		temp = head;
@@ -35,6 +35,6 @@ int	free_tokenlist(t_token_info *token_info)
 		free(temp->heredoc_buffer);
 		free(temp);
 	}
-	free(token_info);
+	free(shell_data);
 	return (0);
 }

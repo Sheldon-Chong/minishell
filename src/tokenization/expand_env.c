@@ -31,7 +31,7 @@ int	find_env_end(char *env_start)
 }
 
 static int	expand_env_iter(int *env_end, char *env_start,
-				char **buffer, t_token_info *token_info)
+				char **buffer, t_shell_data *shell_data)
 {
 	char	*var_name;
 	char	*brace;
@@ -50,16 +50,16 @@ static int	expand_env_iter(int *env_end, char *env_start,
 	else
 	{
 		var_name = ft_substr(env_start - 1, 0, *env_end + 1);
-		if (get_env_var(var_name + 1, &(token_info->env_data->env_list)))
+		if (get_env_var(var_name + 1, &(shell_data->env_data->env_list)))
 			ft_rstrjoin(buffer, get_env_var(var_name + 1,
-					&(token_info->env_data->env_list))->value);
+					&(shell_data->env_data->env_list))->value);
 		free(var_name);
 	}
 	return (0);
 }
 
 // returns a string with any occurences of $<text> expanded
-char	*expand_env(char *string, t_token_info *token_info)
+char	*expand_env(char *string, t_shell_data *shell_data)
 {
 	char	*buffer;
 	char	*i_env_begin;
@@ -77,7 +77,7 @@ char	*expand_env(char *string, t_token_info *token_info)
 	{
 		ft_rstrjoin(&buffer, ft_substr(i_before, 0,
 				i_env_begin - i_before - 1));
-		expand_env_iter(&i_env_end, i_env_begin, &buffer, token_info);
+		expand_env_iter(&i_env_end, i_env_begin, &buffer, shell_data);
 		i_before = i_env_begin + i_env_end;
 		if (!ft_strchr(i_env_begin, '$'))
 			break ;

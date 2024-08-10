@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	print_tokens(t_token_info *token_info, char format)
+int	print_tokens(t_shell_data *shell_data, char format)
 {
 	t_token	*head2;
 	int		i2;
@@ -20,7 +20,7 @@ int	print_tokens(t_token_info *token_info, char format)
 
 	i2 = 0;
 	i = -1;
-	head2 = token_info->token_list;
+	head2 = shell_data->token_list;
 	printf("\n===============\n");
 	printf("%s>> TOKENIZATION: \n%sLocate tokens, process them and append them to token_list\n%stoken_list\n",
 		C_BBLUE, C_GREEN, C_RESET);
@@ -42,8 +42,8 @@ int	print_tokens(t_token_info *token_info, char format)
 		i2++;
 	}
 	printf("%s\n>> TOKEN CHUNK: \n%sGroup tokens into arrays, based on '|' characters\n%scmd_array\n", C_BBLUE, C_GREEN, C_RESET);
-	head2 = token_info->token_chunks;
-	printf("starting position index: %d\n", token_info->start_pos);
+	head2 = shell_data->token_chunks;
+	printf("starting position index: %d\n", shell_data->start_pos);
 	i2 = 0;
 	while (head2)
 	{
@@ -57,8 +57,8 @@ int	print_tokens(t_token_info *token_info, char format)
 	}
 	printf("%s\n>> IOLIST%s\n", C_BBLUE, C_RESET);
 	printf("%s\n>> EXCEVE:\n%s", C_BBLUE, C_RESET);
-	if (!(token_info->cmd_start == NULL))
-		printf("	start at: [%s]\n", token_info->cmd_start->tokens[0]);
+	if (!(shell_data->cmd_start == NULL))
+		printf("	start at: [%s]\n", shell_data->cmd_start->tokens[0]);
 	else
 		printf("	start at: None\n");
 	printf("\n===============\n");

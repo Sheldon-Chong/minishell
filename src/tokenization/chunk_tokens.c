@@ -14,28 +14,12 @@
 
 
 
-#include <sys/stat.h>
-int is_directory(const char *path) {
-    DIR *dir = opendir(path);
-    if (dir) {
-        closedir(dir);
-        return 1; // Path is a directory
-    } else {
-        return 0; // Path is not a directory or an error occurred
-    }
-}
-
-#define PATH_IS_DIR 1
-#define PATH_IS_FILE 0
-#define PATH_NO_PERMISSION 3
-#define PATH_NOT_FOUND 2
-
 int is_dir(char *path)
 {
     struct stat statbuf;
     
 	if (!ft_strchr(path, '/'))
-		return (0);
+		return (PATH_IS_FILE);
 
 	// Check if the path exists
     if (stat(path, &statbuf) != 0)
@@ -49,14 +33,10 @@ int is_dir(char *path)
 	if (fd == -1)
 		return (PATH_NO_PERMISSION);
     // Path exists but is not a directory
-    return (0);
+    return (PATH_IS_FILE);
 }
 
-void process_chunk(t_token *token_chunk, t_token *head, t_token_info *token_info, int chunk_num)
-{
-    token_chunk->tokens = tokens2arr(token_chunk, head, token_info, chunk_num);
-    append_tok(token_chunk, &(token_info->token_chunks));
-}
+
 
 t_token *create_new_chunk(t_token *start)
 {
@@ -65,7 +45,7 @@ t_token *create_new_chunk(t_token *start)
     return new_chunk;
 }
 
-void validate_chunks(t_token *head, t_token_info *token_info)
+void validate_chunks(t_chunk *head, t_shell_data *shell_data)
 {
     int chunk_num = 0;
 
@@ -75,28 +55,36 @@ void validate_chunks(t_token *head, t_token_info *token_info)
         if (status == 1)
         {
             general_error("$SUBJECT,: is a directory", head->tokens[0], 126);
-            token_info->start_pos = chunk_num + 1;
+            shell_data->start_pos = chunk_num + 1;
         }
         else if (status == 2)
         {
             general_error("$SUBJECT,: No such file or directory", head->tokens[0], 127);
-            token_info->start_pos = chunk_num + 1;
+            shell_data->start_pos = chunk_num + 1;
         }
         else if (status == 3)
         {
             general_error("$SUBJECT,: Permission denied", head->tokens[0], 126);
-            token_info->start_pos = chunk_num + 1;
+            shell_data->start_pos = chunk_num + 1;
         }
         chunk_num++;
         head = head->next;
     }
 }
 
-void chunk_tokens(t_token_info *token_info)
+void process_chunk(t_token *token_chunk, t_token *head, t_shell_data *shell_data, int chunk_num)
 {
-    t_token *head = token_info->token_list;
-    t_token *token_chunk = create_new_chunk(token_info->token_list);
-    int chunk_num = 0;
+    token_chunk->tokens = tokens2arr(token_chunk, head, shell_data, chunk_num);
+    append(token_chunk, &(shell_data->token_chunks));
+}
+
+void chunk_tokens(t_shell_data *shell_data)
+{
+    t_token *head = shell_data->token_list;
+    t_chunk *token_chunk = create_new_chunk(shell_data->token_list);
+    int chunk_num;
+    
+    chunk_num = 0;
 
     g_exit_status = 0;
 
@@ -104,7 +92,7 @@ void chunk_tokens(t_token_info *token_info)
     {
         if (head->type == SH_PIPE)
         {
-            process_chunk(token_chunk, head, token_info, chunk_num);
+            process_chunk(token_chunk, head, shell_data, chunk_num);
             token_chunk = create_new_chunk(head->next);
             chunk_num++;
             g_exit_status = 0;
@@ -112,9 +100,9 @@ void chunk_tokens(t_token_info *token_info)
         head = head->next;
     }
 
-    process_chunk(token_chunk, NULL, token_info, chunk_num);
-    head = token_info->token_chunks;
+    process_chunk(token_chunk, NULL, shell_data, chunk_num);
+    head = shell_data->token_chunks;
 
-    validate_chunks(head, token_info);
+    validate_chunks(head, shell_data);
 }
 

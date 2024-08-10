@@ -18,7 +18,7 @@ int	newline(int var)
 	return (1);
 }
 
-int	is_token_valid(char *str, t_token_info *token_info)
+int	is_token_valid(char *str, t_shell_data *shell_data)
 {
 	char	quote;
 	int		i;
@@ -31,7 +31,7 @@ int	is_token_valid(char *str, t_token_info *token_info)
 			quote = toggle_quote_state(quote, str[i]);
 		if (!quote && is_in_charset(str[i], INVALID_CHARS))
 		{
-			token_info->has_error = true;
+			shell_data->has_error = true;
 			printf("minishell: syntax error near unexpected token `%c'\n",
 				str[i]);
 			return (1);
@@ -39,7 +39,7 @@ int	is_token_valid(char *str, t_token_info *token_info)
 	}
 	if (quote)
 	{
-		token_info->has_error = true;
+		shell_data->has_error = true;
 		printf("minishell: syntax error near unexpected token `%c'\n", str[i]);
 		rl_on_new_line();
 		return (1);
@@ -61,7 +61,7 @@ void	clear_heredoc_buffer(t_token *chunk)
 	}
 }
 
-int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, int num)
+int	handle_redir(t_token *head, t_token *token_chunk, t_shell_data *shell_data, int num)
 {
 	int	file;
 
@@ -72,7 +72,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, 
 		char *error_message = strerror(errno);
 		if (file == -1)
 		{
-			token_info->start_pos = num + general_error("$SUBJECT,: Permission denied", head->next->word, 1);
+			shell_data->start_pos = num + general_error("$SUBJECT,: Permission denied", head->next->word, 1);
 			return -1;
 		}
 		else
@@ -92,7 +92,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, 
 		file = open(token_chunk->infile, O_RDONLY);
 		if (file == -1 && g_exit_status == 0)
 		{
-			token_info->start_pos = num + general_error("$SUBJECT,: No such file or directory", head->next->word, 1);
+			shell_data->start_pos = num + general_error("$SUBJECT,: No such file or directory", head->next->word, 1);
 			return -1;
 		}
 	}
@@ -100,7 +100,7 @@ int	handle_redir(t_token *head, t_token *token_chunk, t_token_info *token_info, 
 }
 
 
-char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info, int num)
+char	**tokens2arr(t_token *chunk, t_token *str_end, t_shell_data *shell_data, int num)
 {
 	t_token	*token;
 	char	**cmds;
@@ -111,7 +111,7 @@ char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info, in
 	{
 		if (token->type >= SH_WRITE && token->type <= SH_HEREDOC)
 		{
-			if (handle_redir(token, chunk, token_info, num) == -1)
+			if (handle_redir(token, chunk, shell_data, num) == -1)
 				break;
 			if (token->type == SH_HEREDOC)
 			{

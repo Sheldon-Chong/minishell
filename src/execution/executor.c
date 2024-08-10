@@ -14,15 +14,15 @@
 
 int	exit_error(char *error_name)
 {
-	perror("pipe");
+	perror(error_name);
 	exit(EXIT_FAILURE);
 }
 
-int	run_cmd(t_token *chunk, t_token_info *token_info,
+int	run_cmd(t_token *chunk, t_shell_data *shell_data,
 			int cmd_in_fd, int cmd_out)
 {
 	if (str_in_arr(chunk->start->word, "exit"))
-		ft_exit(chunk->tokens, token_info);
+		ft_exit(chunk->tokens, shell_data);
 	else if (str_in_arr(chunk->start->word, "cd"))
 	{
 		if (chunk->tokens[2])
@@ -39,12 +39,12 @@ int	run_cmd(t_token *chunk, t_token_info *token_info,
 	}
 	else if (str_in_arr(chunk->start->word, "unset"))
 		unset_env(chunk->tokens + 1,
-			&(token_info->env_data->env_list), token_info);
+			&(shell_data->env_data->env_list), shell_data);
 	else if (str_in_arr(chunk->start->word, "export") && chunk->tokens[1])
-		ft_export(chunk->tokens, token_info);
+		ft_export(chunk->tokens, shell_data);
 	else
-		exec_cmd(chunk->tokens, token_info, cmd_in_fd, cmd_out);
-	return 1;
+		exec_cmd(chunk->tokens, shell_data, cmd_in_fd, cmd_out);
+	return (1);
 }
 
 
@@ -66,15 +66,30 @@ void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
 		exe->cmd_out = STDOUT_FILENO;
 }
 
-void handle_sigint(int signum)
+void ignore_sigint(int signum)
 {
 	// Do nothing, just catch the signal to prevent termination
 }
 
-
-void	executor(char **env, t_token_info *token_info)
+t_chunk *get_chunk_start(t_token *start, int pos)
 {
-    t_token		*chunk_list;
+	int i = 0;
+
+	while (i < pos)
+	{
+		start = start->next;
+		i++;
+	}
+	if (!start)
+		return (NULL);
+	return (start);
+}
+
+
+
+void	executor(char **env, t_shell_data *shell_data)
+{
+    t_chunk		*chunk_list;
     int			pipefd[2];
     int			file_fd_in;
     int			file_fd_out;
@@ -83,46 +98,29 @@ void	executor(char **env, t_token_info *token_info)
     int			empty_pipe[2];
     int			i = 0;
 
-    chunk_list = token_info->token_chunks;
-
-    // Move to the start position
-    while (i < token_info->start_pos)
-    {
-        chunk_list = chunk_list->next;
-        i++;
-    }
-    if (!chunk_list)
-        return ;
-
+    chunk_list = get_chunk_start(shell_data->token_chunks, shell_data->start_pos);
+	if (!chunk_list)
+		return;
 	
-    // Create an empty pipe
     if (pipe(empty_pipe) == -1)
-    {
-        perror("pipe");
-        exit(EXIT_FAILURE);
-    }
+		exit_error("pipe");
 	
-    token_info->executor = executor_init();
+    shell_data->executor = executor_init();
 
-	signal(SIGINT, handle_sigint); 
-				
+	signal(SIGINT, ignore_sigint); 
     while (chunk_list)
     {
-		
         if (pipe(pipefd) == -1)
-        {
-            perror("pipe");
-            exit(EXIT_FAILURE);
-        }
+			exit_error("pipe");
 
-        set_outf(chunk_list, token_info->executor, pipefd);
+        set_outf(chunk_list, shell_data->executor, pipefd);
 
         if (chunk_list->infile)
         {
             file_fd_in = open(chunk_list->infile, O_RDONLY);
             if (file_fd_in == -1)
                 exit_error("open infile");
-            token_info->executor->cmd_in = file_fd_in;
+            shell_data->executor->cmd_in = file_fd_in;
         }
         else if (chunk_list->heredoc_buffer != NULL)
         {
@@ -130,58 +128,51 @@ void	executor(char **env, t_token_info *token_info)
                 exit_error("pipe");
             ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
             close(heredoc_fd[1]);
-            token_info->executor->cmd_in = heredoc_fd[0];
+            shell_data->executor->cmd_in = heredoc_fd[0];
         }
-        else if (i == token_info->start_pos && token_info->start_pos != 0)
+        else if (shell_data->start_pos != 0)
         {
-            // Redirect stdin of the first chunk to the empty pipe
-            token_info->executor->cmd_in = empty_pipe[0];
+            shell_data->executor->cmd_in = empty_pipe[0];
             close(empty_pipe[1]);
         }
 		
-		if (!token_info->token_chunks->next)
-		{
-			run_cmd(chunk_list, token_info, token_info->executor->cmd_in, token_info->executor->cmd_out);
-		}
+		if (!shell_data->token_chunks->next)
+			run_cmd(chunk_list, shell_data, shell_data->executor->cmd_in, shell_data->executor->cmd_out);
 		else
 		{
 			pid = fork();
 			if (pid == -1)
-			{
-				perror("fork");
-				exit(EXIT_FAILURE);
-			}
+				exit_error("fork");
 			if (pid == 0) // child
 			{
-				
 				signal(SIGTERM, SIG_DFL);
 				signal(SIGQUIT, SIG_DFL);
-				if (token_info->executor->cmd_in != STDIN_FILENO)
+				if (shell_data->executor->cmd_in != STDIN_FILENO)
 				{
-					dup2(token_info->executor->cmd_in, STDIN_FILENO);
-					close(token_info->executor->cmd_in);
+					dup2(shell_data->executor->cmd_in, STDIN_FILENO);
+					close(shell_data->executor->cmd_in);
 				}
-				if (token_info->executor->cmd_out != STDOUT_FILENO)
+				if (shell_data->executor->cmd_out != STDOUT_FILENO)
 				{
-					dup2(token_info->executor->cmd_out, STDOUT_FILENO);
-					if (token_info->executor->cmd_out != pipefd[1])
-						close(token_info->executor->cmd_out);
+					dup2(shell_data->executor->cmd_out, STDOUT_FILENO);
+					if (shell_data->executor->cmd_out != pipefd[1])
+						close(shell_data->executor->cmd_out);
 				}
 				close(pipefd[1]);
 				close(pipefd[0]);
 
-				run_cmd(chunk_list, token_info, STDIN_FILENO, STDOUT_FILENO);
+				run_cmd(chunk_list, shell_data, STDIN_FILENO, STDOUT_FILENO);
 				exit(g_exit_status);
 			}
 			else // parent
 			{
-				if (token_info->executor->cmd_in != STDIN_FILENO)
-					close(token_info->executor->cmd_in);
-				if (token_info->executor->cmd_out != STDOUT_FILENO && token_info->executor->cmd_out != pipefd[1])
-					close(token_info->executor->cmd_out);
+				if (shell_data->executor->cmd_in != STDIN_FILENO)
+					close(shell_data->executor->cmd_in);
+				if (shell_data->executor->cmd_out != STDOUT_FILENO && shell_data->executor->cmd_out != pipefd[1])
+					close(shell_data->executor->cmd_out);
 				if (chunk_list->next)
 				{
-					token_info->executor->cmd_in = pipefd[0];
+					shell_data->executor->cmd_in = pipefd[0];
 					close(pipefd[1]);
 				}
 				else
@@ -199,5 +190,5 @@ void	executor(char **env, t_token_info *token_info)
 	signal(SIGINT, ctrl_c_function);
     if (g_exit_status == 13)
 		g_exit_status = 0;
-	free(token_info->executor);
+	free(shell_data->executor);
 }

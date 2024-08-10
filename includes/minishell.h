@@ -55,6 +55,11 @@
 # define SH_HEREDOC 5
 
 
+# define PATH_IS_DIR 1
+# define PATH_IS_FILE 0
+# define PATH_NO_PERMISSION 3
+# define PATH_NOT_FOUND 2
+
 typedef struct s_env
 {
 	char			*name;
@@ -73,7 +78,6 @@ typedef struct s_token
 	struct s_token	*start;			//token chunk only
 	char			*heredoc_buffer;
 	struct s_token	*next;			//for BOTH tokens and token chunks
-	bool			hasError;
 	struct s_token	*prev;
 	t_list			*heredocs;
 }	t_token;
@@ -92,11 +96,13 @@ typedef struct s_executor
 	int		status;
 }	t_executor;
 
-typedef struct s_token_info
+typedef t_token	t_chunk;
+
+typedef struct s_shell_data
 {
 	t_token		*token_list;
 	t_token		*quote_list_buffer;
-	t_token		*token_chunks;
+	t_chunk		*token_chunks;
 	int			size;
 	char		*str;
 	t_token		*cmd_start;
@@ -106,7 +112,7 @@ typedef struct s_token_info
 	t_env_data	*env_data;
 	t_executor	*executor;
 	int			start_pos;
-}	t_token_info;
+}	t_shell_data;
 
 typedef struct s_error
 {
@@ -119,35 +125,35 @@ int				get_length_of_list(t_token *head);
 int				newline(int var);
 
 // debugging
-int				print_tokens(t_token_info *token_list, char format);
+int				print_tokens(t_shell_data *token_list, char format);
 
 // free utils
-int				free_tokenlist(t_token_info *token_list);
+int				free_tokenlist(t_shell_data *token_list);
 
 // tokenization
-t_token			*scan_cmd(t_token_info *token_list);
-t_token			*tokenize(char *string, t_token_info *token_list);
-char	**tokens2arr(t_token *chunk, t_token *str_end, t_token_info *token_info, int num);
+t_token			*scan_cmd(t_shell_data *token_list);
+t_token			*tokenize(char *string, t_shell_data *token_list);
+char	**tokens2arr(t_token *chunk, t_token *str_end, t_shell_data *token_info, int num);
 
-t_token			*append_tok(t_token *token, t_token **head);
+t_token			*append(t_token *token, t_token **head);
 t_token			*tok(char *word, char type);
-int				is_token_valid(char *str, t_token_info *token_info);
-t_token_info	*process_input(char *str, t_env_data *env_data);
-bool			post_validate(t_token_info *token_info);
+int				is_token_valid(char *str, t_shell_data *token_info);
+t_shell_data	*process_input(char *str, t_env_data *env_data);
+bool			post_validate(t_shell_data *token_info);
 
 // environment variables
 t_env			*arr2env(char **env);
 t_env			*get_env_var(char *var_name, t_env **env);
 int				print_env(t_env **env_list, char mode);
 char			**env2arr(t_env *env);
-char			*expand_env(char *string, t_token_info *token_info);
+char			*expand_env(char *string, t_shell_data *token_info);
 t_env			*new_env(char *name, char *value);
 int				unset_env(char **var_names, t_env **envList,
-					t_token_info *token_info);
+					t_shell_data *token_info);
 void			ft_pwd(void);
 
 t_env			*append_env(t_env *env, t_env **envList);
-int				export(char **args, t_token_info *token_info);
+int				export(char **args, t_shell_data *token_info);
 bool			is_strset(char *str, char *strset);
 bool			is_valid_identifier(char *str);
 t_env_data		*new_env_data(char **env);
@@ -155,32 +161,32 @@ t_env_data		*new_env_data(char **env);
 // quotes
 char			toggle_quote_state(char quote, char c);
 char			*split_into_quotes(char *str, t_token *tokens,
-					t_token_info *token_info, bool expand_env);
+					t_shell_data *token_info, bool expand_env);
 int				count_outermost_quotes(char *str);
 bool			quote_alternate(char c, char *quote);
 int general_error(char *error, char *subject, int exit_status);
 
 //chunking
-void			chunk_tokens(t_token_info *token_list);
+void			chunk_tokens(t_shell_data *token_list);
 
 // to be removed
-void			executor(char **env, t_token_info *token_info);
+void			executor(char **env, t_shell_data *token_info);
 
 // error printing
-int				syntax_error(char *error, t_token_info *token_info);
-int				err_no_braces(char *subject, t_token_info *token_info);
+int				syntax_error(char *error, t_shell_data *token_info);
+int				err_no_braces(char *subject, t_shell_data *token_info);
 
-int				bash_cmd(t_token_info *token_info, char **cmd);
+int				bash_cmd(t_shell_data *token_info, char **cmd);
 
-void			exec_cmd(char **cmd, t_token_info *token_info,
+void			exec_cmd(char **cmd, t_shell_data *token_info,
 					int cmd_in_fd, int cmd_out);
 char			*get_path(char *cmd, t_env **env);
-void			parse_cmd_list_for_io(t_token_info *token_info);
+void			parse_cmd_list_for_io(t_shell_data *token_info);
 char			**append_to_array(char ***array, char *value);
 char			*here_doc_input(char *delimiter);
 
-void			ft_exit(char **arg, t_token_info *token_info);
-int				ft_export(char **args, t_token_info *token_info);
+void			ft_exit(char **arg, t_shell_data *token_info);
+int				ft_export(char **args, t_shell_data *token_info);
 extern volatile sig_atomic_t g_exit_status;
 int				ft_echo(char **args);
 bool			is_echo_n(char *str);
@@ -197,5 +203,7 @@ void			dup_fd_for_child(int cmd_in_fd, int cmd_out);
 void			close_fds(int cmd_in_fd, int cmd_out);
 void	ctrl_c_function(int signum);
 int	find_env_end(char *env_start);
+
+
 
 #endif

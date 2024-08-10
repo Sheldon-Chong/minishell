@@ -25,59 +25,63 @@ void	ctrl_c_function(int signum)
 }
 
 // an initial check to see if commands do exist
-t_token	*scan_cmd(t_token_info *token_info)
+t_token	*scan_cmd(t_shell_data *shell_data)
 {
 	t_token		*list;
 	char		*path;
 
-	list = token_info->token_chunks;
-	token_info->cmd_start = token_info->token_chunks;
+	list = shell_data->token_chunks;
+	shell_data->cmd_start = shell_data->token_chunks;
 	while (list && list->tokens[0])
 	{
 		path = get_path(list->tokens[0],
-				&(token_info->env_data->env_list));
+				&(shell_data->env_data->env_list));
 		if (str_in_arr(list->tokens[0], BASH_CMDS))
 			nothing();
 		list = list->next;
 	}
-	return (token_info->cmd_start);
+	return (shell_data->cmd_start);
 }
 
-t_token_info	*process_input(char *str, t_env_data *env_data)
+
+t_shell_data	*process_input(char *str, t_env_data *env_data)
 {
-	t_token_info	*token_info;
+	t_shell_data	*shell_data;
 
-	token_info = malloc(sizeof(t_token_info));
-	token_info->start_pos = 0;
-	token_info->token_list = NULL;
-	token_info->cmd_start = NULL;
-	token_info->quote_list_buffer = NULL;
-	token_info->token_chunks = NULL;
-	token_info->has_error = false;
-	token_info->env_data = env_data;
+	shell_data = malloc(sizeof(t_shell_data));
+	shell_data->start_pos = 0;
+	shell_data->token_list = NULL;
+	shell_data->cmd_start = NULL;
+	shell_data->quote_list_buffer = NULL;
+	shell_data->token_chunks = NULL;
+	shell_data->has_error = false;
+	shell_data->env_data = env_data;
 	if (count_outermost_quotes(str) % 2 != 0)
-		err_no_braces("", token_info);
-	tokenize(str, token_info);
-	post_validate(token_info);
-	if (token_info->has_error)
-		return (token_info);
-	chunk_tokens(token_info);
-	return (token_info);
+		err_no_braces("", shell_data);
+	tokenize(str, shell_data);
+	post_validate(shell_data);
+	if (shell_data->has_error)
+		return (shell_data);
+	chunk_tokens(shell_data);
+	return (shell_data);
 }
 
-
+void init_signal(void)
+{
+	signal(SIGINT, ctrl_c_function);
+	signal(SIGQUIT, SIG_IGN);
+}
 
 int	main(int ac, char **av, char **env)
 {
-	t_token_info	*token_info;
+	t_shell_data	*shell_data;
 	char			*user_input;
 	t_env_data		*env_data;
 
+	init_signal();
 	env_data = new_env_data(env);
-	while (1)
+	while (true)
 	{
-		signal(SIGINT, ctrl_c_function);
-		signal(SIGQUIT, SIG_IGN);
 		user_input = readline(SHELL_MSG);
 		
 		if (!user_input)
@@ -85,13 +89,13 @@ int	main(int ac, char **av, char **env)
 		if (ft_strlen(user_input) > 0)
 		{
 			add_history(user_input);
-			token_info = process_input(user_input, env_data);
-			if (!token_info->token_list)
+			shell_data = process_input(user_input, env_data);
+			if (!shell_data->token_list)
 				continue ;
-			if (scan_cmd(token_info) && !token_info->has_error)
-				executor(env_data->environ_arr, token_info);
-			//print_tokens(token_info, 'l');
-			free_tokenlist(token_info);
+			if (scan_cmd(shell_data) && !shell_data->has_error)
+				executor(env_data->environ_arr, shell_data);
+			//print_tokens(shell_data, 'l');
+			free_tokenlist(shell_data);
 		}
 	}
 	exit(0);

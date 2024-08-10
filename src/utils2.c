@@ -34,7 +34,7 @@ int	add_substr_to_toklist(const char *str, int start,
 
 	string = ft_substr(str, start, len);
 	if (string[0])
-		append_tok(tok(ft_strdup(string), 0), tokens);
+		append(tok(ft_strdup(string), 0), tokens);
 	free(string);
 	return (start + len);
 }

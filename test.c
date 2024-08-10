@@ -28,6 +28,8 @@ void handle_sigint(int signum)
     // Do nothing, just catch the signal to prevent termination
 }
 
+
+
 int main(int ac, char **av, char **env)
 {
     char *user_input;
@@ -64,11 +66,9 @@ int main(int ac, char **av, char **env)
                 signal(SIGINT, ctrl_c_function); // Restore SIGINT handler
             }
             else
-            {
                 perror("fork");
-            }
         }
         free(user_input);
     }
-    return 0;
+    return (0);
 }

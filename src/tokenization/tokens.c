@@ -19,10 +19,10 @@ bool	is_shell_opp(int shell_operator_id)
 	return (false);
 }
 
-bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
+bool	pattern_rec(t_token *pattern_start, t_shell_data *shell_data)
 {
 	if (is_shell_opp(pattern_start->type) && (!pattern_start->next))
-		return (syntax_error("newline", token_info), true);
+		return (syntax_error("newline", shell_data), true);
 	if (!pattern_start->next)
 		return (false);
 	if (is_shell_opp(pattern_start->type))
@@ -30,19 +30,19 @@ bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
 		if (pattern_start->type == SH_PIPE && pattern_start->next->type >= SH_WRITE && pattern_start->next->type <= SH_HEREDOC)
 			return(false);
 		if (is_shell_opp(pattern_start->next->type))
-			return (syntax_error(pattern_start->next->word, token_info), true);
+			return (syntax_error(pattern_start->next->word, shell_data), true);
 	}
 	return (false);
 }
 
-bool	post_validate(t_token_info *token_info)
+bool	post_validate(t_shell_data *shell_data)
 {
 	t_token	*head;
 
-	head = token_info->token_list;
-	while (head && !token_info->has_error)
+	head = shell_data->token_list;
+	while (head && !shell_data->has_error)
 	{
-		pattern_rec(head, token_info);
+		pattern_rec(head, shell_data);
 		head = head->next;
 	}
 	return (true);
@@ -65,7 +65,7 @@ t_token	*tok(char *word, char type)
 	return (token);
 }
 
-t_token	*append_tok(t_token *token, t_token **head)
+t_token	*append(t_token *token, t_token **head)
 {
 	t_token	*nav;
 

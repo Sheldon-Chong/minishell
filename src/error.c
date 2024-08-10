@@ -12,17 +12,17 @@
 
 #include "minishell.h"
 
-int	syntax_error(char *error, t_token_info *token_info)
+int	syntax_error(char *error, t_shell_data *shell_data)
 {
-	token_info->has_error = true;
+	shell_data->has_error = true;
 	g_exit_status = ERR_SYNTAX;
 	printf("syntax error near unexpected token `%s'\n", error);
 	return (1);
 }
 
-int	err_no_braces(char *subject, t_token_info *token_info)
+int	err_no_braces(char *subject, t_shell_data *shell_data)
 {
-	token_info->has_error = true;
+	shell_data->has_error = true;
 	g_exit_status = ERR_SYNTAX;
 	printf("minishell: syntax error no closing quotation\n");
 	return (1);

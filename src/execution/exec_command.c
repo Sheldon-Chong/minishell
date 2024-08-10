@@ -61,7 +61,7 @@ void	close_fds_and_wait(int cmd_in_fd, int cmd_out, pid_t pid)
 
 // execute a command with the given arguments,
 //receiving the cmd_in_fd as input and piping its output to cmd_out
-void	exec_cmd(char **cmd, t_token_info *token_info,
+void	exec_cmd(char **cmd, t_shell_data *shell_data,
 			int cmd_in_fd, int cmd_out)
 {
 	char	*command;
@@ -75,12 +75,12 @@ void	exec_cmd(char **cmd, t_token_info *token_info,
 		dup_fd_for_child(cmd_in_fd, cmd_out);
 		if (str_in_arr(cmd[0], "echo,export,pwd,unset"))
 		{
-			bash_cmd(token_info, cmd);
+			bash_cmd(shell_data, cmd);
 			exit(g_exit_status);
 		}
-		command = get_path(cmd[0], &(token_info->env_data->env_list));
+		command = get_path(cmd[0], &(shell_data->env_data->env_list));
 		execve((const char *)command, (char *const *)cmd,
-			token_info->env_data->environ_arr);
+			shell_data->env_data->environ_arr);
 		general_error("$SUBJECT, : command not found", cmd[0], ERR_COMMAND_NOT_FOUND);
 		exit(127);
 	}

@@ -38,10 +38,7 @@ void	set_outfile(t_token *chunk_list, t_executor *exe, int *pipefd)
 	else if (chunk_list->next)
 	{
 		if (pipe(pipefd) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
+			exit_error("pipe");
 		exe->cmd_out = pipefd[1];
 	}
 	else
@@ -57,10 +54,7 @@ void	set_infile(t_token *chunk_list, t_executor *exe)
 	{
 		fd = open(chunk_list->infile, O_RDONLY);
 		if (fd == -1)
-		{
-			perror("open infile");
-			exit(EXIT_FAILURE);
-		}
+			exit_error("open");
 		exe->cmd_in = fd;
 	}
 	else if (chunk_list->heredoc_buffer != NULL)

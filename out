@@ -327,8 +327,8 @@ index 67962f2..0b29f66 100644
 -}
  
  // an initial check to see if commands do exist
- t_token	*scan_cmd(t_token_info *token_info)
-@@ -33,16 +25,8 @@ t_token	*scan_cmd(t_token_info *token_info)
+ t_token	*scan_cmd(t_shell_data *token_info)
+@@ -33,16 +25,8 @@ t_token	*scan_cmd(t_shell_data *token_info)
  	token_info->cmd_start = token_info->token_chunks;
  	while (list && list->tokens[0])
  	{
@@ -345,7 +345,7 @@ index 67962f2..0b29f66 100644
  		list = list->next;
  	}
  	return (token_info->cmd_start);
-@@ -70,6 +54,19 @@ t_token_info	*process_input(char *str, t_env_data *env_data)
+@@ -70,6 +54,19 @@ t_shell_data	*process_input(char *str, t_env_data *env_data)
  	return (token_info);
  }
  
@@ -439,8 +439,8 @@ index 3da52cb..9165d9d 100644
 +    return (0);
  }
  
--void	chunk_tokens(t_token_info *token_info)
-+void process_chunk(t_token *token_chunk, t_token *head, t_token_info *token_info, int chunk_num)
+-void	chunk_tokens(t_shell_data *token_info)
++void process_chunk(t_token *token_chunk, t_token *head, t_shell_data *token_info, int chunk_num)
  {
 -	t_token		*head;
 -	t_token		*token_chunk;
@@ -501,7 +501,7 @@ index 3da52cb..9165d9d 100644
 +    return new_chunk;
 +}
 +
-+void validate_chunks(t_token *head, t_token_info *token_info)
++void validate_chunks(t_token *head, t_shell_data *token_info)
 +{
 +    int chunk_num = 0;
 +
@@ -528,7 +528,7 @@ index 3da52cb..9165d9d 100644
 +    }
 +}
 +
-+void chunk_tokens(t_token_info *token_info)
++void chunk_tokens(t_shell_data *token_info)
 +{
 +    t_token *head = token_info->token_list;
 +    t_token *token_chunk = create_new_chunk(token_info->token_list);
@@ -558,13 +558,13 @@ diff --git a/src/tokenization/tokens.c b/src/tokenization/tokens.c
 index 9ea77b1..d4e672d 100644
 --- a/src/tokenization/tokens.c
 +++ b/src/tokenization/tokens.c
-@@ -35,8 +35,6 @@ bool	pattern_rec(t_token *pattern_start, t_token_info *token_info)
+@@ -35,8 +35,6 @@ bool	pattern_rec(t_token *pattern_start, t_shell_data *token_info)
  	return (false);
  }
  
 -
 -
- bool	post_validate(t_token_info *token_info)
+ bool	post_validate(t_shell_data *token_info)
  {
  	t_token	*head;
 diff --git a/valgrind-out.txt b/valgrind-out.txt

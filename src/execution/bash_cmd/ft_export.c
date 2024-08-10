@@ -86,7 +86,7 @@ t_env	*str2env(char *str)
 	return (env);
 }
 
-static int	export_assign(t_token_info *token_info, char **args)
+static int	export_assign(t_shell_data *shell_data, char **args)
 {
 	int		i;
 	int		error;
@@ -103,20 +103,20 @@ static int	export_assign(t_token_info *token_info, char **args)
 			error = general_error("export:, $SUBJECT,: not a valid identifier", args[i], 1);
 			continue ;
 		}
-		append_env(env, &(token_info->env_data->env_list));
+		append_env(env, &(shell_data->env_data->env_list));
 	}
 	return (error);
 }
 
-int	ft_export(char **args, t_token_info *token_info)
+int	ft_export(char **args, t_shell_data *shell_data)
 {
 	char	**arr;
 	t_env	*head;
 
-	head = token_info->env_data->env_list;
+	head = shell_data->env_data->env_list;
 	if (args[1] == NULL)
 	{
-		arr = env2arr(token_info->env_data->env_list);
+		arr = env2arr(shell_data->env_data->env_list);
 		if (arr == NULL)
 			return (0);
 		arr = sort_doublearray(arr);
@@ -126,10 +126,10 @@ int	ft_export(char **args, t_token_info *token_info)
 			free(head->value);
 			head = head->next;
 		}
-		token_info->env_data->env_list = arr2env(arr);
-		print_env(&(token_info->env_data->env_list), 'x');
+		shell_data->env_data->env_list = arr2env(arr);
+		print_env(&(shell_data->env_data->env_list), 'x');
 	}
 	else
-		export_assign(token_info, args);
+		export_assign(shell_data, args);
 	return (0);
 }
