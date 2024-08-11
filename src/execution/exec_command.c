@@ -38,16 +38,6 @@ char	*get_path(char *cmd, t_env **env)
 	return (NULL);
 }
 
-void	reset_signal(void)
-{
-	if (signal(SIGINT, SIG_DFL) == SIG_ERR)
-		perror("Failed to reset SIGINT handler");
-	if (signal(SIGTERM, SIG_DFL) == SIG_ERR)
-		perror("Failed to reset SIGTERM handler");
-	if (signal(SIGQUIT, SIG_DFL) == SIG_ERR)
-		perror("Failed to reset SIGQUIT handler");
-}
-
 void	close_fds_and_wait(int cmd_in_fd, int cmd_out, pid_t pid)
 {
 	if (cmd_in_fd != STDIN_FILENO)

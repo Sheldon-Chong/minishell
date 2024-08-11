@@ -48,6 +48,21 @@ int	run_cmd(t_token *chunk, t_shell_data *shell_data,
 }
 
 
+
+t_chunk *get_chunk_start(t_token *start, int pos)
+{
+	int i = 0;
+
+	while (i < pos)
+	{
+		start = start->next;
+		i++;
+	}
+	if (!start)
+		return (NULL);
+	return (start);
+}
+
 void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
 {
 	int	fd;
@@ -65,27 +80,6 @@ void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
 	else
 		exe->cmd_out = STDOUT_FILENO;
 }
-
-void ignore_sigint(int signum)
-{
-	// Do nothing, just catch the signal to prevent termination
-}
-
-t_chunk *get_chunk_start(t_token *start, int pos)
-{
-	int i = 0;
-
-	while (i < pos)
-	{
-		start = start->next;
-		i++;
-	}
-	if (!start)
-		return (NULL);
-	return (start);
-}
-
-
 
 void	executor(char **env, t_shell_data *shell_data)
 {

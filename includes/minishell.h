@@ -122,6 +122,8 @@ typedef struct s_error
 	char	*subject;
 }	t_error;
 
+void ignore_sigint(int signum);
+
 // utils
 int				get_length_of_list(t_token *head);
 int				newline(int var);
