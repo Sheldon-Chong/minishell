@@ -215,6 +215,7 @@ void	executor(char **env, t_shell_data *shell_data)
 		waitpid(pid_array[i], &g_exit_status, 0);
 		i++;
 	}
+	free(pid_array);
 	signal(SIGINT, ctrl_c_function);
 	free(shell_data->executor);
 }
