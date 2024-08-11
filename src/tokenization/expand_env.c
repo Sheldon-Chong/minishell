@@ -33,7 +33,8 @@ int	find_env_end(char *env_start)
 static int	expand_env_iter(int *env_end, char *env_start,
 				char **buffer, t_shell_data *shell_data)
 {
-	char	*var_name;
+	char	*env_name;
+	t_env	*env;
 	char	*brace;
 
 	if (*env_start == '?')
@@ -49,11 +50,11 @@ static int	expand_env_iter(int *env_end, char *env_start,
 		*env_end = 1;
 	else
 	{
-		var_name = ft_substr(env_start - 1, 0, *env_end + 1);
-		if (get_env_var(var_name + 1, &(shell_data->env_data->env_list)))
-			ft_rstrjoin(buffer, get_env_var(var_name + 1,
-					&(shell_data->env_data->env_list))->value);
-		free(var_name);
+		env_name = ft_substr(env_start - 1, 0, *env_end + 1);
+		env = get_env_var(env_name + 1, &(shell_data->env_data->env_list));
+		if (env)
+			ft_rstrjoin(buffer, env->value);
+		free(env_name);
 	}
 	return (0);
 }
@@ -62,27 +63,28 @@ static int	expand_env_iter(int *env_end, char *env_start,
 char	*expand_env(char *string, t_shell_data *shell_data)
 {
 	char	*buffer;
-	char	*i_env_begin;
+	char	*env_start;
 	char	*i_before;
-	int		i_env_end;
+	int		env_end;
 
-	i_env_begin = 0;
-	i_env_end = 0;
+	env_start = 0;
+	env_end = 0;
 	i_before = string;
 	if (!ft_strchr(string, '$'))
-		return (string);
+		return (ft_strdup(string));
 	buffer = ft_strdup("");
-	i_env_begin = ft_strchr(string, '$') + 1;
-	while (*i_env_begin)
+	env_start = ft_strchr(string, '$') + 1;
+	while (*env_start)
 	{
-		ft_rstrjoin(&buffer, ft_substr(i_before, 0,
-				i_env_begin - i_before - 1));
-		expand_env_iter(&i_env_end, i_env_begin, &buffer, shell_data);
-		i_before = i_env_begin + i_env_end;
-		if (!ft_strchr(i_env_begin, '$'))
+		char *str = ft_substr(i_before, 0, env_start - i_before - 1);
+		buffer = ft_fstrjoinf(&buffer, &str);
+		expand_env_iter(&env_end, env_start, &buffer, shell_data);
+		i_before = env_start + env_end;
+		if (!ft_strchr(env_start, '$'))
 			break ;
-		i_env_begin = ft_strchr(i_env_begin, '$') + 1;
+		env_start = ft_strchr(env_start, '$') + 1;
 	}
-	ft_rstrjoin(&buffer, ft_substr(i_before, 0, ft_strlen(i_before)));
+	char *str = ft_substr(i_before, 0, ft_strlen(i_before));
+	buffer = ft_fstrjoinf(&buffer, &str);
 	return (buffer);
 }

@@ -22,11 +22,12 @@ char	*ft_strdup(const char *s)
 	return ((char *)ft_memcpy(str, s, (ft_strlen(s) + 1)));
 }
 
-
+#include <stdio.h>
 char	*ft_fstrdup(char **s)
 {
 	char	*str;
 
+	printf("%s\n", *s);
 	str = (char *)malloc(sizeof(*str) * (ft_strlen(*s) + 1));
 	if (!str)
 		return (NULL);

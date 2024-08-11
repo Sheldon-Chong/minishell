@@ -44,3 +44,13 @@ char	*ft_rstrjoin(char **s1, char *s2)
 	*s1 = temp;
 	return (*s1);
 }
+
+char	*ft_fstrjoinf(char **s1, char **s2)
+{
+	char	*temp;
+
+	temp = ft_strjoin(*s1, *s2);
+	free(*s1);
+	free(*s2);
+	return (temp);
+}

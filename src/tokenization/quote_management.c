@@ -49,7 +49,10 @@ static void	process_quote_list(t_token *head, t_shell_data *shell_data)
 		else if (head->word[0] == '"')
 			head->word = ft_rsubstr(&(head->word), 1,
 					ft_strlen(head->word) - 2);
+		char *temp = head->word;
 		head->word = expand_env(head->word, shell_data);
+		free(temp);
+		
 		head = head->next;
 	}
 }
@@ -73,19 +76,20 @@ void split_into_quotes_sub(char *str, t_token **tokens)
 		quote = toggle_quote_state(quote, str[i]);
 		len = i - pos + !(quote);
 		string = ft_substr(str, pos, len);
-		append(tok(ft_fstrdup(&string), 0), tokens);
+		append(tok(ft_strdup(string), 0), tokens);
+		free(string);
 		pos += len;
     }
     len = i - pos;
 	string = ft_substr(str, pos, len);
-	append(tok(ft_fstrdup(&string), 0), tokens);
+	append(tok(ft_strdup(string), 0), tokens);
+	free(string);
 }
 
 // Forms a linkedlist with quotes
 char	*split_into_quotes(char *str, t_token *tokens,
 	t_shell_data *shell_data, bool expand_env)
 {
-	return ft_strdup("test");
 	split_into_quotes_sub(str, &tokens);
 	if (expand_env)
 		process_quote_list(tokens, shell_data);
