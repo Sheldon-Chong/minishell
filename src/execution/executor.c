@@ -161,12 +161,7 @@ void parent(t_chunk *chunk_list, t_shell_data *shell_data)
 
 void cleanup(t_shell_data *shell_data)
 {
-	while (wait(&g_exit_status) > 0)
-        g_exit_status = WEXITSTATUS(g_exit_status);
-	signal(SIGINT, ctrl_c_function);
-    if (g_exit_status == 13)
-		g_exit_status = 0;
-	free(shell_data->executor);
+	
 }
 
 void	executor(char **env, t_shell_data *shell_data)
@@ -181,8 +176,19 @@ void	executor(char **env, t_shell_data *shell_data)
 		return;
     shell_data->executor = executor_init();
 	signal(SIGINT, ignore_sigint); 
-    while (chunk_list)
+    //int *pid_array = malloc(sizeof(int) * shell_data->size);
+	t_chunk *size = shell_data->token_chunks;
+	shell_data->size = 0;
+	while (size)
+	{
+		shell_data->size++;
+		size = size->next;
+	}
+
+	int *pid_array = malloc(sizeof(int) * shell_data->size);
+	while (chunk_list)
     {
+		
         set_outf(chunk_list, shell_data->executor);
         set_inf(shell_data->executor, chunk_list, shell_data);
 		if (!shell_data->token_chunks->next)
@@ -195,10 +201,20 @@ void	executor(char **env, t_shell_data *shell_data)
 			if (pid == 0)
 				child(chunk_list, shell_data);
 			else
+			{
+				pid_array[i] = pid;
 				parent(chunk_list, shell_data);
+			}
 			i++;
 		}
 		chunk_list = chunk_list->next;
     }
-	cleanup(shell_data);
+	i = 0;
+	while (i < shell_data->size)
+	{
+		waitpid(pid_array[i], &g_exit_status, 0);
+		i++;
+	}
+	signal(SIGINT, ctrl_c_function);
+	free(shell_data->executor);
 }
