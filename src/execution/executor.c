@@ -63,9 +63,12 @@ t_chunk *get_chunk_start(t_token *start, int pos)
 	return (start);
 }
 
-void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
+void	set_outf(t_token *chunk_list, t_executor *exe)
 {
 	int	fd;
+
+	if (pipe(exe->pipefd) == -1)
+		exit_error("pipe");
 
 	if (chunk_list->outfile)
 	{
@@ -76,60 +79,112 @@ void	set_outf(t_token *chunk_list, t_executor *exe, int *pipefd)
 		exe->cmd_out = fd;
 	}
 	else if (chunk_list->next)
-		exe->cmd_out = pipefd[1];
+		exe->cmd_out = exe->pipefd[1];
 	else
 		exe->cmd_out = STDOUT_FILENO;
+}
+
+void set_inf(t_executor *executor, t_chunk *chunk_list, t_shell_data *shell_data)
+{
+	int		file_fd_in;
+	int		heredoc_fd[2];
+	int		empty_pipe[2];
+
+	if (chunk_list->infile)
+	{
+		file_fd_in = open(chunk_list->infile, O_RDONLY);
+		if (file_fd_in == -1)
+			exit_error("open infile");
+		executor->cmd_in = file_fd_in;
+	}
+	else if (chunk_list->heredoc_buffer != NULL)
+	{
+		if (pipe(heredoc_fd) == -1)
+			exit_error("pipe");
+		ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
+		close(heredoc_fd[1]);
+		executor->cmd_in = heredoc_fd[0];
+	}
+	else if (shell_data->start_pos != 0)
+	{
+		if (pipe(empty_pipe) == -1)
+			exit_error("pipe");
+		executor->cmd_in = empty_pipe[0];
+		close(empty_pipe[1]);
+	}
+}
+
+void set_child_redirections(t_shell_data *shell_data)
+{
+	if (shell_data->executor->cmd_in != STDIN_FILENO)
+	{
+		dup2(shell_data->executor->cmd_in, STDIN_FILENO);
+		close(shell_data->executor->cmd_in);
+	}
+	if (shell_data->executor->cmd_out != STDOUT_FILENO)
+	{
+		dup2(shell_data->executor->cmd_out, STDOUT_FILENO);
+		if (shell_data->executor->cmd_out != shell_data->executor->pipefd[1])
+			close(shell_data->executor->cmd_out);
+	}
+	close(shell_data->executor->pipefd[1]);
+	close(shell_data->executor->pipefd[0]);
+}
+
+void child(t_chunk *chunk_list, t_shell_data *shell_data)
+{
+	signal(SIGTERM, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	
+	set_child_redirections(shell_data);
+	run_cmd(chunk_list, shell_data, STDIN_FILENO, STDOUT_FILENO);
+	exit(g_exit_status);
+}
+
+void parent(t_chunk *chunk_list, t_shell_data *shell_data)
+{
+	if (shell_data->executor->cmd_in != STDIN_FILENO)
+		close(shell_data->executor->cmd_in);
+	if (shell_data->executor->cmd_out != STDOUT_FILENO && shell_data->executor->cmd_out != shell_data->executor->pipefd[1])
+		close(shell_data->executor->cmd_out);
+	if (chunk_list->next)
+	{
+		shell_data->executor->cmd_in = shell_data->executor->pipefd[0];
+		close(shell_data->executor->pipefd[1]);
+	}
+	else
+	{
+		close(shell_data->executor->pipefd[1]);
+		close(shell_data->executor->pipefd[0]);
+	}
+}
+
+void cleanup(t_shell_data *shell_data)
+{
+	while (wait(&g_exit_status) > 0)
+        g_exit_status = WEXITSTATUS(g_exit_status);
+	signal(SIGINT, ctrl_c_function);
+    if (g_exit_status == 13)
+		g_exit_status = 0;
+	free(shell_data->executor);
 }
 
 void	executor(char **env, t_shell_data *shell_data)
 {
     t_chunk		*chunk_list;
-    int			pipefd[2];
-    int			file_fd_in;
-    int			file_fd_out;
     pid_t		pid;
-    int			heredoc_fd[2];
-    int			empty_pipe[2];
-    int			i = 0;
-
+    int			i;
+	
+	i = 0;
     chunk_list = get_chunk_start(shell_data->token_chunks, shell_data->start_pos);
 	if (!chunk_list)
 		return;
-	
-    if (pipe(empty_pipe) == -1)
-		exit_error("pipe");
-	
     shell_data->executor = executor_init();
-
 	signal(SIGINT, ignore_sigint); 
     while (chunk_list)
     {
-        if (pipe(pipefd) == -1)
-			exit_error("pipe");
-
-        set_outf(chunk_list, shell_data->executor, pipefd);
-
-        if (chunk_list->infile)
-        {
-            file_fd_in = open(chunk_list->infile, O_RDONLY);
-            if (file_fd_in == -1)
-                exit_error("open infile");
-            shell_data->executor->cmd_in = file_fd_in;
-        }
-        else if (chunk_list->heredoc_buffer != NULL)
-        {
-            if (pipe(heredoc_fd) == -1)
-                exit_error("pipe");
-            ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
-            close(heredoc_fd[1]);
-            shell_data->executor->cmd_in = heredoc_fd[0];
-        }
-        else if (shell_data->start_pos != 0)
-        {
-            shell_data->executor->cmd_in = empty_pipe[0];
-            close(empty_pipe[1]);
-        }
-		
+        set_outf(chunk_list, shell_data->executor);
+        set_inf(shell_data->executor, chunk_list, shell_data);
 		if (!shell_data->token_chunks->next)
 			run_cmd(chunk_list, shell_data, shell_data->executor->cmd_in, shell_data->executor->cmd_out);
 		else
@@ -137,52 +192,13 @@ void	executor(char **env, t_shell_data *shell_data)
 			pid = fork();
 			if (pid == -1)
 				exit_error("fork");
-			if (pid == 0) // child
-			{
-				signal(SIGTERM, SIG_DFL);
-				signal(SIGQUIT, SIG_DFL);
-				if (shell_data->executor->cmd_in != STDIN_FILENO)
-				{
-					dup2(shell_data->executor->cmd_in, STDIN_FILENO);
-					close(shell_data->executor->cmd_in);
-				}
-				if (shell_data->executor->cmd_out != STDOUT_FILENO)
-				{
-					dup2(shell_data->executor->cmd_out, STDOUT_FILENO);
-					if (shell_data->executor->cmd_out != pipefd[1])
-						close(shell_data->executor->cmd_out);
-				}
-				close(pipefd[1]);
-				close(pipefd[0]);
-
-				run_cmd(chunk_list, shell_data, STDIN_FILENO, STDOUT_FILENO);
-				exit(g_exit_status);
-			}
-			else // parent
-			{
-				if (shell_data->executor->cmd_in != STDIN_FILENO)
-					close(shell_data->executor->cmd_in);
-				if (shell_data->executor->cmd_out != STDOUT_FILENO && shell_data->executor->cmd_out != pipefd[1])
-					close(shell_data->executor->cmd_out);
-				if (chunk_list->next)
-				{
-					shell_data->executor->cmd_in = pipefd[0];
-					close(pipefd[1]);
-				}
-				else
-				{
-					close(pipefd[1]);
-					close(pipefd[0]);
-				}
-			}
+			if (pid == 0)
+				child(chunk_list, shell_data);
+			else
+				parent(chunk_list, shell_data);
 			i++;
 		}
 		chunk_list = chunk_list->next;
     }
-    while (wait(&g_exit_status) > 0)
-        g_exit_status = WEXITSTATUS(g_exit_status);
-	signal(SIGINT, ctrl_c_function);
-    if (g_exit_status == 13)
-		g_exit_status = 0;
-	free(shell_data->executor);
+	cleanup(shell_data);
 }
