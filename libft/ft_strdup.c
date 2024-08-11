@@ -21,3 +21,16 @@ char	*ft_strdup(const char *s)
 		return (NULL);
 	return ((char *)ft_memcpy(str, s, (ft_strlen(s) + 1)));
 }
+
+
+char	*ft_fstrdup(char **s)
+{
+	char	*str;
+
+	str = (char *)malloc(sizeof(*str) * (ft_strlen(*s) + 1));
+	if (!str)
+		return (NULL);
+	char * ret = (char *)ft_memcpy(str, *s, (ft_strlen(*s) + 1));
+	free(*s);
+	return (ret);
+}

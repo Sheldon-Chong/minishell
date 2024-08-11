@@ -51,3 +51,9 @@ int	count_outermost_quotes(char *str)
 	}
 	return (count);
 }
+
+bool is_char_transition_quote(char quote_status, char current_char)
+{
+    return (is_in_charset(current_char, "'\""))
+		&& (!quote_status || current_char == quote_status);
+}

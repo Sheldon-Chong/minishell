@@ -55,35 +55,37 @@ static void	process_quote_list(t_token *head, t_shell_data *shell_data)
 }
 
 
-void	split_into_quotes_sub(char *str, t_token **tokens)
+void split_into_quotes_sub(char *str, t_token **tokens)
 {
-	int		i;
-	char	quote;
-	int		start;
-	int		end;
+    int		i;
+    char	quote;
+    int		pos;
+	char	*string;
+	int		len;
 
-	i = -1;
+	pos = 0;
 	quote = '\0';
-	start = 0;
-	end = 0;
-	while (str[++i])
-	{
-		if ((is_in_charset(str[i], "'\"")) && (!quote || str[i] == quote))
-		{
-			quote = toggle_quote_state(quote, str[i]);
-			if (quote)
-				start = add_substr_to_toklist(str, end, i - end, tokens);
-			else
-				end = add_substr_to_toklist(str, start, i - start + 1, tokens);
-		}
-	}
-	add_substr_to_toklist(str, end, i, tokens);
+	i = -1;
+    while (str[++i])
+    {
+        if (!is_char_transition_quote(quote, str[i]))
+			continue;
+		quote = toggle_quote_state(quote, str[i]);
+		len = i - pos + !(quote);
+		string = ft_substr(str, pos, len);
+		append(tok(ft_fstrdup(&string), 0), tokens);
+		pos += len;
+    }
+    len = i - pos;
+	string = ft_substr(str, pos, len);
+	append(tok(ft_fstrdup(&string), 0), tokens);
 }
 
 // Forms a linkedlist with quotes
 char	*split_into_quotes(char *str, t_token *tokens,
 	t_shell_data *shell_data, bool expand_env)
 {
+	return ft_strdup("test");
 	split_into_quotes_sub(str, &tokens);
 	if (expand_env)
 		process_quote_list(tokens, shell_data);

@@ -16,28 +16,28 @@ bool is_pure_env(char *str)
 {
 
 	if (str[0] != '$')
-		return false;
+		return (false);
 	if (ft_strchr(str, '\'') || ft_strchr(str, '"'))
-		return false;
+		return (false);
 	
 	int i = 0;
 	char *ref = str;
-	while(1)
+	while (1)
 	{
 		str+=1;
 		str += find_env_end(str);
 		if (find_env_end(str) == 0)
 		{
 			if (str - ref == ft_strlen(ref))
-				return true;
+				return (true);
 			else
-				return false;
+				return (false);
 			break;
 		}
 		else if (str[1] == '$')
-			return false;
+			return (false);
 	}
-	return true;
+	return (true);
 }
 
 

@@ -14,7 +14,6 @@
 
 volatile sig_atomic_t	g_exit_status;
 
-
 void	ctrl_c_function(int signum)
 {
 	rl_replace_line("", 0);
@@ -23,26 +22,6 @@ void	ctrl_c_function(int signum)
 	rl_redisplay();
 	g_exit_status = CTRL_C;
 }
-
-// an initial check to see if commands do exist
-t_token	*scan_cmd(t_shell_data *shell_data)
-{
-	t_token		*list;
-	char		*path;
-
-	list = shell_data->token_chunks;
-	shell_data->cmd_start = shell_data->token_chunks;
-	while (list && list->tokens[0])
-	{
-		path = get_path(list->tokens[0],
-				&(shell_data->env_data->env_list));
-		if (str_in_arr(list->tokens[0], BASH_CMDS))
-			nothing();
-		list = list->next;
-	}
-	return (shell_data->cmd_start);
-}
-
 
 t_shell_data	*process_input(char *str, t_env_data *env_data)
 {
@@ -66,7 +45,7 @@ t_shell_data	*process_input(char *str, t_env_data *env_data)
 	return (shell_data);
 }
 
-void init_signal(void)
+void	init_signal(void)
 {
 	signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
@@ -83,7 +62,6 @@ int	main(int ac, char **av, char **env)
 	while (true)
 	{
 		user_input = readline(SHELL_MSG);
-		
 		if (!user_input)
 			break ;
 		if (ft_strlen(user_input) > 0)
@@ -92,7 +70,7 @@ int	main(int ac, char **av, char **env)
 			shell_data = process_input(user_input, env_data);
 			if (!shell_data->token_list)
 				continue ;
-			if (scan_cmd(shell_data) && !shell_data->has_error)
+			if (!shell_data->has_error)
 				executor(env_data->environ_arr, shell_data);
 			//print_tokens(shell_data, 'l');
 			free_tokenlist(shell_data);

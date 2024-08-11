@@ -163,4 +163,8 @@ int				arr_append(void ***array, void *item);
 
 bool			str_in_arr(char *str, char	*str_array);
 int				ft_strcmp(const char *s1, const char *s2);
+
+
+char	*ft_fstrdup(char **s);
+
 #endif

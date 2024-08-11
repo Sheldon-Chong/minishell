@@ -27,17 +27,6 @@ char	*ft_strndup(const char *str, size_t n)
 	return (output);
 }
 
-int	add_substr_to_toklist(const char *str, int start,
-		int len, t_token **tokens)
-{
-	char	*string;
-
-	string = ft_substr(str, start, len);
-	if (string[0])
-		append(tok(ft_strdup(string), 0), tokens);
-	free(string);
-	return (start + len);
-}
 
 void	dup_fd_for_child(int cmd_in_fd, int cmd_out)
 {

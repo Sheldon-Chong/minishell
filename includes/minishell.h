@@ -60,6 +60,8 @@
 # define PATH_NO_PERMISSION 3
 # define PATH_NOT_FOUND 2
 
+extern volatile sig_atomic_t g_exit_status;
+
 typedef struct s_env
 {
 	char			*name;
@@ -131,7 +133,6 @@ int				print_tokens(t_shell_data *token_list, char format);
 int				free_tokenlist(t_shell_data *token_list);
 
 // tokenization
-t_token			*scan_cmd(t_shell_data *token_list);
 t_token			*tokenize(char *string, t_shell_data *token_list);
 char	**tokens2arr(t_token *chunk, t_token *str_end, t_shell_data *token_info, int num);
 
@@ -187,7 +188,6 @@ char			*here_doc_input(char *delimiter);
 
 void			ft_exit(char **arg, t_shell_data *token_info);
 int				ft_export(char **args, t_shell_data *token_info);
-extern volatile sig_atomic_t g_exit_status;
 int				ft_echo(char **args);
 bool			is_echo_n(char *str);
 
