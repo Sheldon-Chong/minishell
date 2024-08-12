@@ -12,20 +12,7 @@
 
 #include "minishell.h"
 
-bool	is_echo_n(char *str)
-{
-	int	i;
 
-	i = 0;
-	if (str[0] != '-')
-		return (false);
-	while (str[++i])
-	{
-		if (str[i] != 'n')
-			return (false);
-	}
-	return (true);
-}
 
 int	bash_cmd(t_shell_data *shell_data, char **args)
 {

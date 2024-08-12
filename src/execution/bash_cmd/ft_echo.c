@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+bool	is_echo_n(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[0] != '-')
+		return (false);
+	while (str[++i])
+	{
+		if (str[i] != 'n')
+			return (false);
+	}
+	return (true);
+}
+
 int	ft_echo(char **args)
 {
 	int	i;
@@ -32,6 +47,11 @@ int	ft_echo(char **args)
 	}
 	else
 		while (args[i])
-			printf("%s", args[i++]);
+		{
+			printf("%s", args[i]);
+			if (args[i + 1])
+				printf(" ");
+			i ++;
+		}
 	return (0);
 }
