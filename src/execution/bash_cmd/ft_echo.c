@@ -29,29 +29,24 @@ bool	is_echo_n(char *str)
 
 int	ft_echo(char **args)
 {
-	int	i;
+    int	arg;
+    int	newline;
 
-	i = 1;
-	while (args[i] && is_echo_n(args[i]))
-		i ++;
-	if (i == 1)
-	{
-		while (args[i])
-		{
-			printf("%s", args[i]);
-			if (args[i + 1])
-				printf(" ");
-			i ++;
-		}
-		printf("\n");
-	}
-	else
-		while (args[i])
-		{
-			printf("%s", args[i]);
-			if (args[i + 1])
-				printf(" ");
-			i ++;
-		}
-	return (0);
+    arg = 1;
+    newline = 1;
+    while (args[arg] && is_echo_n(args[arg]))
+    {
+        newline = 0;
+        arg++;
+    }
+    while (args[arg])
+    {
+        printf("%s", args[arg]);
+        if (args[arg + 1])
+            printf(" ");
+        arg++;
+    }
+    if (newline)
+        printf("\n");
+    return (0);
 }

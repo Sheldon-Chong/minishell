@@ -20,7 +20,7 @@ void	ctrl_c_function(int signum)
 	printf("\n");
 	rl_on_new_line();
 	rl_redisplay();
-	g_exit_status = CTRL_C;
+	g_exit_status = ERRNO_CTRL_C;
 }
 
 t_shell_data	*process_input(char *str, t_env_data *env_data)
@@ -58,8 +58,6 @@ int	main(int ac, char **av, char **env)
 	char			*user_input;
 	t_env_data		*env_data;
 
-	// printf(">>> %d\n", check_path_type("/src"));
-	// return 0;
 	init_signal();
 	env_data = new_env_data(env);
 	while (true)
@@ -79,5 +77,6 @@ int	main(int ac, char **av, char **env)
 			free_tokenlist(shell_data);
 		}
 	}
+	clear_history();
 	exit(0);
 }

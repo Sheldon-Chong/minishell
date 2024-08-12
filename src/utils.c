@@ -105,7 +105,7 @@ char	**tokens2arr(t_token *chunk, t_token *str_end,
 			if (token->type == SH_HEREDOC)
 			{
 				clear_heredoc_buffer(chunk);
-				chunk->heredoc_buffer = here_doc_input(token->next->word);
+				chunk->heredoc_buffer = here_doc_input(token->next->word, shell_data);
 			}
 			token = token->next->next;
 			continue ;

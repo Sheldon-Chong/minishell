@@ -64,8 +64,8 @@ void exec_cmd(char **cmd, t_shell_data *shell_data,
     if (pid == 0) {
         reset_signal();
         dup_fd_for_child(cmd_in_fd, cmd_out);
-        if (str_in_arr(cmd[0], "echo,export,pwd,unset")) {
-            bash_cmd(shell_data, cmd);
+        if (str_in_arr(cmd[0], "echo,export,pwd,unset,env")) {
+            builtins(shell_data, cmd);
             exit(g_exit_status);
         }
         command = get_path(cmd[0], &(shell_data->env_data->env_list));
@@ -86,14 +86,14 @@ void exec_cmd(char **cmd, t_shell_data *shell_data,
                     command = cmd[0]; // Absolute path case
                 }
             } else {
-                gen_err(ERR_CMDNOTFOUND, cmd[0], ERR_COMMAND_NOT_FOUND);
+                gen_err(ERR_CMDNOTFOUND, cmd[0], ERRNO_COMMAND_NOT_FOUND);
                 exit(127);
             }
         }
 
         execve((const char *)command, (char *const *)cmd,
                shell_data->env_data->environ_arr);
-        gen_err(ERR_CMDNOTFOUND, cmd[0], ERR_COMMAND_NOT_FOUND);
+        gen_err(ERR_CMDNOTFOUND, cmd[0], ERRNO_COMMAND_NOT_FOUND);
         exit(127);
     }
     close_fds(cmd_in_fd, cmd_out);

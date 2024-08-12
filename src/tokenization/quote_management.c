@@ -35,7 +35,7 @@ static char	*quote_list2str(t_token *token_list)
 }
 
 // Remove the outermost quotes, expand any occurences of '$'
-static void	process_quote_list(t_token *head, t_shell_data *shell_data)
+static void	process_quote_list(t_token *head, t_shell_data *shell_data, bool is_expand_env)
 {
 	char	*temp;
 
@@ -51,9 +51,12 @@ static void	process_quote_list(t_token *head, t_shell_data *shell_data)
 		else if (head->word[0] == '"')
 			head->word = ft_rsubstr(&(head->word), 1,
 					ft_strlen(head->word) - 2);
-		temp = head->word;
-		head->word = expand_env(head->word, shell_data);
-		free(temp);
+		if (is_expand_env)
+		{
+			temp = head->word;
+			head->word = expand_env(head->word, shell_data);
+			free(temp);
+		}
 		head = head->next;
 	}
 }
@@ -91,7 +94,6 @@ char	*split_into_quotes(char *str, t_token *tokens,
 	t_shell_data *shell_data, bool expand_env)
 {
 	split_into_quotes_sub(str, &tokens);
-	if (expand_env)
-		process_quote_list(tokens, shell_data);
+	process_quote_list(tokens, shell_data, expand_env);
 	return (quote_list2str(tokens));
 }

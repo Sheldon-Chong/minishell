@@ -24,19 +24,7 @@ int	run_cmd(t_token *chunk, t_shell_data *shell_data,
 	if (str_in_arr(chunk->start->word, "exit"))
 		ft_exit(chunk->tokens, shell_data);
 	else if (str_in_arr(chunk->start->word, "cd"))
-	{
-		if (chunk->tokens[2])
-		{
-			g_exit_status = 0;
-			return (0);
-		}
-		if (chdir(chunk->tokens[1]) == -1)
-		{
-			ft_putstr_fd("minishell: cd: ", 2);
-			perror(chunk->tokens[1]);
-			g_exit_status = 1;
-		}
-	}
+		ft_cd(chunk);
 	else if (str_in_arr(chunk->start->word, "unset"))
 		unset_env(chunk->tokens + 1,
 			&(shell_data->env_data->env_list), shell_data);

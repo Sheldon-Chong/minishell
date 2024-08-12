@@ -33,17 +33,10 @@ char	*heredoc_input_sub(char *delimiter)
 	return (str);
 }
 
-// line50 Set up the ignore action
-// line53 Set up the default action
-// line56 Save the old signal handlers and set new ones sigaction
-// line60 Restore the old signal handlers
-char	*here_doc_input(char *delimiter)
+void signal_init(void)
 {
-	char				*str;
 	struct sigaction	sa_ignore;
 	struct sigaction	sa_default;
-	struct sigaction	sa_old_int;
-	struct sigaction	sa_old_quit;
 
 	sa_ignore.sa_handler = SIG_IGN;
 	sigemptyset(&sa_ignore.sa_mask);
@@ -51,11 +44,21 @@ char	*here_doc_input(char *delimiter)
 	sa_default.sa_handler = SIG_DFL;
 	sigemptyset(&sa_default.sa_mask);
 	sa_default.sa_flags = 0;
-	sigaction(SIGINT, &sa_ignore, &sa_old_int);
-	sigaction(SIGQUIT, &sa_ignore, &sa_old_quit);
+	sigaction(SIGINT, &sa_ignore, NULL);
+	sigaction(SIGQUIT, &sa_ignore, NULL);
+}
+
+char	*here_doc_input(char *delimiter, t_shell_data *shell_data)
+{
+	char				*str;
+	struct sigaction	sa_old_int;
+	struct sigaction	sa_old_quit;
+
+	signal_init();
 	write(STDOUT_FILENO, "> ", 2);
 	str = heredoc_input_sub(delimiter);
 	sigaction(SIGINT, &sa_old_int, NULL);
 	sigaction(SIGQUIT, &sa_old_quit, NULL);
+	str = expand_env(str, shell_data);
 	return (str);
 }

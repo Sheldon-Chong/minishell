@@ -14,7 +14,7 @@
 
 
 
-int	bash_cmd(t_shell_data *shell_data, char **args)
+int	builtins(t_shell_data *shell_data, char **args)
 {
 	int		i;
 

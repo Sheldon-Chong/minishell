@@ -44,28 +44,6 @@ t_token	*create_new_chunk(t_token *start)
 	return (new_chunk);
 }
 
-void	validate_chunks(t_chunk *head, t_shell_data *shell_data)
-{
-	int	chunk_num;
-	int	status;
-
-	chunk_num = 0;
-	while (head)
-	{
-		status = is_dir(head->tokens[0]);
-		if (status == 1)
-			gen_err(ERR_ISDIR, head->tokens[0], 126);
-		else if (status == 2)
-			gen_err(ERR_NOFILDIR, head->tokens[0], 127);
-		else if (status == 3)
-			gen_err(ERR_NOPERM, head->tokens[0], 126);
-		if (status == 1 || status == 2 || status == 3)
-			shell_data->start_pos = chunk_num + 1;
-		chunk_num++;
-		head = head->next;
-	}
-}
-
 void	process_chunk(t_token *token_chunk, t_token *head,
 			t_shell_data *shell_data, int chunk_num)
 {
@@ -96,5 +74,4 @@ void	chunk_tokens(t_shell_data *shell_data)
 	}
 	process_chunk(token_chunk, NULL, shell_data, chunk_num);
 	head = shell_data->token_chunks;
-	//validate_chunks(head, shell_data);
 }

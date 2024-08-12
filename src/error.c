@@ -15,7 +15,7 @@
 int	syntax_error(char *error, t_shell_data *shell_data)
 {
 	shell_data->has_error = true;
-	g_exit_status = ERR_SYNTAX;
+	g_exit_status = ERRNO_SYNTAX;
 	printf("syntax error near unexpected token `%s'\n", error);
 	return (1);
 }
@@ -23,7 +23,7 @@ int	syntax_error(char *error, t_shell_data *shell_data)
 int	err_no_braces(char *subject, t_shell_data *shell_data)
 {
 	shell_data->has_error = true;
-	g_exit_status = ERR_SYNTAX;
+	g_exit_status = ERRNO_SYNTAX;
 	printf("minishell: syntax error no closing quotation\n");
 	return (1);
 }

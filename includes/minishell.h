@@ -46,11 +46,12 @@
 
 # define NOT_WITHIN_QUOTE '\0'
 
-# define ERR_INVALID_EXIT_ARG 128
-# define ERR_COMMAND_NOT_FOUND 127
-# define ERR_NO_PERMISSIONS 126
-# define ERR_SYNTAX 258
-# define CTRL_C 130
+
+# define ERRNO_INVALID_EXIT_ARG 128
+# define ERRNO_COMMAND_NOT_FOUND 127
+# define ERRNO_NO_PERMISSIONS 126
+# define ERRNO_SYNTAX 258
+# define ERRNO_CTRL_C 130
 
 # define SH_STR 0
 # define SH_PIPE 1
@@ -137,6 +138,9 @@ void			ignore_sigint(int signum);
 int				get_length_of_list(t_token *head);
 int				newline(int var);
 
+int ft_cd(t_chunk *chunk);
+
+
 // debugging
 int				print_tokens(t_shell_data *token_list, char format);
 
@@ -189,14 +193,14 @@ void			executor(char **env, t_shell_data *token_info);
 int				syntax_error(char *error, t_shell_data *token_info);
 int				err_no_braces(char *subject, t_shell_data *token_info);
 
-int				bash_cmd(t_shell_data *token_info, char **cmd);
+int				builtins(t_shell_data *token_info, char **cmd);
 
 void			exec_cmd(char **cmd, t_shell_data *token_info,
 					int cmd_in_fd, int cmd_out);
 char			*get_path(char *cmd, t_env **env);
 void			parse_cmd_list_for_io(t_shell_data *token_info);
 char			**append_to_array(char ***array, char *value);
-char			*here_doc_input(char *delimiter);
+char			*here_doc_input(char *delimiter, t_shell_data *shell_data);
 
 void			ft_exit(char **arg, t_shell_data *token_info);
 int				ft_export(char **args, t_shell_data *token_info);
