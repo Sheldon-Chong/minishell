@@ -82,6 +82,8 @@ void exec_cmd(char **cmd, t_shell_data *shell_data,
                 } else if (path_type == P_FILE && access(cmd[0], X_OK) != 0) {
                     gen_err(ERR_NOPERM, cmd[0], 1);
                     exit(126);
+                } else {
+                    command = cmd[0]; // Absolute path case
                 }
             } else {
                 gen_err(ERR_CMDNOTFOUND, cmd[0], ERR_COMMAND_NOT_FOUND);
