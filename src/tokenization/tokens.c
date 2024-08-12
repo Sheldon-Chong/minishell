@@ -27,8 +27,10 @@ bool	pattern_rec(t_token *pattern_start, t_shell_data *shell_data)
 		return (false);
 	if (is_shell_opp(pattern_start->type))
 	{
-		if (pattern_start->type == SH_PIPE && pattern_start->next->type >= SH_WRITE && pattern_start->next->type <= SH_HEREDOC)
-			return(false);
+		if (pattern_start->type == SH_PIPE
+			&& pattern_start->next->type >= SH_WRITE
+			&& pattern_start->next->type <= SH_HEREDOC)
+			return (false);
 		if (is_shell_opp(pattern_start->next->type))
 			return (syntax_error(pattern_start->next->word, shell_data), true);
 	}

@@ -66,17 +66,17 @@ char	*expand_env(char *string, t_shell_data *shell_data)
 	char	*env_start;
 	char	*i_before;
 	int		env_end;
+	char	*str;
 
-	env_start = 0;
+	env_start = ft_strchr(string, '$') + 1;
 	env_end = 0;
 	i_before = string;
 	if (!ft_strchr(string, '$'))
 		return (ft_strdup(string));
 	buffer = ft_strdup("");
-	env_start = ft_strchr(string, '$') + 1;
 	while (*env_start)
 	{
-		char *str = ft_substr(i_before, 0, env_start - i_before - 1);
+		str = ft_substr(i_before, 0, env_start - i_before - 1);
 		buffer = ft_fstrjoinf(&buffer, &str);
 		expand_env_iter(&env_end, env_start, &buffer, shell_data);
 		i_before = env_start + env_end;
@@ -84,7 +84,7 @@ char	*expand_env(char *string, t_shell_data *shell_data)
 			break ;
 		env_start = ft_strchr(env_start, '$') + 1;
 	}
-	char *str = ft_substr(i_before, 0, ft_strlen(i_before));
+	str = ft_substr(i_before, 0, ft_strlen(i_before));
 	buffer = ft_fstrjoinf(&buffer, &str);
 	return (buffer);
 }

@@ -100,7 +100,7 @@ static int	export_assign(t_shell_data *shell_data, char **args)
 		env = str2env(args[i]);
 		if (!is_valid_identifier(env->name))
 		{
-			error = general_error("export:, $SUBJECT,: not a valid identifier", args[i], 1);
+			error = gen_err(ERR_EXPORTINVALID, args[i], 1);
 			continue ;
 		}
 		append_env(env, &(shell_data->env_data->env_list));

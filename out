@@ -339,7 +339,7 @@ index 67962f2..0b29f66 100644
 -		// else if (ft_strlen(list->tokens[0]) && (access(path, F_OK) != 0 \
 -		// 			|| !ft_strcmp(list->tokens[0], "")))
 -		// {
--		// 	general_error("$SUBJECT, : command not found", list->start->word, ERR_COMMAND_NOT_FOUND);
+-		// 	gen_err("$SUBJECT, : command not found", list->start->word, ERR_COMMAND_NOT_FOUND);
 -		// 	token_info->cmd_start = list->next;
 -		// }
  		list = list->next;
@@ -474,17 +474,17 @@ index 3da52cb..9165d9d 100644
 -		int status = is_dir(head->tokens[0]);
 -		if (status == 1)
 -		{
--			general_error("$SUBJECT,: is a directory", head->tokens[0], 126);
+-			gen_err("$SUBJECT,: is a directory", head->tokens[0], 126);
 -			token_info->start_pos = chunk_num + 1;
 -		}
 -		else if (status == 2)
 -		{
--			general_error("$SUBJECT,: No such file or directory", head->tokens[0], 127);
+-			gen_err("$SUBJECT,: No such file or directory", head->tokens[0], 127);
 -			token_info->start_pos = chunk_num + 1;
 -		}
 -		else if (status == 3)
 -		{
--			general_error("$SUBJECT,: Permission denied", head->tokens[0], 126);
+-			gen_err("$SUBJECT,: Permission denied", head->tokens[0], 126);
 -			token_info->start_pos = chunk_num + 1;
 -		}
 -		chunk_num ++;
@@ -510,17 +510,17 @@ index 3da52cb..9165d9d 100644
 +        int status = is_dir(head->tokens[0]);
 +        if (status == 1)
 +        {
-+            general_error("$SUBJECT,: is a directory", head->tokens[0], 126);
++            gen_err("$SUBJECT,: is a directory", head->tokens[0], 126);
 +            token_info->start_pos = chunk_num + 1;
 +        }
 +        else if (status == 2)
 +        {
-+            general_error("$SUBJECT,: No such file or directory", head->tokens[0], 127);
++            gen_err("$SUBJECT,: No such file or directory", head->tokens[0], 127);
 +            token_info->start_pos = chunk_num + 1;
 +        }
 +        else if (status == 3)
 +        {
-+            general_error("$SUBJECT,: Permission denied", head->tokens[0], 126);
++            gen_err("$SUBJECT,: Permission denied", head->tokens[0], 126);
 +            token_info->start_pos = chunk_num + 1;
 +        }
 +        chunk_num++;

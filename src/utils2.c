@@ -12,21 +12,22 @@
 
 #include "minishell.h"
 
-char	*ft_strndup(const char *str, size_t n)
+int	handle_read(t_token *head, t_token *token_chunk,
+		t_shell_data *shell_data, int num)
 {
-	size_t	i;
-	char	*output;
+	int	e;
+	int	file;
 
-	output = malloc(sizeof(char) * n + 1);
-	if (output == NULL)
-		return (NULL);
-	i = -1;
-	while (++i < n)
-		output[i] = str[i];
-	output[i] = '\0';
-	return (output);
+	e = 0;
+	token_chunk->infile = head->next->word;
+	file = open(token_chunk->infile, O_RDONLY);
+	if (file == -1 && g_exit_status == 0)
+	{
+		e = gen_err(ERR_NOFILDIR, head->next->word, 1);
+		shell_data->start_pos = num + e;
+		return (-1);
+	}
 }
-
 
 void	dup_fd_for_child(int cmd_in_fd, int cmd_out)
 {
@@ -48,4 +49,32 @@ void	close_fds(int cmd_in_fd, int cmd_out)
 		close(cmd_in_fd);
 	if (cmd_out != STDOUT_FILENO)
 		close(cmd_out);
+}
+
+int	get_shell_opp_type(char *str)
+{
+	if (!strncmp(str, ">>", 2))
+		return (SH_APPEND);
+	else if (!strncmp(str, ">", 1))
+		return (SH_WRITE);
+	else if (!strncmp(str, "<<", 2))
+		return (SH_HEREDOC);
+	else if (!strncmp(str, "<", 1))
+		return (SH_READ);
+	else if (!strncmp(str, "|", 1))
+		return (SH_PIPE);
+	return (-1);
+}
+
+int	get_length_of_list(t_token *head)
+{
+	int	length;
+
+	length = 0;
+	while (head)
+	{
+		length++;
+		head = head->next;
+	}
+	return (length);
 }

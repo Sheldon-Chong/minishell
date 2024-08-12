@@ -37,6 +37,8 @@ static char	*quote_list2str(t_token *token_list)
 // Remove the outermost quotes, expand any occurences of '$'
 static void	process_quote_list(t_token *head, t_shell_data *shell_data)
 {
+	char	*temp;
+
 	while (head)
 	{
 		if (head->word[0] == '\'')
@@ -49,38 +51,36 @@ static void	process_quote_list(t_token *head, t_shell_data *shell_data)
 		else if (head->word[0] == '"')
 			head->word = ft_rsubstr(&(head->word), 1,
 					ft_strlen(head->word) - 2);
-		char *temp = head->word;
+		temp = head->word;
 		head->word = expand_env(head->word, shell_data);
 		free(temp);
-		
 		head = head->next;
 	}
 }
 
-
-void split_into_quotes_sub(char *str, t_token **tokens)
+void	split_into_quotes_sub(char *str, t_token **tokens)
 {
-    int		i;
-    char	quote;
-    int		pos;
+	int		i;
+	char	quote;
+	int		pos;
 	char	*string;
 	int		len;
 
 	pos = 0;
 	quote = '\0';
 	i = -1;
-    while (str[++i])
-    {
-        if (!is_char_transition_quote(quote, str[i]))
-			continue;
+	while (str[++i])
+	{
+		if (!is_char_transition_quote(quote, str[i]))
+			continue ;
 		quote = toggle_quote_state(quote, str[i]);
 		len = i - pos + !(quote);
 		string = ft_substr(str, pos, len);
 		append(tok(ft_strdup(string), 0), tokens);
 		free(string);
 		pos += len;
-    }
-    len = i - pos;
+	}
+	len = i - pos;
 	string = ft_substr(str, pos, len);
 	append(tok(ft_strdup(string), 0), tokens);
 	free(string);

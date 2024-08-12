@@ -28,13 +28,15 @@ int	err_no_braces(char *subject, t_shell_data *shell_data)
 	return (1);
 }
 
-int general_error(char *error, char *subject, int exit_status)
+int	gen_err(char *error, char *subject, int exit_status)
 {
-	char **error_splitted = ft_split(error, ',');
-	int i = -1;
+	char	**error_splitted;
+	int		i;
 
+	error_splitted = ft_split(error, ',');
+	i = -1;
 	ft_putstr_fd("minishell: ", 2);
-	while(error_splitted[++i])
+	while (error_splitted[++i])
 	{
 		if (!ft_strcmp(error_splitted[i], "$SUBJECT"))
 			ft_putstr_fd(subject, 2);
@@ -43,7 +45,6 @@ int general_error(char *error, char *subject, int exit_status)
 	}
 	ft_free_array((void **)error_splitted, 0);
 	ft_putstr_fd("\n", 2);
-
 	g_exit_status = exit_status;
 	return (exit_status);
 }

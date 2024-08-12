@@ -1,4 +1,16 @@
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/05 09:18:03 by jyap              #+#    #+#             */
+/*   Updated: 2024/08/05 09:18:03 by jyap             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
 
 void	reset_signal(void)
 {
@@ -10,7 +22,8 @@ void	reset_signal(void)
 		perror("Failed to reset SIGQUIT handler");
 }
 
-void ignore_sigint(int signum)
+// Do nothing, just catch the signal to prevent termination
+void	ignore_sigint(int signum)
 {
-	// Do nothing, just catch the signal to prevent termination
+	return ;
 }

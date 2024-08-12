@@ -60,14 +60,14 @@ static int	handle_exit_errors(char **args, int len, t_shell_data *shell_data)
 	}
 	else if (!ft_str_is_digit(args[1]))
 	{
-		general_error("exit: ,$SUBJECT,: numeric argument required", args[1], 255);
+		gen_err(ERR_EXITNUMARG, args[1], 255);
 		g_exit_status = 255;
 		free_env_data(shell_data->env_data);
 		free(shell_data->executor);
 		free_tokenlist(shell_data);
 		exit(255);
 	}
-	return (general_error("exit: too many arguments", NULL, 1));
+	return (gen_err("exit: too many arguments", NULL, 1));
 }
 
 void	ft_exit(char **args, t_shell_data *shell_data)

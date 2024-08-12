@@ -50,10 +50,7 @@ int	is_token_valid(char *str, t_shell_data *shell_data)
 void	clear_heredoc_buffer(t_token *chunk)
 {
 	if (chunk->infile != NULL)
-	{
-		//free(chunk->infile);
 		chunk->infile = NULL;
-	}
 	if (chunk->heredoc_buffer != NULL)
 	{
 		free(chunk->heredoc_buffer);
@@ -61,46 +58,38 @@ void	clear_heredoc_buffer(t_token *chunk)
 	}
 }
 
-int	handle_redir(t_token *head, t_token *token_chunk, t_shell_data *shell_data, int num)
+int	handle_redir(t_token *head, t_token *token_chunk,
+		t_shell_data *shell_data, int num)
 {
-	int	file;
+	int		file;
+	int		e;
 
+	e = 0;
 	if (head->type == SH_APPEND || head->type == SH_WRITE)
 	{
-		
 		file = open(head->next->word, O_CREAT | O_RDWR, 0644);
-		char *error_message = strerror(errno);
 		if (file == -1)
 		{
-			shell_data->start_pos = num + general_error("$SUBJECT,: Permission denied", head->next->word, 1);
-			return -1;
+			e = gen_err(ERR_NOPERM, head->next->word, 1);
+			shell_data->start_pos = num + e;
+			return (-1);
 		}
-		else
-			close(file);
+		close(file);
 		if (head->type == SH_APPEND)
 			token_chunk->outfile_mode = 'a';
-		if (token_chunk->heredoc_buffer != NULL)
-		{
-			free(token_chunk->heredoc_buffer);
-			token_chunk->heredoc_buffer = NULL;
-		}
 		token_chunk->outfile = head->next->word;
 	}
 	if (head->type == SH_READ)
 	{
-		token_chunk->infile = head->next->word;
-		file = open(token_chunk->infile, O_RDONLY);
-		if (file == -1 && g_exit_status == 0)
-		{
-			shell_data->start_pos = num + general_error("$SUBJECT,: No such file or directory", head->next->word, 1);
-			return -1;
-		}
+		e = handle_read(head, token_chunk, shell_data, num);
+		if (e == -1)
+			return (-1);
 	}
 	return (0);
 }
 
-
-char	**tokens2arr(t_token *chunk, t_token *str_end, t_shell_data *shell_data, int num)
+char	**tokens2arr(t_token *chunk, t_token *str_end,
+			t_shell_data *shell_data, int num)
 {
 	t_token	*token;
 	char	**cmds;
@@ -112,7 +101,7 @@ char	**tokens2arr(t_token *chunk, t_token *str_end, t_shell_data *shell_data, in
 		if (token->type >= SH_WRITE && token->type <= SH_HEREDOC)
 		{
 			if (handle_redir(token, chunk, shell_data, num) == -1)
-				break;
+				break ;
 			if (token->type == SH_HEREDOC)
 			{
 				clear_heredoc_buffer(chunk);
@@ -125,17 +114,4 @@ char	**tokens2arr(t_token *chunk, t_token *str_end, t_shell_data *shell_data, in
 		token = token->next;
 	}
 	return (cmds);
-}
-
-int	get_length_of_list(t_token *head)
-{
-	int	length;
-
-	length = 0;
-	while (head)
-	{
-		length++;
-		head = head->next;
-	}
-	return (length);
 }

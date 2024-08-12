@@ -71,7 +71,7 @@ void	exec_cmd(char **cmd, t_shell_data *shell_data,
 		command = get_path(cmd[0], &(shell_data->env_data->env_list));
 		execve((const char *)command, (char *const *)cmd,
 			shell_data->env_data->environ_arr);
-		general_error("$SUBJECT, : command not found", cmd[0], ERR_COMMAND_NOT_FOUND);
+		gen_err(ERR_CMDNOTFOUND, cmd[0], ERR_COMMAND_NOT_FOUND);
 		exit(127);
 	}
 	close_fds(cmd_in_fd, cmd_out);

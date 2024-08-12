@@ -13,7 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include <sys/stat.h>
+# include <sys/stat.h>
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -26,7 +26,7 @@
 # include <dirent.h>
 # include <stdbool.h>
 # include <stdarg.h>
-#include <errno.h>
+# include <errno.h>
 # include <fcntl.h>
 
 # define SHELL_MSG "minishell$ "
@@ -37,6 +37,13 @@
 # define INVALID_CHARS "{};\\"
 # define SHELL_OPERATORS "|><"
 
+# define ERR_NOFILDIR "$SUBJECT,: No such file or directory"
+# define ERR_NOPERM "$SUBJECT,: Permission denied"
+# define ERR_CMDNOTFOUND "$SUBJECT, : command not found"
+# define ERR_EXITNUMARG "exit: ,$SUBJECT,: numeric argument required"
+# define ERR_EXPORTINVALID "export:, $SUBJECT,: not a valid identifier"
+# define ERR_ISDIR "$SUBJECT,: is a directory"
+
 # define NOT_WITHIN_QUOTE '\0'
 
 # define ERR_INVALID_EXIT_ARG 128
@@ -45,8 +52,6 @@
 # define ERR_SYNTAX 258
 # define CTRL_C 130
 
-
-
 # define SH_STR 0
 # define SH_PIPE 1
 # define SH_WRITE 2
@@ -54,13 +59,12 @@
 # define SH_READ 4 
 # define SH_HEREDOC 5
 
-
 # define PATH_IS_DIR 1
 # define PATH_IS_FILE 0
 # define PATH_NO_PERMISSION 3
 # define PATH_NOT_FOUND 2
 
-extern volatile sig_atomic_t g_exit_status;
+extern volatile sig_atomic_t	g_exit_status;
 
 typedef struct s_env
 {
@@ -122,7 +126,7 @@ typedef struct s_error
 	char	*subject;
 }	t_error;
 
-void ignore_sigint(int signum);
+void			ignore_sigint(int signum);
 
 // utils
 int				get_length_of_list(t_token *head);
@@ -136,7 +140,8 @@ int				free_tokenlist(t_shell_data *token_list);
 
 // tokenization
 t_token			*tokenize(char *string, t_shell_data *token_list);
-char	**tokens2arr(t_token *chunk, t_token *str_end, t_shell_data *token_info, int num);
+char			**tokens2arr(t_token *chunk, t_token *str_end,
+					t_shell_data *token_info, int num);
 
 t_token			*append(t_token *token, t_token **head);
 t_token			*tok(char *word, char type);
@@ -167,7 +172,7 @@ char			*split_into_quotes(char *str, t_token *tokens,
 					t_shell_data *token_info, bool expand_env);
 int				count_outermost_quotes(char *str);
 bool			quote_alternate(char c, char *quote);
-int general_error(char *error, char *subject, int exit_status);
+int				gen_err(char *error, char *subject, int exit_status);
 
 //chunking
 void			chunk_tokens(t_shell_data *token_list);
@@ -193,9 +198,6 @@ int				ft_export(char **args, t_shell_data *token_info);
 int				ft_echo(char **args);
 bool			is_echo_n(char *str);
 
-char			*ft_strndup(const char *str, size_t n);
-int				add_substr_to_toklist(const char *str, int start,
-					int len, t_token **tokens);
 t_executor		*executor_init(void);
 void			set_infile(t_token *chunk_list, t_executor *exe);
 void			set_outfile(t_token *chunk_list, t_executor *exe, int *pipefd);
@@ -203,9 +205,10 @@ int				exit_error(char *error_name);
 void			reset_signal(void);
 void			dup_fd_for_child(int cmd_in_fd, int cmd_out);
 void			close_fds(int cmd_in_fd, int cmd_out);
-void	ctrl_c_function(int signum);
-int	find_env_end(char *env_start);
-
-
-
+void			ctrl_c_function(int signum);
+int				find_env_end(char *env_start);
+int				get_shell_opp_type(char *str);
+int				handle_read(t_token *head, t_token *token_chunk,
+					t_shell_data *shell_data, int num);
+bool			is_char_transition_quote(char quote_status, char current_char);
 #endif
