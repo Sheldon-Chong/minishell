@@ -76,6 +76,10 @@ char	*expand_env(char *string, t_shell_data *shell_data)
 	buffer = ft_strdup("");
 	while (*env_start)
 	{
+		while (*env_start == '$')
+			env_start ++; 
+		if (!*env_start)
+			break;
 		str = ft_substr(i_before, 0, env_start - i_before - 1);
 		buffer = ft_fstrjoinf(&buffer, &str);
 		expand_env_iter(&env_end, env_start, &buffer, shell_data);
