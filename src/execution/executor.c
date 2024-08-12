@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   executor.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/05 09:17:41 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/05 09:17:41 by jyap             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 int	exit_error(char *error_name)
@@ -75,7 +63,7 @@ void	parent(t_chunk *chunk_list, t_shell_data *shell_data)
 	}
 }
 
-/*void	executor(char **env, t_shell_data *shell_data)
+void	executor(char **env, t_shell_data *shell_data)
 {
 	t_chunk		*chunk_list;
 	pid_t		pid;
@@ -114,63 +102,6 @@ void	parent(t_chunk *chunk_list, t_shell_data *shell_data)
 		waitpid(last_pid, &status, 0);
 		g_exit_status = WEXITSTATUS(status);
 	}
-	signal(SIGINT, ctrl_c_function);
-	free(shell_data->executor);
-}*/
-
-void	executor(char **env, t_shell_data *shell_data)
-{
-	t_chunk		*chunk_list;
-	pid_t		pid;
-	int			i;
-	int			*pid_array;
-	t_chunk		*size;
-
-	i = 0;
-	chunk_list = get_chunk_start(shell_data->token_chunks,
-			shell_data->start_pos);
-	if (!chunk_list)
-		return ;
-	shell_data->executor = executor_init();
-	signal(SIGINT, ignore_sigint);
-	size = shell_data->token_chunks;
-	shell_data->size = 0;
-	while (size)
-	{
-		shell_data->size++;
-		size = size->next;
-	}
-	pid_array = malloc(sizeof(int) * shell_data->size);
-	while (chunk_list)
-	{
-		set_outf(chunk_list, shell_data->executor);
-		set_inf(shell_data->executor, chunk_list, shell_data);
-		if (!shell_data->token_chunks->next)
-			run_cmd(chunk_list, shell_data,
-				shell_data->executor->cmd_in, shell_data->executor->cmd_out);
-		else
-		{
-			pid = fork();
-			if (pid == -1)
-				exit_error("fork");
-			if (pid == 0)
-				child(chunk_list, shell_data);
-			else
-			{
-				pid_array[i] = pid;
-				parent(chunk_list, shell_data);
-			}
-			i++;
-		}
-		chunk_list = chunk_list->next;
-	}
-	i = 0;
-	while (i < shell_data->size)
-	{
-		waitpid(pid_array[i], &g_exit_status, 0);
-		i++;
-	}
-	free(pid_array);
 	signal(SIGINT, ctrl_c_function);
 	free(shell_data->executor);
 }

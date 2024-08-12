@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-volatile sig_atomic_t	g_exit_status;
+int	g_exit_status;
 
 void	ctrl_c_function(int signum)
 {

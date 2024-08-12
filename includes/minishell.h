@@ -42,7 +42,7 @@
 # define ERR_CMDNOTFOUND "$SUBJECT, : command not found"
 # define ERR_EXITNUMARG "exit: ,$SUBJECT,: numeric argument required"
 # define ERR_EXPORTINVALID "export:, $SUBJECT,: not a valid identifier"
-# define ERR_ISDIR "$SUBJECT,: Is a directory"
+# define ERR_ISDIR "$SUBJECT,: is a directory"
 
 # define NOT_WITHIN_QUOTE '\0'
 
@@ -64,7 +64,7 @@
 # define PATH_NO_PERMISSION 3
 # define PATH_NOT_FOUND 2
 
-extern volatile sig_atomic_t	g_exit_status;
+int	g_exit_status;
 
 typedef struct s_env
 {
