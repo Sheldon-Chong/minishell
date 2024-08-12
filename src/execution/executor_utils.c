@@ -23,10 +23,27 @@ t_executor	*executor_init(void)
 	return (executor);
 }
 
-void	set_outfile(t_token *chunk_list, t_executor *exe, int *pipefd)
+t_chunk	*get_chunk_start(t_token *start, int pos)
+{
+	int	i;
+
+	i = 0;
+	while (i < pos)
+	{
+		start = start->next;
+		i++;
+	}
+	if (!start)
+		return (NULL);
+	return (start);
+}
+
+void	set_outf(t_token *chunk_list, t_executor *exe)
 {
 	int	fd;
 
+	if (pipe(exe->pipefd) == -1)
+		exit_error("pipe");
 	if (chunk_list->outfile)
 	{
 		if (chunk_list->outfile_mode == 'a')
@@ -36,42 +53,55 @@ void	set_outfile(t_token *chunk_list, t_executor *exe, int *pipefd)
 		exe->cmd_out = fd;
 	}
 	else if (chunk_list->next)
-	{
-		if (pipe(pipefd) == -1)
-			exit_error("pipe");
-		exe->cmd_out = pipefd[1];
-	}
+		exe->cmd_out = exe->pipefd[1];
 	else
 		exe->cmd_out = STDOUT_FILENO;
 }
 
-void	set_infile(t_token *chunk_list, t_executor *exe)
+void	set_inf(t_executor *executor, t_chunk *chunk_list,
+			t_shell_data *shell_data)
 {
-	int	fd;
-	int	heredoc_fd[2];
+	int		file_fd_in;
+	int		heredoc_fd[2];
+	int		empty_pipe[2];
 
 	if (chunk_list->infile)
 	{
-		fd = open(chunk_list->infile, O_RDONLY);
-		if (fd == -1)
-			exit_error("open");
-		exe->cmd_in = fd;
+		file_fd_in = open(chunk_list->infile, O_RDONLY);
+		if (file_fd_in == -1)
+			exit_error("open infile");
+		executor->cmd_in = file_fd_in;
 	}
 	else if (chunk_list->heredoc_buffer != NULL)
 	{
 		if (pipe(heredoc_fd) == -1)
-			exit_error("open");
+			exit_error("pipe");
 		ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
 		close(heredoc_fd[1]);
-		exe->cmd_in = heredoc_fd[0];
+		executor->cmd_in = heredoc_fd[0];
+	}
+	else if (shell_data->start_pos != 0)
+	{
+		if (pipe(empty_pipe) == -1)
+			exit_error("pipe");
+		executor->cmd_in = empty_pipe[0];
+		close(empty_pipe[1]);
 	}
 }
 
-void	check_file(int cmd_in, int cmd_out)
+void	set_child_redirections(t_shell_data *shell_data)
 {
-	if (cmd_in == -1)
-		perror("open infile");
-	if (cmd_out == -1)
-		perror("open outfile");
-	exit(EXIT_FAILURE);
+	if (shell_data->executor->cmd_in != STDIN_FILENO)
+	{
+		dup2(shell_data->executor->cmd_in, STDIN_FILENO);
+		close(shell_data->executor->cmd_in);
+	}
+	if (shell_data->executor->cmd_out != STDOUT_FILENO)
+	{
+		dup2(shell_data->executor->cmd_out, STDOUT_FILENO);
+		if (shell_data->executor->cmd_out != shell_data->executor->pipefd[1])
+			close(shell_data->executor->cmd_out);
+	}
+	close(shell_data->executor->pipefd[1]);
+	close(shell_data->executor->pipefd[0]);
 }

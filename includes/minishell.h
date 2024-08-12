@@ -199,8 +199,6 @@ int				ft_echo(char **args);
 bool			is_echo_n(char *str);
 
 t_executor		*executor_init(void);
-void			set_infile(t_token *chunk_list, t_executor *exe);
-void			set_outfile(t_token *chunk_list, t_executor *exe, int *pipefd);
 int				exit_error(char *error_name);
 void			reset_signal(void);
 void			dup_fd_for_child(int cmd_in_fd, int cmd_out);
@@ -211,4 +209,12 @@ int				get_shell_opp_type(char *str);
 int				handle_read(t_token *head, t_token *token_chunk,
 					t_shell_data *shell_data, int num);
 bool			is_char_transition_quote(char quote_status, char current_char);
+
+void			cleanup(t_shell_data *shell_data);
+t_chunk			*get_chunk_start(t_token *start, int pos);
+void			set_outf(t_token *chunk_list, t_executor *exe);
+void			set_inf(t_executor *executor, t_chunk *chunk_list,
+					t_shell_data *shell_data);
+void			set_child_redirections(t_shell_data *shell_data);
+
 #endif

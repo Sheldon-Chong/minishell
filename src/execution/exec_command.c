@@ -38,17 +38,6 @@ char	*get_path(char *cmd, t_env **env)
 	return (NULL);
 }
 
-void	close_fds_and_wait(int cmd_in_fd, int cmd_out, pid_t pid)
-{
-	if (cmd_in_fd != STDIN_FILENO)
-		close(cmd_in_fd);
-	if (cmd_out != STDOUT_FILENO)
-		close(cmd_out);
-	waitpid(pid, &g_exit_status, 0);
-	if (WIFEXITED(g_exit_status))
-		g_exit_status = WEXITSTATUS(g_exit_status);
-}
-
 // execute a command with the given arguments,
 //receiving the cmd_in_fd as input and piping its output to cmd_out
 void	exec_cmd(char **cmd, t_shell_data *shell_data,
