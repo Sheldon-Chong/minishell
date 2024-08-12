@@ -52,20 +52,20 @@ static int	handle_exit_errors(char **args, int len, t_shell_data *shell_data)
 	if (len == 2 && ft_strlen(args[1]) == 0)
 	{
 		ft_putstr_fd("minishell: exit: : numeric argument required\n", 2);
-		g_exit_status = 255;
+		g_exit_status = 2;
 		free(shell_data->executor);
 		free_env_data(shell_data->env_data);
 		free_tokenlist(shell_data);
-		exit(255);
+		exit(2);
 	}
 	else if (!ft_str_is_digit(args[1]))
 	{
 		gen_err(ERR_EXITNUMARG, args[1], 255);
-		g_exit_status = 255;
+		g_exit_status = 2;
 		free_env_data(shell_data->env_data);
 		free(shell_data->executor);
 		free_tokenlist(shell_data);
-		exit(255);
+		exit(2);
 	}
 	return (gen_err("exit: too many arguments", NULL, 1));
 }

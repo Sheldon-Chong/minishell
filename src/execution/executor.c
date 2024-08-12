@@ -27,7 +27,8 @@ int	run_cmd(t_token *chunk, t_shell_data *shell_data,
 	{
 		if (chunk->tokens[2])
 		{
-			g_exit_status = 0;
+			g_exit_status = 1;
+			ft_putstr_fd("minishell: cd: too many arugments", 2);
 			return (0);
 		}
 		if (chdir(chunk->tokens[1]) == -1)
@@ -74,6 +75,49 @@ void	parent(t_chunk *chunk_list, t_shell_data *shell_data)
 		close(shell_data->executor->pipefd[0]);
 	}
 }
+
+/*void	executor(char **env, t_shell_data *shell_data)
+{
+	t_chunk		*chunk_list;
+	pid_t		pid;
+	pid_t		last_pid;
+	int			status;
+
+	status = 0;
+	last_pid = 0;
+	chunk_list = get_chunk_start(shell_data->token_chunks,
+			shell_data->start_pos);
+	if (!chunk_list)
+		return ;
+	shell_data->executor = executor_init();
+	signal(SIGINT, ignore_sigint);
+	while (chunk_list)
+	{
+		set_outf(chunk_list, shell_data->executor);
+		set_inf(shell_data->executor, chunk_list, shell_data);
+		if (!shell_data->token_chunks->next)
+			run_cmd(chunk_list, shell_data,
+				shell_data->executor->cmd_in, shell_data->executor->cmd_out);
+		else
+		{
+			pid = fork();
+			if (pid == -1)
+				exit_error("fork");
+			if (pid == 0)
+				child(chunk_list, shell_data);
+			last_pid = pid;
+			parent(chunk_list, shell_data);
+		}
+		chunk_list = chunk_list->next;
+	}
+	if (last_pid != 0)
+	{
+		waitpid(last_pid, &status, 0);
+		g_exit_status = WEXITSTATUS(status);
+	}
+	signal(SIGINT, ctrl_c_function);
+	free(shell_data->executor);
+}*/
 
 void	executor(char **env, t_shell_data *shell_data)
 {

@@ -42,7 +42,7 @@
 # define ERR_CMDNOTFOUND "$SUBJECT, : command not found"
 # define ERR_EXITNUMARG "exit: ,$SUBJECT,: numeric argument required"
 # define ERR_EXPORTINVALID "export:, $SUBJECT,: not a valid identifier"
-# define ERR_ISDIR "$SUBJECT,: is a directory"
+# define ERR_ISDIR "$SUBJECT,: Is a directory"
 
 # define NOT_WITHIN_QUOTE '\0'
 
