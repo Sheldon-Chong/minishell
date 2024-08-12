@@ -27,8 +27,7 @@ int	run_cmd(t_token *chunk, t_shell_data *shell_data,
 	{
 		if (chunk->tokens[2])
 		{
-			g_exit_status = 1;
-			ft_putstr_fd("minishell: cd: too many arugments", 2);
+			g_exit_status = 0;
 			return (0);
 		}
 		if (chdir(chunk->tokens[1]) == -1)
