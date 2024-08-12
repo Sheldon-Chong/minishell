@@ -12,11 +12,13 @@
 
 #include "minishell.h"
 
-void	*heredoc_input_sub(char *delimiter, char *str)
+char	*heredoc_input_sub(char *delimiter)
 {
 	char	*buffer;
+	char	*str;
 
 	buffer = get_next_line(STDIN_FILENO);
+	str = ft_strdup("");
 	while (buffer)
 	{
 		if (!ft_strncmp(delimiter, buffer, ft_strlen(delimiter))
@@ -28,7 +30,7 @@ void	*heredoc_input_sub(char *delimiter, char *str)
 		buffer = get_next_line(STDIN_FILENO);
 	}
 	free(buffer);
-	
+	return (str);
 }
 
 // line50 Set up the ignore action
@@ -38,13 +40,11 @@ void	*heredoc_input_sub(char *delimiter, char *str)
 char	*here_doc_input(char *delimiter)
 {
 	char				*str;
-	char				*buffer;
 	struct sigaction	sa_ignore;
 	struct sigaction	sa_default;
 	struct sigaction	sa_old_int;
 	struct sigaction	sa_old_quit;
 
-	str = ft_strdup("");
 	sa_ignore.sa_handler = SIG_IGN;
 	sigemptyset(&sa_ignore.sa_mask);
 	sa_ignore.sa_flags = 0;
@@ -54,19 +54,7 @@ char	*here_doc_input(char *delimiter)
 	sigaction(SIGINT, &sa_ignore, &sa_old_int);
 	sigaction(SIGQUIT, &sa_ignore, &sa_old_quit);
 	write(STDOUT_FILENO, "> ", 2);
-	//heredoc_input_sub(delimiter, str);
-	buffer = get_next_line(STDIN_FILENO);
-	while (buffer)
-	{
-		if (!ft_strncmp(delimiter, buffer, ft_strlen(delimiter))
-			&& (ft_strlen(delimiter) == ft_strlen(buffer) - 1))
-			break ;
-		ft_rstrjoin(&str, buffer);
-		free(buffer);
-		write(STDOUT_FILENO, "> ", 2);
-		buffer = get_next_line(STDIN_FILENO);
-	}
-	free(buffer);
+	str = heredoc_input_sub(delimiter);
 	sigaction(SIGINT, &sa_old_int, NULL);
 	sigaction(SIGQUIT, &sa_old_quit, NULL);
 	return (str);
