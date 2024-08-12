@@ -64,7 +64,12 @@
 # define PATH_NO_PERMISSION 3
 # define PATH_NOT_FOUND 2
 
-int	g_exit_status;
+#define P_FILE 0
+#define P_DIR 1
+#define P_NOT_EXIST 2
+int check_path_type(const char *path);
+
+extern int	g_exit_status;
 
 typedef struct s_env
 {

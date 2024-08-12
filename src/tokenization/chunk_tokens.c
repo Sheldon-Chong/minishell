@@ -15,10 +15,13 @@
 // line25 Check if the path exists
 // line27 Check if the path is a directory
 // line32 Path exists but is not a directory
+
+
 int	is_dir(char *path)
 {
 	struct stat	statbuf;
 	int			fd;
+
 
 	if (!ft_strchr(path, '/'))
 		return (PATH_IS_FILE);
@@ -93,5 +96,5 @@ void	chunk_tokens(t_shell_data *shell_data)
 	}
 	process_chunk(token_chunk, NULL, shell_data, chunk_num);
 	head = shell_data->token_chunks;
-	validate_chunks(head, shell_data);
+	//validate_chunks(head, shell_data);
 }

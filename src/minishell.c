@@ -51,12 +51,15 @@ void	init_signal(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
+
 int	main(int ac, char **av, char **env)
 {
 	t_shell_data	*shell_data;
 	char			*user_input;
 	t_env_data		*env_data;
 
+	// printf(">>> %d\n", check_path_type("/src"));
+	// return 0;
 	init_signal();
 	env_data = new_env_data(env);
 	while (true)

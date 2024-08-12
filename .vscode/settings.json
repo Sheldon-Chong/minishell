@@ -42,5 +42,19 @@
 		"readline.h": "c",
 		"string.h": "c"
 	},
-	"peacock.color": "#a37d60"
+	"peacock.color": "#a37d60",
+	"workbench.colorCustomizations": {
+		"commandCenter.border": "#e7e7e799",
+		"sash.hoverBorder": "#9d769d",
+		"statusBar.background": "#835d83",
+		"statusBar.foreground": "#e7e7e7",
+		"statusBarItem.hoverBackground": "#9d769d",
+		"statusBarItem.remoteBackground": "#835d83",
+		"statusBarItem.remoteForeground": "#e7e7e7",
+		"titleBar.activeBackground": "#835d83",
+		"titleBar.activeForeground": "#e7e7e7",
+		"titleBar.inactiveBackground": "#835d8399",
+		"titleBar.inactiveForeground": "#e7e7e799"
+	},
+	"peacock.remoteColor": "#835d83"
 }
