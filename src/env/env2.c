@@ -23,7 +23,6 @@ t_env	*new_env(char *name, char *value)
 	return (env);
 }
 
-
 void	append_env(t_env *env, t_env **envList)
 {
 	t_env	*head;

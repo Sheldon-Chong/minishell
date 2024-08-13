@@ -22,3 +22,9 @@ int	exit_error(char *error_name)
 	perror(error_name);
 	exit(EXIT_FAILURE);
 }
+
+void	skip_dollar_char(char *env_start)
+{
+	while (*env_start == '$')
+		env_start++;
+}

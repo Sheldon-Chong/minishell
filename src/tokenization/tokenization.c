@@ -12,7 +12,6 @@
 
 #include "minishell.h"
 
-
 int	is_token_valid(char *str, t_shell_data *shell_data)
 {
 	char	quote;
@@ -41,7 +40,6 @@ int	is_token_valid(char *str, t_shell_data *shell_data)
 	}
 	return (0);
 }
-
 
 // expands braces, remove quotes
 static char	*process_str(char *str, t_shell_data *shell_data)

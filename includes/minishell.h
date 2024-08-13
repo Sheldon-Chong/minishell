@@ -232,5 +232,6 @@ void			set_inf(t_executor *executor, t_chunk *chunk_list,
 void			set_child_redirections(t_shell_data *shell_data);
 int				check_path_type(const char *path);
 void			free_env_node(t_env *node);
+void			skip_dollar_char(char *env_start);
 
 #endif

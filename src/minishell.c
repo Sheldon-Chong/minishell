@@ -20,8 +20,6 @@ int	newline(int var)
 	return (1);
 }
 
-
-
 t_shell_data	*process_input(char *str, t_env_data *env_data)
 {
 	t_shell_data	*shell_data;
@@ -49,7 +47,6 @@ void	init_signal(void)
 	signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
 }
-
 
 int	main(int ac, char **av, char **env)
 {

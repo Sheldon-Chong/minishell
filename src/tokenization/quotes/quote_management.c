@@ -35,7 +35,8 @@ static char	*quote_list2str(t_token *token_list)
 }
 
 // Remove the outermost quotes, expand any occurences of '$'
-static void	process_quote_list(t_token *head, t_shell_data *shell_data, bool is_expand_env)
+static void	process_quote_list(t_token *head,
+	t_shell_data *shell_data, bool is_expand_env)
 {
 	char	*temp;
 

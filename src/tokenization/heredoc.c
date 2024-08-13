@@ -33,7 +33,7 @@ char	*heredoc_input_sub(char *delimiter)
 	return (str);
 }
 
-void signal_init(void)
+void	signal_init(void)
 {
 	struct sigaction	sa_ignore;
 	struct sigaction	sa_default;
