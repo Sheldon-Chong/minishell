@@ -12,23 +12,62 @@
 
 #include "minishell.h"
 
+bool	is_valid_identifier(char *str)
+{
+	if (!ft_isalpha(*str) && *str != '_')
+		return (false);
+	while (*(++str))
+	{
+		if (!ft_isalnum(*str) && *str != '_')
+			return (false);
+	}
+	return (true);
+}
+
+
+int	print_env(t_env **env_list, char mode)
+{
+	t_env	*head;
+
+	head = *env_list;
+	while (head)
+	{
+		if (mode == 'x')
+		{
+			if (head->value == NULL)
+				printf("declare -x %s\n", head->name);
+			else
+				printf("declare -x %s=\"%s\"\n", head->name, head->value);
+		}
+		else if (mode == 'e')
+		{
+			if (head->value != NULL)
+				printf ("%s=%s\n", head->name, head->value);
+		}
+		head = head->next;
+	}
+	return (0);
+}
+
 char	**sort_doublearray(char **array)
 {
 	int		i;
 	int		j;
-	int		len;
+	int		max;
 	char	**output;
 	char	*temp;
 
 	output = dup_doublearray(array);
 	if (output == NULL)
 		return (NULL);
-	len = get_length_of_array(array);
+	max = 0;
+	while (array[max] != 0)
+		max++;
 	i = -1;
-	while (++i < len)
+	while (++i < max)
 	{
 		j = i;
-		while (++j < len)
+		while (++j < max)
 		{
 			if (ft_strcmp(output[i], output[j]) > 0)
 			{
@@ -62,18 +101,6 @@ t_env	*str2env(char *str)
 	return (env);
 }
 
-bool	is_valid_identifier(char *str)
-{
-	if (!ft_isalpha(*str) && *str != '_')
-		return (false);
-	while (*(++str))
-	{
-		if (!ft_isalnum(*str) && *str != '_')
-			return (false);
-	}
-	return (true);
-}
-
 static int	export_assign(t_shell_data *shell_data, char **args)
 {
 	int		i;
@@ -104,17 +131,15 @@ int	ft_export(char **args, t_shell_data *shell_data)
 	if (args[1] == NULL)
 	{
 		arr = env2arr(shell_data->env_data->env_list);
+		
 		if (arr == NULL)
 			return (0);
+		
 		sorted_arr = sort_doublearray(arr);
 		if (sorted_arr == NULL)
 			return (ft_free_array((void **)arr, 0), 0);
 		head = arr2env(arr);
-		while (head)
-		{
-			print_export(head);
-			head = head->next;
-		}
+		print_env(&head, 'x');
 		ft_free_array((void **)sorted_arr, 0);
 		ft_free_array((void **)arr, 0);
 		free_env_list(head);
