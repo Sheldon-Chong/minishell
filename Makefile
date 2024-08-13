@@ -10,7 +10,7 @@ LDFLAGS = -lncurses -lreadline
 
 OUTPUT = bin/minishell
 
-SRCS = $(wildcard src/*.c ./libft/*.c ./src/tokenization/*.c ./src/env/*.c ./src/execution/*.c ./src/execution/builtins/*.c ./src/tokenization/*.c ./src/signals/*.c )
+SRCS = $(wildcard src/*.c ./libft/*.c ./src/tokenization/*.c ./src/env/*.c ./src/execution/*.c ./src/execution/builtins/*.c ./src/tokenization/*.c ./src/signals/*.c ./src/chunking/*.c ./src/tokenization/quotes/*.c ./src/tokenization/expand_env/*.c)
 
 OBJ_DIR = obj
 

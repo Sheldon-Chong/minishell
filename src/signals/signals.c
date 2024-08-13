@@ -27,3 +27,12 @@ void	ignore_sigint(int signum)
 {
 	return ;
 }
+
+void	ctrl_c_function(int signum)
+{
+	rl_replace_line("", 0);
+	printf("\n");
+	rl_on_new_line();
+	rl_redisplay();
+	g_exit_status = ERRNO_CTRL_C;
+}

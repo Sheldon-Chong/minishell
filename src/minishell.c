@@ -14,14 +14,13 @@
 
 int	g_exit_status;
 
-void	ctrl_c_function(int signum)
+int	newline(int var)
 {
-	rl_replace_line("", 0);
-	printf("\n");
 	rl_on_new_line();
-	rl_redisplay();
-	g_exit_status = ERRNO_CTRL_C;
+	return (1);
 }
+
+
 
 t_shell_data	*process_input(char *str, t_env_data *env_data)
 {

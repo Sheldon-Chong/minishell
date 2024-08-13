@@ -12,34 +12,36 @@
 
 #include "minishell.h"
 
-bool	is_pure_env(char *str)
-{
-	int		i;
-	char	*ref;
 
-	i = 0;
-	if (str[0] != '$')
-		return (false);
-	if (ft_strchr(str, '\'') || ft_strchr(str, '"'))
-		return (false);
-	ref = str;
-	while (1)
+int	is_token_valid(char *str, t_shell_data *shell_data)
+{
+	char	quote;
+	int		i;
+
+	i = -1;
+	quote = 0;
+	while (str[++i])
 	{
-		str += 1;
-		str += find_env_end(str);
-		if (find_env_end(str) == 0)
+		if (is_in_charset(str[i], "'\""))
+			quote = toggle_quote_state(quote, str[i]);
+		if (!quote && is_in_charset(str[i], INVALID_CHARS))
 		{
-			if (str - ref == ft_strlen(ref))
-				return (true);
-			else
-				return (false);
-			break ;
+			shell_data->has_error = true;
+			printf("minishell: syntax error near unexpected token `%c'\n",
+				str[i]);
+			return (1);
 		}
-		else if (str[1] == '$')
-			return (false);
 	}
-	return (true);
+	if (quote)
+	{
+		shell_data->has_error = true;
+		printf("minishell: syntax error near unexpected token `%c'\n", str[i]);
+		rl_on_new_line();
+		return (1);
+	}
+	return (0);
 }
+
 
 // expands braces, remove quotes
 static char	*process_str(char *str, t_shell_data *shell_data)

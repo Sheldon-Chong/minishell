@@ -454,7 +454,7 @@ index 3da52cb..9165d9d 100644
 -	{
 -		if (head->type == SH_PIPE)
 -		{
--			token_chunk->tokens = tokens2arr(token_chunk, head, token_info, chunk_num);
+-			token_chunk->tokens = group_tokens(token_chunk, head, token_info, chunk_num);
 -			append_tok(token_chunk, &(token_info->token_chunks));
 -			token_chunk = tok("", 'g');
 -			token_chunk->start = head->next;
@@ -463,7 +463,7 @@ index 3da52cb..9165d9d 100644
 -		}			
 -		head = head->next;
 -	}
--	token_chunk->tokens = tokens2arr(token_chunk, NULL, token_info, chunk_num);
+-	token_chunk->tokens = group_tokens(token_chunk, NULL, token_info, chunk_num);
 -	append_tok(token_chunk, &(token_info->token_chunks));
 -
 -	head = token_info->token_chunks;
@@ -490,7 +490,7 @@ index 3da52cb..9165d9d 100644
 -		chunk_num ++;
 -		head = head->next;
 -	}
-+    token_chunk->tokens = tokens2arr(token_chunk, head, token_info, chunk_num);
++    token_chunk->tokens = group_tokens(token_chunk, head, token_info, chunk_num);
 +    append_tok(token_chunk, &(token_info->token_chunks));
  }
 +

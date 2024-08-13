@@ -16,3 +16,9 @@ void	cleanup(t_shell_data *shell_data)
 {
 	return ;
 }
+
+int	exit_error(char *error_name)
+{
+	perror(error_name);
+	exit(EXIT_FAILURE);
+}

@@ -105,3 +105,17 @@ void	set_child_redirections(t_shell_data *shell_data)
 	close(shell_data->executor->pipefd[1]);
 	close(shell_data->executor->pipefd[0]);
 }
+
+void	dup_fd_for_child(int cmd_in_fd, int cmd_out)
+{
+	if (cmd_in_fd != STDIN_FILENO)
+	{
+		dup2(cmd_in_fd, STDIN_FILENO);
+		close(cmd_in_fd);
+	}
+	if (cmd_out != STDOUT_FILENO)
+	{
+		dup2(cmd_out, STDOUT_FILENO);
+		close(cmd_out);
+	}
+}

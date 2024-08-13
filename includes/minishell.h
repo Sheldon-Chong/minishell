@@ -154,7 +154,7 @@ int				free_tokenlist(t_shell_data *token_list);
 
 // tokenization
 t_token			*tokenize(char *string, t_shell_data *token_list);
-char			**tokens2arr(t_token *chunk, t_token *str_end,
+char			**group_tokens(t_token *chunk, t_token *str_end,
 					t_shell_data *token_info, int num);
 
 t_token			*append(t_token *token, t_token **head);
@@ -193,7 +193,10 @@ void			chunk_tokens(t_shell_data *token_list);
 
 // to be removed
 void			executor(char **env, t_shell_data *token_info);
+t_chunk	*new_chunk(t_token *start);
 
+int	handle_redir(t_token *head, t_token *token_chunk,
+		t_shell_data *shell_data, int num);
 // error printing
 int				syntax_error(char *error, t_shell_data *token_info);
 int				err_no_braces(char *subject, t_shell_data *token_info);
@@ -206,6 +209,7 @@ char			*get_path(char *cmd, t_env **env);
 void			parse_cmd_list_for_io(t_shell_data *token_info);
 char			**append_to_array(char ***array, char *value);
 char			*here_doc_input(char *delimiter, t_shell_data *shell_data);
+bool			is_pure_env(char *str);
 
 void			ft_exit(char **arg, t_shell_data *token_info);
 int				ft_export(char **args, t_shell_data *token_info);
