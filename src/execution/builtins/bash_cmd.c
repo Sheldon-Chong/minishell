@@ -14,8 +14,6 @@
 
 int	builtins(t_shell_data *shell_data, char **args)
 {
-	int		i;
-
 	if (!ft_strcmp(args[0], "echo"))
 		ft_echo(args);
 	else if (!ft_strcmp(args[0], "exit"))

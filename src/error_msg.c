@@ -20,7 +20,7 @@ int	syntax_error(char *error, t_shell_data *shell_data)
 	return (1);
 }
 
-int	err_no_braces(char *subject, t_shell_data *shell_data)
+int	err_no_braces(t_shell_data *shell_data)
 {
 	shell_data->has_error = true;
 	g_exit_status = ERRNO_SYNTAX;

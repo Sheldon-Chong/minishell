@@ -132,7 +132,6 @@ void			ignore_sigint(int signum);
 
 // utils
 int				get_length_of_list(t_token *head);
-int				newline(int var);
 
 int				ft_cd(t_chunk *chunk);
 
@@ -188,14 +187,14 @@ int				gen_err(char *error, char *subject, int exit_status);
 void			chunk_tokens(t_shell_data *token_list);
 
 // to be removed
-void			executor(char **env, t_shell_data *token_info);
+void			executor(t_shell_data *token_info);
 t_chunk			*new_chunk(t_token *start);
 
 int				handle_redir(t_token *head, t_token *token_chunk,
 					t_shell_data *shell_data, int num);
 // error printing
 int				syntax_error(char *error, t_shell_data *token_info);
-int				err_no_braces(char *subject, t_shell_data *token_info);
+int				err_no_braces(t_shell_data *token_info);
 
 int				builtins(t_shell_data *token_info, char **cmd);
 
@@ -224,7 +223,6 @@ int				handle_read(t_token *head, t_token *token_chunk,
 					t_shell_data *shell_data, int num);
 bool			is_char_transition_quote(char quote_status, char current_char);
 
-void			cleanup(t_shell_data *shell_data);
 t_chunk			*get_chunk_start(t_token *start, int pos);
 void			set_outf(t_token *chunk_list, t_executor *exe);
 void			set_inf(t_executor *executor, t_chunk *chunk_list,

@@ -56,26 +56,27 @@ void	gen_err_and_exit(char *str, char *subject, int num, int exit_num)
 	exit (exit_num);
 }
 
-void	check_path_before_execve(char *command, char *cmd)
+void	check_path_before_execve(char **command, char *cmd)
 {
 	int	path_type;
 
-	if (command != NULL)
-		return ;
-	path_type = check_path_type(cmd);
-	if (ft_strchr(cmd, '/'))
+	if (*command == NULL)
 	{
-		if (path_type == P_NOT_EXIST)
-			gen_err_and_exit(ERR_NOFILDIR, cmd, 1, 127);
-		else if (path_type == P_DIR)
-			gen_err_and_exit(ERR_ISDIR, cmd, 1, 126);
-		else if (path_type == P_FILE && access(cmd, X_OK) != 0)
-			gen_err_and_exit(ERR_NOPERM, cmd, 1, 126);
+		path_type = check_path_type(cmd);
+		if (ft_strchr(cmd, '/'))
+		{
+			if (path_type == P_NOT_EXIST)
+				gen_err_and_exit(ERR_NOFILDIR, cmd, 1, 127);
+			else if (path_type == P_DIR)
+				gen_err_and_exit(ERR_ISDIR, cmd, 1, 126);
+			else if (path_type == P_FILE && access(cmd, X_OK) != 0)
+				gen_err_and_exit(ERR_NOPERM, cmd, 1, 126);
+			else
+				*command = cmd;
+		}
 		else
-			command = cmd;
+			gen_err_and_exit(ERR_CMDNOTFOUND, cmd, ERRNO_COMMAND_NOT_FOUND, 127);
 	}
-	else
-		gen_err_and_exit(ERR_CMDNOTFOUND, cmd, ERRNO_COMMAND_NOT_FOUND, 127);
 }
 
 // execute a command with the given arguments,
@@ -98,7 +99,7 @@ void	exec_cmd(char **cmd, t_shell_data *shell_data,
 			exit(g_exit_status);
 		}
 		command = get_path(cmd[0], &(shell_data->env_data->env_list));
-		check_path_before_execve(command, cmd[0]);
+		check_path_before_execve(&command, cmd[0]);
 		execve((const char *)command, (char *const *)cmd,
 			shell_data->env_data->environ_arr);
 		gen_err_and_exit(ERR_CMDNOTFOUND, cmd[0], ERRNO_COMMAND_NOT_FOUND, 127);

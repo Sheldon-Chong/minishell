@@ -14,7 +14,6 @@
 
 int	free_tokenlist(t_shell_data *shell_data)
 {
-	int		i;
 	t_token	*head;
 	t_token	*temp;
 

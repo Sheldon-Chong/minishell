@@ -117,10 +117,9 @@ void	wait_for_child_and_cleanup(int lastpid, int size,
 	free(shell_data->executor);
 }
 
-void	executor(char **env, t_shell_data *shell_data)
+void	executor(t_shell_data *shell_data)
 {
 	t_chunk		*chunk_list;
-	pid_t		pid;
 	pid_t		lastpid;
 	int			size;
 

@@ -24,5 +24,7 @@ int	ft_cd(t_chunk *chunk)
 		ft_putstr_fd("minishell: cd: ", 2);
 		perror(chunk->tokens[1]);
 		g_exit_status = 1;
+		return (1);
 	}
+	return (0);
 }

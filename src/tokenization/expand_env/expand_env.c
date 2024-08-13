@@ -14,10 +14,8 @@
 
 bool	is_pure_env(char *str)
 {
-	int		i;
 	char	*ref;
 
-	i = 0;
 	if (str[0] != '$')
 		return (false);
 	if (ft_strchr(str, '\'') || ft_strchr(str, '"'))
@@ -29,7 +27,7 @@ bool	is_pure_env(char *str)
 		str += find_env_end(str);
 		if (find_env_end(str) == 0)
 		{
-			if (str - ref == ft_strlen(ref))
+			if ((size_t)(str - ref) == ft_strlen(ref))
 				return (true);
 			else
 				return (false);
@@ -64,7 +62,6 @@ static int	expand_env_iter(int *env_end, char *env_start,
 {
 	char	*env_name;
 	t_env	*env;
-	char	*brace;
 
 	if (*env_start == '?')
 	{

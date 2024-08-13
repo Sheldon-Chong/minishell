@@ -14,12 +14,6 @@
 
 int	g_exit_status;
 
-int	newline(int var)
-{
-	rl_on_new_line();
-	return (1);
-}
-
 t_shell_data	*process_input(char *str, t_env_data *env_data)
 {
 	t_shell_data	*shell_data;
@@ -33,7 +27,7 @@ t_shell_data	*process_input(char *str, t_env_data *env_data)
 	shell_data->has_error = false;
 	shell_data->env_data = env_data;
 	if (count_outermost_quotes(str) % 2 != 0)
-		err_no_braces("", shell_data);
+		err_no_braces(shell_data);
 	tokenize(str, shell_data);
 	post_validate(shell_data);
 	if (shell_data->has_error)
@@ -68,11 +62,13 @@ int	main(int ac, char **av, char **env)
 			if (!shell_data->token_list)
 				continue ;
 			if (!shell_data->has_error)
-				executor(env_data->environ_arr, shell_data);
+				executor(shell_data);
 			//print_tokens(shell_data, 'l');
 			free_tokenlist(shell_data);
 		}
 	}
 	clear_history();
 	exit(0);
+	(void)ac;
+	(void)av;
 }

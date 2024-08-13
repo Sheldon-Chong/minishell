@@ -25,11 +25,13 @@ void	reset_signal(void)
 // Do nothing, just catch the signal to prevent termination
 void	ignore_sigint(int signum)
 {
+	(void)signum;
 	return ;
 }
 
 void	ctrl_c_function(int signum)
 {
+	(void)signum;
 	rl_replace_line("", 0);
 	printf("\n");
 	rl_on_new_line();

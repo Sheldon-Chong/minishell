@@ -23,8 +23,7 @@ void	free_env_node(t_env *node)
 	free (temp);
 }
 
-void	unset_env_sub(char **var_names, t_env **envList,
-			t_shell_data *shell_data)
+void	unset_env_sub(char **var_names, t_env **envList)
 {
 	t_env	*head;
 	t_env	*prev;
@@ -54,7 +53,7 @@ void	unset_env_sub(char **var_names, t_env **envList,
 
 int	unset_env(char **var_names, t_env **envList, t_shell_data *shell_data)
 {
-	unset_env_sub(var_names, envList, shell_data);
+	unset_env_sub(var_names, envList);
 	ft_free_array((void **)shell_data->env_data->environ_arr, 0);
 	shell_data->env_data->environ_arr = env2arr(*envList);
 	return (0);
