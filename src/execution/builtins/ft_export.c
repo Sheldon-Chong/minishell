@@ -16,21 +16,19 @@ char	**sort_doublearray(char **array)
 {
 	int		i;
 	int		j;
-	int		max;
+	int		len;
 	char	**output;
 	char	*temp;
 
 	output = dup_doublearray(array);
 	if (output == NULL)
 		return (NULL);
-	max = 0;
-	while (array[max] != 0)
-		max++;
+	len = get_length_of_array(array);
 	i = -1;
-	while (++i < max)
+	while (++i < len)
 	{
 		j = i;
-		while (++j < max)
+		while (++j < len)
 		{
 			if (ft_strcmp(output[i], output[j]) > 0)
 			{
@@ -76,7 +74,6 @@ bool	is_valid_identifier(char *str)
 	return (true);
 }
 
-
 static int	export_assign(t_shell_data *shell_data, char **args)
 {
 	int		i;
@@ -98,7 +95,6 @@ static int	export_assign(t_shell_data *shell_data, char **args)
 	return (error);
 }
 
-
 int	ft_export(char **args, t_shell_data *shell_data)
 {
 	char	**arr;
@@ -114,11 +110,9 @@ int	ft_export(char **args, t_shell_data *shell_data)
 		if (sorted_arr == NULL)
 			return (ft_free_array((void **)arr, 0), 0);
 		head = arr2env(arr);
-		while (head) {
-			if (head->value == NULL)
-				printf("declare -x %s\n", head->name);
-			else
-				printf("declare -x %s=\"%s\"\n", head->name, head->value);
+		while (head)
+		{
+			print_export(head);
 			head = head->next;
 		}
 		ft_free_array((void **)sorted_arr, 0);

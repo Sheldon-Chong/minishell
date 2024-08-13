@@ -28,3 +28,20 @@ void	skip_dollar_char(char *env_start)
 	while (*env_start == '$')
 		env_start++;
 }
+
+int		get_length_of_array(char **array)
+{
+	int	i;
+
+	while (array[i])
+		i++;
+	return (i);
+}
+
+void	print_export(t_env *head)
+{
+	if (head->value == NULL)
+		printf("declare -x %s\n", head->name);
+	else
+		printf("declare -x %s=\"%s\"\n", head->name, head->value);
+}

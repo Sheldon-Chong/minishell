@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-
-
 int	builtins(t_shell_data *shell_data, char **args)
 {
 	int		i;
