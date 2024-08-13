@@ -12,16 +12,6 @@
 
 #include "minishell.h"
 
-void	free_env_node(t_env *node)
-{
-	t_env	*temp;
-
-	temp = node;
-	node = node->next;
-	free (temp->name);
-	free (temp->value);
-	free (temp);
-}
 
 void	unset_env_sub(char **var_names, t_env **envList)
 {
