@@ -12,29 +12,7 @@
 
 #include "minishell.h"
 
-char	**dup_doublearray(char **src)
-{
-	char	**output;
-	int		i;
 
-	i = 0;
-	while (src[i] != NULL)
-		i++;
-	output = ft_calloc(i + 1, sizeof(char *));
-	if (output == NULL)
-		return (NULL);
-	output[i] = NULL;
-	while (--i >= 0)
-	{
-		output[i] = ft_strdup(src[i]);
-		if (output[i] == NULL)
-		{
-			ft_free_array((void **)output, 0);
-			return (NULL);
-		}
-	}
-	return (output);
-}
 
 char	**sort_doublearray(char **array)
 {
@@ -88,6 +66,19 @@ t_env	*str2env(char *str)
 	return (env);
 }
 
+bool	is_valid_identifier(char *str)
+{
+	if (!ft_isalpha(*str) && *str != '_')
+		return (false);
+	while (*(++str))
+	{
+		if (!ft_isalnum(*str) && *str != '_')
+			return (false);
+	}
+	return (true);
+}
+
+
 static int	export_assign(t_shell_data *shell_data, char **args)
 {
 	int		i;
@@ -109,19 +100,7 @@ static int	export_assign(t_shell_data *shell_data, char **args)
 	return (error);
 }
 
-void free_env_list(t_env *env)
-{
-	t_env *temp;
-	while (env)
-	{
-		free(env->name);
-		if (env->value)
-			free(env->value);
-		temp = env->next;
-		free(env);
-		env = temp;
-	}
-}
+
 int	ft_export(char **args, t_shell_data *shell_data)
 {
 	char	**arr;
@@ -131,15 +110,19 @@ int	ft_export(char **args, t_shell_data *shell_data)
 	if (args[1] == NULL)
 	{
 		arr = env2arr(shell_data->env_data->env_list);
-		
 		if (arr == NULL)
 			return (0);
-		
 		sorted_arr = sort_doublearray(arr);
 		if (sorted_arr == NULL)
 			return (ft_free_array((void **)arr, 0), 0);
 		head = arr2env(arr);
-		print_env(&head, 'x');
+		while (head) {
+			if (head->value == NULL)
+				printf("declare -x %s\n", head->name);
+			else
+				printf("declare -x %s=\"%s\"\n", head->name, head->value);
+			head = head->next;
+		}
 		ft_free_array((void **)sorted_arr, 0);
 		ft_free_array((void **)arr, 0);
 		free_env_list(head);

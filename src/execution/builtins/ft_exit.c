@@ -29,24 +29,6 @@ bool	ft_str_is_digit(char *str)
 	return (true);
 }
 
-void	free_env_data(t_env_data *env_data)
-{
-	t_env	*head;
-	t_env	*tmp;
-
-	head = env_data->env_list;
-	while (head)
-	{
-		tmp = head;
-		free(head->name);
-		free(head->value);
-		head = head->next;
-		free(tmp);
-	}
-	ft_free_array((void **)((env_data)->environ_arr), 0);
-	free(env_data);
-}
-
 static int	handle_exit_errors(char **args, int len, t_shell_data *shell_data)
 {
 	if (len == 2 && ft_strlen(args[1]) == 0)

@@ -26,7 +26,7 @@ int	builtins(t_shell_data *shell_data, char **args)
 		ft_exit(0, shell_data);
 	}
 	else if (!ft_strcmp(args[0], "env"))
-		print_env(&(shell_data->env_data->env_list), 'e');
+		print_env_env(shell_data->env_data->env_list);
 	else if (!ft_strcmp(args[0], "unset"))
 		unset_env(args + 1, &(shell_data->env_data->env_list), shell_data);
 	else if (!ft_strcmp(args[0], "pwd"))

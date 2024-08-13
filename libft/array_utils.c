@@ -48,3 +48,27 @@ char	**append_to_array(char ***array, char *value)
 	ft_free_array((void **)current_array, 0);
 	return (new_array);
 }
+
+char	**dup_doublearray(char **src)
+{
+	char	**output;
+	int		i;
+
+	i = 0;
+	while (src[i] != NULL)
+		i++;
+	output = ft_calloc(i + 1, sizeof(char *));
+	if (output == NULL)
+		return (NULL);
+	output[i] = NULL;
+	while (--i >= 0)
+	{
+		output[i] = ft_strdup(src[i]);
+		if (output[i] == NULL)
+		{
+			ft_free_array((void **)output, 0);
+			return (NULL);
+		}
+	}
+	return (output);
+}

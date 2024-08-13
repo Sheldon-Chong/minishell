@@ -26,38 +26,38 @@ t_env	*get_env_var(char *var_name, t_env **env)
 	return (NULL);
 }
 
-int	print_env(t_env **env_list, char mode)
+
+
+void	free_env_data(t_env_data *env_data)
 {
 	t_env	*head;
+	t_env	*tmp;
 
-	head = *env_list;
+	head = env_data->env_list;
 	while (head)
 	{
-		if (mode == 'x')
-		{
-			if (head->value == NULL)
-				printf("declare -x %s\n", head->name);
-			else
-				printf("declare -x %s=\"%s\"\n", head->name, head->value);
-		}
-		else if (mode == 'e')
-		{
-			if (head->value != NULL)
-				printf ("%s=%s\n", head->name, head->value);
-		}
+		tmp = head;
+		free(head->name);
+		free(head->value);
 		head = head->next;
+		free(tmp);
 	}
-	return (0);
+	ft_free_array((void **)((env_data)->environ_arr), 0);
+	free(env_data);
 }
 
-bool	is_valid_identifier(char *str)
+
+
+void free_env_list(t_env *env)
 {
-	if (!ft_isalpha(*str) && *str != '_')
-		return (false);
-	while (*(++str))
+	t_env *temp;
+	while (env)
 	{
-		if (!ft_isalnum(*str) && *str != '_')
-			return (false);
+		free(env->name);
+		if (env->value)
+			free(env->value);
+		temp = env->next;
+		free(env);
+		env = temp;
 	}
-	return (true);
 }
