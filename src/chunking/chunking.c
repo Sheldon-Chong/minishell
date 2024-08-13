@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   chunk_tokens.c                                     :+:      :+:    :+:   */
+/*   chunking.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -16,11 +16,11 @@
 // line27 Check if the path is a directory
 // line32 Path exists but is not a directory
 
-
 void	process_chunk(t_token *token_chunk, t_token *head,
 			t_shell_data *shell_data, int chunk_num)
 {
-	token_chunk->tokens = group_tokens(token_chunk, head, shell_data, chunk_num);
+	token_chunk->tokens = group_tokens(token_chunk,
+			head, shell_data, chunk_num);
 	append(token_chunk, &(shell_data->token_chunks));
 }
 
@@ -60,7 +60,6 @@ void	clear_heredoc_buffer(t_token *chunk)
 	}
 }
 
-
 char	**group_tokens(t_token *chunk, t_token *str_end,
 			t_shell_data *shell_data, int num)
 {
@@ -78,7 +77,8 @@ char	**group_tokens(t_token *chunk, t_token *str_end,
 			if (token->type == SH_HEREDOC)
 			{
 				clear_heredoc_buffer(chunk);
-				chunk->heredoc_buffer = here_doc_input(token->next->word, shell_data);
+				chunk->heredoc_buffer
+					= here_doc_input(token->next->word, shell_data);
 			}
 			token = token->next->next;
 			continue ;

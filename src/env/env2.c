@@ -23,14 +23,15 @@ t_env	*new_env(char *name, char *value)
 	return (env);
 }
 
-t_env	*append_env(t_env *env, t_env **envList)
+
+void	append_env(t_env *env, t_env **envList)
 {
 	t_env	*head;
 
 	if (!(*envList))
 	{
 		*envList = env;
-		return (env);
+		return ;
 	}
 	head = *envList;
 	while (head)
@@ -40,16 +41,12 @@ t_env	*append_env(t_env *env, t_env **envList)
 			if (head->value)
 				free(head->value);
 			head->value = ft_strdup(env->value);
-			free(env->name);
-			free(env->value);
-			free(env);
-			return (head);
+			free_env_node(env);
 		}
-		head = head->next;
+		if (head->next)
+			head = head->next;
+		else
+			break ;
 	}
-	head = *envList;
-	while (head->next)
-		head = head->next;
 	head->next = env;
-	return (env);
 }

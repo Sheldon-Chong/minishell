@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-
-
 char	**sort_doublearray(char **array)
 {
 	int		i;

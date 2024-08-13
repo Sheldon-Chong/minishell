@@ -26,8 +26,6 @@ t_env	*get_env_var(char *var_name, t_env **env)
 	return (NULL);
 }
 
-
-
 void	free_env_data(t_env_data *env_data)
 {
 	t_env	*head;
@@ -46,11 +44,10 @@ void	free_env_data(t_env_data *env_data)
 	free(env_data);
 }
 
-
-
-void free_env_list(t_env *env)
+void	free_env_list(t_env *env)
 {
-	t_env *temp;
+	t_env	*temp;
+
 	while (env)
 	{
 		free(env->name);

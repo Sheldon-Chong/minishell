@@ -170,7 +170,7 @@ int				unset_env(char **var_names, t_env **envList,
 					t_shell_data *token_info);
 void			ft_pwd(void);
 
-t_env			*append_env(t_env *env, t_env **envList);
+void			append_env(t_env *env, t_env **envList);
 int				export(char **args, t_shell_data *token_info);
 bool			is_strset(char *str, char *strset);
 bool			is_valid_identifier(char *str);
@@ -231,5 +231,6 @@ void			set_inf(t_executor *executor, t_chunk *chunk_list,
 					t_shell_data *shell_data);
 void			set_child_redirections(t_shell_data *shell_data);
 int				check_path_type(const char *path);
+void			free_env_node(t_env *node);
 
 #endif
