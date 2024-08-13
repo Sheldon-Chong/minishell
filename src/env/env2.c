@@ -37,11 +37,12 @@ t_env	*append_env(t_env *env, t_env **envList)
 	{
 		if (!ft_strcmp(head->name, env->name))
 		{
-			if (!env->value && head->value)
-			{
-			}
-			else
-				head->value = env->value;
+			if (head->value)
+				free(head->value);
+			head->value = ft_strdup(env->value);
+			free(env->name);
+			free(env->value);
+			free(env);
 			return (head);
 		}
 		head = head->next;

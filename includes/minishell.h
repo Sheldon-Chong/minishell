@@ -118,7 +118,6 @@ typedef struct s_shell_data
 	int			size;
 	char		*str;
 	t_token		*cmd_start;
-	char		**env_arr;
 	bool		has_error;
 	t_env		**global_env;
 	t_env_data	*env_data;
