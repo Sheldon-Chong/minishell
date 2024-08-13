@@ -62,8 +62,7 @@ void	set_inf(t_executor *executor, t_chunk *chunk_list,
 			t_shell_data *shell_data)
 {
 	int		file_fd_in;
-	int		heredoc_fd[2];
-	int		empty_pipe[2];
+	int		pipefd[2];
 
 	if (chunk_list->infile)
 	{
@@ -74,17 +73,17 @@ void	set_inf(t_executor *executor, t_chunk *chunk_list,
 	}
 	else if (chunk_list->heredoc_buffer != NULL)
 	{
-		if (pipe(heredoc_fd) == -1)
+		if (pipe(pipefd) == -1)
 			exit_error("pipe");
-		ft_putstr_fd(chunk_list->heredoc_buffer, heredoc_fd[1]);
-		close(heredoc_fd[1]);
-		executor->cmd_in = heredoc_fd[0];
+		ft_putstr_fd(chunk_list->heredoc_buffer, pipefd[1]);
+		close(pipefd[1]);
+		executor->cmd_in = pipefd[0];
 	}
 	else if (shell_data->start_pos != 0)
 	{
-		if (pipe(empty_pipe) == -1)
+		if (pipe(pipefd) == -1)
 			exit_error("pipe");
-		executor->cmd_in = empty_pipe[0];
-		close(empty_pipe[1]);
+		executor->cmd_in = pipefd[0];
+		close(pipefd[1]);
 	}
 }

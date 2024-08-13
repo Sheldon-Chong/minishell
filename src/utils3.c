@@ -29,10 +29,11 @@ void	skip_dollar_char(char *env_start)
 		env_start++;
 }
 
-int		get_length_of_array(char **array)
+int	get_length_of_array(char **array)
 {
 	int	i;
 
+	i = 0;
 	while (array[i])
 		i++;
 	return (i);

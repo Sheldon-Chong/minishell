@@ -90,7 +90,7 @@ void	run_cmd_fork(int *lastpid, t_chunk *chunk_list,
 	t_shell_data *shell_data)
 {
 	pid_t	pid;
-	
+
 	pid = fork();
 	if (pid == -1)
 		exit_error("fork");
