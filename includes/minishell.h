@@ -28,6 +28,7 @@
 # include <stdarg.h>
 # include <errno.h>
 # include <fcntl.h>
+# include "structs.h"
 
 # define SHELL_MSG "minishell$ "
 # define SPACE_CHAR " \f\v\t\r\n"
@@ -45,7 +46,6 @@
 # define ERR_ISDIR "$SUBJECT,: is a directory"
 
 # define NOT_WITHIN_QUOTE '\0'
-
 
 # define ERRNO_INVALID_EXIT_ARG 128
 # define ERRNO_COMMAND_NOT_FOUND 127
@@ -65,10 +65,9 @@
 # define PATH_NO_PERMISSION 3
 # define PATH_NOT_FOUND 2
 
-#define P_FILE 0
-#define P_DIR 1
-#define P_NOT_EXIST 2
-int check_path_type(const char *path);
+# define P_FILE 0
+# define P_DIR 1
+# define P_NOT_EXIST 2
 
 extern int	g_exit_status;
 
@@ -108,8 +107,6 @@ typedef struct s_executor
 	int		status;
 }	t_executor;
 
-typedef t_token	t_chunk;
-
 typedef struct s_shell_data
 {
 	t_token		*token_list;
@@ -137,14 +134,13 @@ void			ignore_sigint(int signum);
 int				get_length_of_list(t_token *head);
 int				newline(int var);
 
-int ft_cd(t_chunk *chunk);
+int				ft_cd(t_chunk *chunk);
 
-
-void	free_env_data(t_env_data *env_data);
-void	free_env_list(t_env *env);
-void	print_env_export(t_env *env_list);
-void	print_env_env(t_env *env_list);
-char	**dup_doublearray(char **src);
+void			free_env_data(t_env_data *env_data);
+void			free_env_list(t_env *env);
+void			print_env_export(t_env *env_list);
+void			print_env_env(t_env *env_list);
+char			**dup_doublearray(char **src);
 
 // debugging
 int				print_tokens(t_shell_data *token_list, char format);
@@ -193,10 +189,10 @@ void			chunk_tokens(t_shell_data *token_list);
 
 // to be removed
 void			executor(char **env, t_shell_data *token_info);
-t_chunk	*new_chunk(t_token *start);
+t_chunk			*new_chunk(t_token *start);
 
-int	handle_redir(t_token *head, t_token *token_chunk,
-		t_shell_data *shell_data, int num);
+int				handle_redir(t_token *head, t_token *token_chunk,
+					t_shell_data *shell_data, int num);
 // error printing
 int				syntax_error(char *error, t_shell_data *token_info);
 int				err_no_braces(char *subject, t_shell_data *token_info);
@@ -234,5 +230,6 @@ void			set_outf(t_token *chunk_list, t_executor *exe);
 void			set_inf(t_executor *executor, t_chunk *chunk_list,
 					t_shell_data *shell_data);
 void			set_child_redirections(t_shell_data *shell_data);
+int				check_path_type(const char *path);
 
 #endif
