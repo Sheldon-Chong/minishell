@@ -29,43 +29,16 @@ int	run_cmd(t_token *chunk, t_shell_data *shell_data,
 	return (1);
 }
 
-void	child(t_chunk *chunk_list, t_shell_data *shell_data)
-{
-	signal(SIGTERM, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	set_child_redirections(shell_data);
-	run_cmd(chunk_list, shell_data, STDIN_FILENO, STDOUT_FILENO);
-	exit(g_exit_status);
-}
-
-void	parent(t_chunk *chunk_list, t_shell_data *shell_data)
-{
-	if (shell_data->executor->cmd_in != STDIN_FILENO)
-		close(shell_data->executor->cmd_in);
-	if (shell_data->executor->cmd_out != STDOUT_FILENO
-		&& shell_data->executor->cmd_out != shell_data->executor->pipefd[1])
-		close(shell_data->executor->cmd_out);
-	if (chunk_list->next)
-	{
-		shell_data->executor->cmd_in = shell_data->executor->pipefd[0];
-		close(shell_data->executor->pipefd[1]);
-	}
-	else
-	{
-		close(shell_data->executor->pipefd[1]);
-		close(shell_data->executor->pipefd[0]);
-	}
-}
-
+/*
 void	executor(char **env, t_shell_data *shell_data)
 {
 	t_chunk		*chunk_list;
 	pid_t		pid;
 	int			status;
-	pid_t		pid_list[1024]; // Assuming a maximum of 1024 commands in a pipeline
-	int			pid_count = 0;
+	pid_t		pid_list[1024];
 
 	status = 0;
+	pid_count = 0;
 	chunk_list = get_chunk_start(shell_data->token_chunks,
 			shell_data->start_pos);
 	if (!chunk_list)
@@ -99,4 +72,71 @@ void	executor(char **env, t_shell_data *shell_data)
 	}
 	signal(SIGINT, ctrl_c_function);
 	free(shell_data->executor);
+}
+*/
+
+void	init_value_for_executor(t_shell_data *shell_data, int *lastpid,
+	int *size, t_chunk **chunk_list)
+{
+	*lastpid = 0;
+	*size = get_length_of_list(shell_data->token_chunks);
+	*chunk_list = get_chunk_start(shell_data->token_chunks,
+			shell_data->start_pos);
+	shell_data->executor = executor_init();
+	signal(SIGINT, ignore_sigint);
+}
+
+void	run_cmd_fork(int *lastpid, t_chunk *chunk_list,
+	t_shell_data *shell_data)
+{
+	pid_t	pid;
+	
+	pid = fork();
+	if (pid == -1)
+		exit_error("fork");
+	if (pid == 0)
+		child(chunk_list, shell_data);
+	*lastpid = pid;
+	parent(chunk_list, shell_data);
+}
+
+void	wait_for_child_and_cleanup(int lastpid, int size,
+	t_shell_data *shell_data)
+{
+	int	status;
+
+	if (lastpid != 0)
+	{
+		waitpid(lastpid, &status, 0);
+		if (WIFEXITED(status))
+			g_exit_status = WEXITSTATUS(status);
+	}
+	while (--size > 0)
+		waitpid(-1, NULL, 0);
+	signal(SIGINT, ctrl_c_function);
+	free(shell_data->executor);
+}
+
+void	executor(char **env, t_shell_data *shell_data)
+{
+	t_chunk		*chunk_list;
+	pid_t		pid;
+	pid_t		lastpid;
+	int			size;
+
+	init_value_for_executor(shell_data, &lastpid, &size, &chunk_list);
+	if (!chunk_list)
+		return ;
+	while (chunk_list)
+	{
+		set_outf(chunk_list, shell_data->executor);
+		set_inf(shell_data->executor, chunk_list, shell_data);
+		if (!shell_data->token_chunks->next)
+			run_cmd(chunk_list, shell_data,
+				shell_data->executor->cmd_in, shell_data->executor->cmd_out);
+		else
+			run_cmd_fork(&lastpid, chunk_list, shell_data);
+		chunk_list = chunk_list->next;
+	}
+	wait_for_child_and_cleanup(lastpid, size, shell_data);
 }

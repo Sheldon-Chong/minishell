@@ -235,5 +235,8 @@ void			free_env_node(t_env *node);
 void			skip_dollar_char(char *env_start);
 int				get_length_of_array(char **array);
 void			print_export(t_env *head);
-
+void			child(t_chunk *chunk_list, t_shell_data *shell_data);
+void			parent(t_chunk *chunk_list, t_shell_data *shell_data);
+int				run_cmd(t_token *chunk, t_shell_data *shell_data,
+					int cmd_in_fd, int cmd_out);
 #endif
