@@ -51,7 +51,10 @@ static char	*process_str(char *str, t_shell_data *shell_data)
 	quote_list_buffer = NULL;
 	ret = str;
 	if (!str[0] || is_token_valid(str, shell_data))
+	{
+		free(str);
 		return (NULL);
+	}
 	head = shell_data->token_list;
 	while (head && head->next)
 		head = head->next;

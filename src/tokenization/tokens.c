@@ -72,7 +72,10 @@ t_token	*append(t_token *token, t_token **head)
 	t_token	*nav;
 
 	if (!(token->word))
+	{
+		free(token);
 		return (NULL);
+	}
 	if (!(*head))
 	{
 		*head = token;

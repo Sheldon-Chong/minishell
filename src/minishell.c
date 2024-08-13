@@ -60,7 +60,10 @@ int	main(int ac, char **av, char **env)
 			add_history(user_input);
 			shell_data = process_input(user_input, env_data);
 			if (!shell_data->token_list)
-				continue ;
+			{
+				free_tokenlist(shell_data);
+				continue;
+			}
 			if (!shell_data->has_error)
 				executor(shell_data);
 			//print_tokens(shell_data, 'l');
