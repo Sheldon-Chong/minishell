@@ -1,4 +1,4 @@
-CC = gcc
+CC = cc
 
 CFLAGS = -I./includes -I./libft -Wall -Wextra -Werror #-fsanitize=address -g3
 
