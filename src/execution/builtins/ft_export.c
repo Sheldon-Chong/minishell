@@ -6,7 +6,7 @@
 /*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:29 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/14 15:25:41 by shechong         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:21:11 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	ft_export(char **args, t_shell_data *shell_data)
 		sorted_arr = sort_doublearray(arr);
 		if (sorted_arr == NULL)
 			return (ft_free_array((void **)arr, 0), 0);
-		head = arr2env(arr);
+		head = arr2env(sorted_arr);
 		print_env_export(head);
 		ft_free_array((void **)sorted_arr, 0);
 		ft_free_array((void **)arr, 0);
