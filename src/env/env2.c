@@ -30,6 +30,13 @@ void	free_env_node(t_env *env)
 	free(env);
 }
 
+void	set_env_value(t_env *head, char *value)
+{
+	if (head->value)
+		free(head->value);
+	head->value = ft_strdup(value);
+}
+
 void	append_env(t_env *env, t_env **envList)
 {
 	t_env	*head;
@@ -45,11 +52,7 @@ void	append_env(t_env *env, t_env **envList)
 		if (!ft_strcmp(head->name, env->name))
 		{
 			if (ft_strlen(env->value))
-			{
-				if (head->value)
-					free(head->value);
-				head->value = ft_strdup(env->value);
-			}
+				set_env_value(head, env->value);
 			free_env_node(env);
 			return ;
 		}

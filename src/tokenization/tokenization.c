@@ -32,15 +32,12 @@ int	is_token_valid(char *str, t_shell_data *shell_data)
 			return (1);
 		}
 	}
-	if (quote)
-	{
-		shell_data->has_error = true;
-		printf("minishell: syntax error near unexpected token `%c'\n", str[i]);
-		g_exit_status = ERRNO_SYNTAX;
-		rl_on_new_line();
-		return (1);
-	}
-	return (0);
+	if (!quote)
+		return (0);
+	shell_data->has_error = true;
+	printf("minishell: syntax error near unexpected token `%c'\n", str[i]);
+	g_exit_status = ERRNO_SYNTAX;
+	return (rl_on_new_line(), 1);
 }
 
 // expands braces, remove quotes

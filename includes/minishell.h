@@ -44,7 +44,7 @@ extern int	g_exit_status;
 # define ERR_NOPERM "$SUBJECT,: Permission denied"
 # define ERR_CMDNOTFOUND "$SUBJECT, : command not found"
 # define ERR_EXITNUMARG "exit: ,$SUBJECT,: numeric argument required"
-# define ERR_EXPORTINVALID "export:, $SUBJECT,: not a valid identifier"
+# define ERR_EXPORTINVALID "export: `,$SUBJECT,' : not a valid identifier"
 # define ERR_ISDIR "$SUBJECT,: is a directory"
 
 # define NOT_WITHIN_QUOTE '\0'
