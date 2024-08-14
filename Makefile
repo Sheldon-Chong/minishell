@@ -4,6 +4,10 @@ CFLAGS = -I./includes -I./libft -Wall -Wextra -Werror #-fsanitize=address -g3
 
 LDFLAGS = -lncurses -lreadline
 
+#CFLAGS = -I./includes -I./libft -I/goinfre/jyap/.brew/opt/readline/include #-fsanitize=address -g3
+
+#LDFLAGS = -lncurses -L/goinfre/jyap/.brew/opt/readline/lib -lreadline
+
 OUTPUT = minishell
 
 SRCS = $(wildcard src/*.c ./libft/*.c ./src/tokenization/*.c ./src/env/*.c ./src/execution/*.c ./src/execution/builtins/*.c ./src/tokenization/*.c ./src/signals/*.c ./src/chunking/*.c ./src/tokenization/quotes/*.c ./src/tokenization/expand_env/*.c)
