@@ -6,37 +6,49 @@
 /*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:33 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/14 13:26:43 by shechong         ###   ########.fr       */
+/*   Updated: 2024/08/14 16:39:36 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	unset_env_sub(char **var_names, t_env **envList)
+void	remove_env_var(char *var_name, t_env **envList)
 {
 	t_env	*head;
 	t_env	*prev;
-	int		i;
+
+	head = *envList;
+	prev = NULL;
+	while (head)
+	{
+		if (!ft_strcmp(var_name, head->name))
+		{
+			if (prev)
+				prev->next = head->next;
+			else
+				*envList = head->next;
+			free_env_node(head);
+			break ;
+		}
+		prev = head;
+		head = head->next;
+	}
+}
+
+void	unset_env_sub(char **var_names, t_env **envList)
+{
+	int	i;
 
 	i = -1;
 	while (var_names[++i])
 	{
-		head = *envList;
-		prev = NULL;
-		while (head)
+		if (!is_valid_identifier(var_names[i]))
 		{
-			if (!ft_strcmp(var_names[i], head->name))
-			{
-				if (prev)
-					prev->next = head->next;
-				else
-					*envList = head->next;
-				free_env_node(head);
-				break ;
-			}
-			prev = head;
-			head = head->next;
+			gen_err("unset: `,$SUBJECT,': not a valid identifier",
+				var_names[i], 1);
+			continue ;
 		}
+		remove_env_var(var_names[i], envList);
 	}
 }
 
