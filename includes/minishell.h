@@ -28,7 +28,7 @@
 # include <stdarg.h>
 # include <errno.h>
 # include <fcntl.h>
-#include <termios.h>
+# include <termios.h>
 # include "shared_types.h"
 
 extern int	g_exit_status;
