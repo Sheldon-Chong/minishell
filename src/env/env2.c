@@ -44,9 +44,12 @@ void	append_env(t_env *env, t_env **envList)
 	{
 		if (!ft_strcmp(head->name, env->name))
 		{
-			if (head->value)
-				free(head->value);
-			head->value = ft_strdup(env->value);
+			if (ft_strlen(env->value))
+			{
+				if (head->value)
+					free(head->value);
+				head->value = ft_strdup(env->value);
+			}
 			free_env_node(env);
 			return ;
 		}

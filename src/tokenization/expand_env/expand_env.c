@@ -47,7 +47,8 @@ static int	expand_env_iter(int *env_end, char *env_start,
 	return (0);
 }
 
-static int	init_value(char *string, char **env_start, char **i_before, char **buffer)
+static int	init_value(char *string, char **env_start,
+	char **i_before, char **buffer)
 {
 	*env_start = ft_strchr(string, '$') + 1;
 	*i_before = string;
