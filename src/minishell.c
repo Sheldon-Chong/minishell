@@ -51,7 +51,6 @@ void	init_signal(void)
 		perror("Tcsetattr failed\n");
 		exit(errno);
 	}
-
 	signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
 }

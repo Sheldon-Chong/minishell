@@ -45,20 +45,17 @@ void	signal_init(void)
 	sigemptyset(&sa_default.sa_mask);
 	sa_default.sa_flags = 0;
 	sigaction(SIGINT, &sa_ignore, NULL);
-	sigaction(SIGQUIT, &sa_ignore, NULL);
 }
 
 char	*here_doc_input(char *delimiter, t_shell_data *shell_data)
 {
 	char				*str;
 	struct sigaction	sa_old_int;
-	struct sigaction	sa_old_quit;
 
 	signal_init();
 	write(STDOUT_FILENO, "> ", 2);
 	str = heredoc_input_sub(delimiter);
 	sigaction(SIGINT, &sa_old_int, NULL);
-	sigaction(SIGQUIT, &sa_old_quit, NULL);
 	str = expand_env(str, shell_data);
 	return (str);
 }
