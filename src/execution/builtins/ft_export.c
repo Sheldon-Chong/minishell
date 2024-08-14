@@ -6,7 +6,7 @@
 /*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:29 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/14 15:02:39 by shechong         ###   ########.fr       */
+/*   Updated: 2024/08/14 15:07:39 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_env	*str2env(char *str)
 	char	*env_value;
 
 	if (ft_strchr(str, '=') == NULL)
-		return (new_env(ft_strdup(str), ft_strdup("")));
+		return (new_env(ft_strdup(str), NULL));
 	env_value = ft_strdup(ft_strchr(str, '=') + 1);
 	env_key = ft_substr(str, 0, ft_strlen(str) - ft_strlen(env_value) - 1);
 	if (ft_strlen(env_value) == 0)
