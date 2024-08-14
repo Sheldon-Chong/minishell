@@ -25,7 +25,10 @@ int	run_cmd(t_token *chunk, t_shell_data *shell_data,
 	else if (str_in_arr(chunk->start->word, "export") && chunk->tokens[1])
 		ft_export(chunk->tokens, shell_data);
 	else
+	{
+		signal(SIGINT, SIG_IGN);
 		exec_cmd(chunk->tokens, shell_data, cmd_in_fd, cmd_out);
+	}
 	return (1);
 }
 
@@ -83,7 +86,7 @@ void	init_value_for_executor(t_shell_data *shell_data, int *lastpid,
 	*chunk_list = get_chunk_start(shell_data->token_chunks,
 			shell_data->start_pos);
 	shell_data->executor = executor_init();
-	signal(SIGINT, ignore_sigint);
+	//signal(SIGINT, ignore_sigint);
 }
 
 void	run_cmd_fork(int *lastpid, t_chunk *chunk_list,

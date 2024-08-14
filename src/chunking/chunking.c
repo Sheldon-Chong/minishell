@@ -49,14 +49,15 @@ void	chunk_tokens(t_shell_data *shell_data)
 	head = shell_data->token_chunks;
 }
 
-void	clear_heredoc_buffer(t_token *chunk)
+void	clear_heredoc_fd(t_token *chunk)
 {
 	if (chunk->infile != NULL)
 		chunk->infile = NULL;
-	if (chunk->heredoc_buffer != NULL)
+	if (chunk->heredoc_fd != NULL)
 	{
-		free(chunk->heredoc_buffer);
-		chunk->heredoc_buffer = NULL;
+		close(chunk->heredoc_fd[0]);
+		free(chunk->heredoc_fd);
+		chunk->heredoc_fd = NULL;
 	}
 }
 
@@ -76,9 +77,8 @@ char	**group_tokens(t_token *chunk, t_token *str_end,
 				break ;
 			if (token->type == SH_HEREDOC)
 			{
-				clear_heredoc_buffer(chunk);
-				chunk->heredoc_buffer
-					= here_doc_input(token->next->word, shell_data);
+				clear_heredoc_fd(chunk);
+				exec_heredoc(chunk, token->next->word,shell_data);
 			}
 			token = token->next->next;
 			continue ;

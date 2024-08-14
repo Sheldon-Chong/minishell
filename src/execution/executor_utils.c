@@ -6,7 +6,7 @@
 /*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 14:37:11 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/05 18:22:21 by jyap             ###   ########.fr       */
+/*   Updated: 2024/08/14 20:04:33 by jyap             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,8 @@ void	set_inf(t_executor *executor, t_chunk *chunk_list,
 			exit_error("open infile");
 		executor->cmd_in = file_fd_in;
 	}
-	else if (chunk_list->heredoc_buffer != NULL)
-	{
-		if (pipe(pipefd) == -1)
-			exit_error("pipe");
-		ft_putstr_fd(chunk_list->heredoc_buffer, pipefd[1]);
-		close(pipefd[1]);
-		executor->cmd_in = pipefd[0];
-	}
+	else if (chunk_list->heredoc_fd != NULL)
+		executor->cmd_in = chunk_list->heredoc_fd[0];
 	else if (shell_data->start_pos != 0)
 	{
 		if (pipe(pipefd) == -1)

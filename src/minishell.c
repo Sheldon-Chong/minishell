@@ -62,6 +62,7 @@ int	mainloop(t_env_data *env_data)
 
 	while (true)
 	{
+		init_signal();
 		user_input = readline(SHELL_MSG);
 		if (!user_input)
 			break ;
@@ -87,7 +88,6 @@ int	main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	init_signal();
 	env_data = new_env_data(env);
 	mainloop(env_data);
 	clear_history();

@@ -87,6 +87,7 @@ void	exec_cmd(char **cmd, t_shell_data *shell_data,
 {
 	char	*command;
 	pid_t	pid;
+	int		status;
 
 	g_exit_status = 0;
 	pid = fork();
@@ -106,7 +107,7 @@ void	exec_cmd(char **cmd, t_shell_data *shell_data,
 		gen_err_and_exit(ERR_CMDNOTFOUND, cmd[0], ERRNO_COMMAND_NOT_FOUND, 127);
 	}
 	close_fds(cmd_in_fd, cmd_out);
-	waitpid(pid, &g_exit_status, 0);
-	if (WEXITSTATUS(g_exit_status))
-		g_exit_status = WEXITSTATUS(g_exit_status);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		g_exit_status = WEXITSTATUS(status);
 }

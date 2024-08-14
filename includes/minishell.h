@@ -88,7 +88,7 @@ typedef struct s_token
 	char			outfile_mode;	//token chunk only
 	char			**tokens;			//token chunk only
 	struct s_token	*start;			//token chunk only
-	char			*heredoc_buffer;
+	int				*heredoc_fd;
 	struct s_token	*next;			//for BOTH tokens and token chunks
 	struct s_token	*prev;
 	t_list			*heredocs;
@@ -205,7 +205,6 @@ void			exec_cmd(char **cmd, t_shell_data *token_info,
 char			*get_path(char *cmd, t_env **env);
 void			parse_cmd_list_for_io(t_shell_data *token_info);
 char			**append_to_array(char ***array, char *value);
-char			*here_doc_input(char *delimiter, t_shell_data *shell_data);
 bool			is_pure_env(char *str);
 
 void			ft_exit(char **arg, t_shell_data *token_info);
@@ -236,5 +235,7 @@ void			child(t_chunk *chunk_list, t_shell_data *shell_data);
 void			parent(t_chunk *chunk_list, t_shell_data *shell_data);
 int				run_cmd(t_token *chunk, t_shell_data *shell_data,
 					int cmd_in_fd, int cmd_out);
+void			exec_heredoc(t_chunk *chunk,
+					char *delimiter, t_shell_data *shell_data);
 
 #endif

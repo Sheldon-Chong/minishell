@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shechong <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:05:52 by shechong          #+#    #+#             */
-/*   Updated: 2024/08/14 14:05:53 by shechong         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:55:40 by jyap             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_token	*tok(char *word, char type)
 	token->next = NULL;
 	token->tokens = NULL;
 	token->outfile_mode = 0;
-	token->heredoc_buffer = NULL;
+	token->heredoc_fd = NULL;
 	return (token);
 }
 
