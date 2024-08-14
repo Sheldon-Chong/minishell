@@ -44,7 +44,7 @@ void	free_env_data(t_env_data *env_data)
 	free(env_data);
 }
 
-void	free_env_list(t_env *env)
+int	free_env_list(t_env *env)
 {
 	t_env	*temp;
 
@@ -57,4 +57,5 @@ void	free_env_list(t_env *env)
 		free(env);
 		env = temp;
 	}
+	return (0);
 }

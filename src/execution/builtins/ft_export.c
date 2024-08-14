@@ -6,7 +6,7 @@
 /*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:29 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/09 18:10:15 by shechong         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:10:24 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,62 +24,6 @@ bool	is_valid_identifier(char *str)
 	return (true);
 }
 
-
-int	print_env(t_env **env_list, char mode)
-{
-	t_env	*head;
-
-	head = *env_list;
-	while (head)
-	{
-		if (mode == 'x')
-		{
-			if (head->value == NULL)
-				printf("declare -x %s\n", head->name);
-			else
-				printf("declare -x %s=\"%s\"\n", head->name, head->value);
-		}
-		else if (mode == 'e')
-		{
-			if (head->value != NULL)
-				printf ("%s=%s\n", head->name, head->value);
-		}
-		head = head->next;
-	}
-	return (0);
-}
-
-char	**sort_doublearray(char **array)
-{
-	int		i;
-	int		j;
-	int		max;
-	char	**output;
-	char	*temp;
-
-	output = dup_doublearray(array);
-	if (output == NULL)
-		return (NULL);
-	max = 0;
-	while (array[max] != 0)
-		max++;
-	i = -1;
-	while (++i < max)
-	{
-		j = i;
-		while (++j < max)
-		{
-			if (ft_strcmp(output[i], output[j]) > 0)
-			{
-				temp = output[i];
-				output[i] = output[j];
-				output[j] = temp;
-			}
-		}
-	}
-	return (output);
-}
-
 t_env	*str2env(char *str)
 {
 	t_env	*env;
@@ -87,9 +31,7 @@ t_env	*str2env(char *str)
 	char	*env_value;
 
 	if (ft_strchr(str, '=') == NULL)
-	{
 		return (new_env(ft_strdup(str), ft_strdup("")));
-	}
 	env_value = ft_strdup(ft_strchr(str, '=') + 1);
 	env_key = ft_substr(str, 0, ft_strlen(str) - ft_strlen(env_value) - 1);
 	if (ft_strlen(env_value) == 0)
@@ -122,6 +64,7 @@ static int	export_assign(t_shell_data *shell_data, char **args)
 	return (error);
 }
 
+
 int	ft_export(char **args, t_shell_data *shell_data)
 {
 	char	**arr;
@@ -131,15 +74,13 @@ int	ft_export(char **args, t_shell_data *shell_data)
 	if (args[1] == NULL)
 	{
 		arr = env2arr(shell_data->env_data->env_list);
-		
 		if (arr == NULL)
 			return (0);
-		
 		sorted_arr = sort_doublearray(arr);
 		if (sorted_arr == NULL)
 			return (ft_free_array((void **)arr, 0), 0);
 		head = arr2env(arr);
-		print_env(&head, 'x');
+		print_env_export(head);
 		ft_free_array((void **)sorted_arr, 0);
 		ft_free_array((void **)arr, 0);
 		free_env_list(head);

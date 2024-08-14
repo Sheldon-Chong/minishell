@@ -72,3 +72,13 @@ char	**dup_doublearray(char **src)
 	}
 	return (output);
 }
+
+int	double_arr_len(void **array)
+{
+	int	max;
+
+	max = 0;
+	while (array[max])
+		max ++;
+	return (max);
+}

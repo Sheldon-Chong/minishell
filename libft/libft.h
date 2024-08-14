@@ -166,4 +166,8 @@ int				ft_strcmp(const char *s1, const char *s2);
 
 char			*ft_fstrdup(char **s);
 char			*ft_fstrjoinf(char **s1, char **s2);
+
+int				double_arr_len(void **array);
+char	**sort_doublearray(char **array);
+
 #endif

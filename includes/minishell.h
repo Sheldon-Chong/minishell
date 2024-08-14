@@ -136,7 +136,7 @@ int				get_length_of_list(t_token *head);
 int				ft_cd(t_chunk *chunk);
 
 void			free_env_data(t_env_data *env_data);
-void			free_env_list(t_env *env);
+int				free_env_list(t_env *env);
 void			print_env_export(t_env *env_list);
 void			print_env_env(t_env *env_list);
 char			**dup_doublearray(char **src);
