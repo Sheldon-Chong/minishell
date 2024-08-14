@@ -34,7 +34,7 @@ t_env	*arr2env(char **env)
 	while (env[++i])
 	{
 		if (ft_strchr(env[i], '=') == NULL)
-			append_env(new_env(env[i], NULL), &env_list);
+			append_env(new_env(ft_strdup(env[i]), NULL), &env_list);
 		else
 		{
 			var_name = ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]);

@@ -50,8 +50,6 @@ int	free_env_list(t_env *env)
 
 	while (env)
 	{
-		if(env->value == NULL)
-		printf(">>>%s", env->value);
 		free(env->name);
 		if (env->value != NULL)
 			free(env->value);
