@@ -38,6 +38,20 @@ t_shell_data	*process_input(char *str, t_env_data *env_data)
 
 void	init_signal(void)
 {
+	struct termios	termios_current;
+
+	if (tcgetattr(STDIN_FILENO, &termios_current) == -1)
+	{
+		perror("Tcgetattr failed\n");
+		exit(errno);
+	}
+	termios_current.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &termios_current) == -1)
+	{
+		perror("Tcsetattr failed\n");
+		exit(errno);
+	}
+
 	signal(SIGINT, ctrl_c_function);
 	signal(SIGQUIT, SIG_IGN);
 }
