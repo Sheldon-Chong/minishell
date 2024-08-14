@@ -21,15 +21,15 @@ bool	is_shell_opp(int shell_operator_id)
 
 int	get_shell_opp_type(char *str)
 {
-	if (!strncmp(str, ">>", 2))
+	if (!ft_strncmp(str, ">>", 2))
 		return (SH_APPEND);
-	else if (!strncmp(str, ">", 1))
+	else if (!ft_strncmp(str, ">", 1))
 		return (SH_WRITE);
-	else if (!strncmp(str, "<<", 2))
+	else if (!ft_strncmp(str, "<<", 2))
 		return (SH_HEREDOC);
-	else if (!strncmp(str, "<", 1))
+	else if (!ft_strncmp(str, "<", 1))
 		return (SH_READ);
-	else if (!strncmp(str, "|", 1))
+	else if (!ft_strncmp(str, "|", 1))
 		return (SH_PIPE);
 	return (-1);
 }
