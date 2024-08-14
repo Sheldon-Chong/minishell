@@ -168,6 +168,6 @@ char			*ft_fstrdup(char **s);
 char			*ft_fstrjoinf(char **s1, char **s2);
 
 int				double_arr_len(void **array);
-char	**sort_doublearray(char **array);
+char			**sort_doublearray(char **array);
 
 #endif
