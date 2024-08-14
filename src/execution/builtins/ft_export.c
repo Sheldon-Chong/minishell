@@ -6,7 +6,7 @@
 /*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:29 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/14 13:10:24 by shechong         ###   ########.fr       */
+/*   Updated: 2024/08/14 13:26:51 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ static int	export_assign(t_shell_data *shell_data, char **args)
 	}
 	return (error);
 }
-
 
 int	ft_export(char **args, t_shell_data *shell_data)
 {

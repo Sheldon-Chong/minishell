@@ -75,7 +75,8 @@ void	check_path_before_execve(char **command, char *cmd)
 				*command = cmd;
 		}
 		else
-			gen_err_and_exit(ERR_CMDNOTFOUND, cmd, ERRNO_COMMAND_NOT_FOUND, 127);
+			gen_err_and_exit(ERR_CMDNOTFOUND, cmd,
+				ERRNO_COMMAND_NOT_FOUND, 127);
 	}
 }
 

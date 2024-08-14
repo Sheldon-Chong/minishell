@@ -30,7 +30,6 @@ void	free_env_node(t_env *env)
 	free(env);
 }
 
-
 void	append_env(t_env *env, t_env **envList)
 {
 	t_env	*head;

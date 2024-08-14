@@ -18,7 +18,7 @@ int	builtins(t_shell_data *shell_data, char **args)
 		ft_echo(args);
 	else if (!ft_strcmp(args[0], "exit"))
 	{
-		free_tokenlist(shell_data);
+		free_shell_data(shell_data);
 		ft_exit(0, shell_data);
 	}
 	else if (!ft_strcmp(args[0], "env"))

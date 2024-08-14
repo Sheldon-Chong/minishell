@@ -70,3 +70,11 @@ void	dup_fd_for_child(int cmd_in_fd, int cmd_out)
 		close(cmd_out);
 	}
 }
+
+void	close_fds(int cmd_in_fd, int cmd_out)
+{
+	if (cmd_in_fd != STDIN_FILENO)
+		close(cmd_in_fd);
+	if (cmd_out != STDOUT_FILENO)
+		close(cmd_out);
+}

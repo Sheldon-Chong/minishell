@@ -28,7 +28,9 @@
 # include <stdarg.h>
 # include <errno.h>
 # include <fcntl.h>
-# include "structs.h"
+# include "shared_types.h"
+
+extern int	g_exit_status;
 
 # define SHELL_MSG "minishell$ "
 # define SPACE_CHAR " \f\v\t\r\n"
@@ -68,8 +70,6 @@
 # define P_FILE 0
 # define P_DIR 1
 # define P_NOT_EXIST 2
-
-extern int	g_exit_status;
 
 typedef struct s_env
 {
@@ -129,6 +129,7 @@ typedef struct s_error
 }	t_error;
 
 void			ignore_sigint(int signum);
+t_env			*get_env_var(char *var_name, t_env **env);
 
 // utils
 int				get_length_of_list(t_token *head);
@@ -145,7 +146,7 @@ char			**dup_doublearray(char **src);
 int				print_tokens(t_shell_data *token_list, char format);
 
 // free utils
-int				free_tokenlist(t_shell_data *token_list);
+int				free_shell_data(t_shell_data *token_list);
 
 // tokenization
 t_token			*tokenize(char *string, t_shell_data *token_list);
@@ -230,11 +231,9 @@ void			set_inf(t_executor *executor, t_chunk *chunk_list,
 void			set_child_redirections(t_shell_data *shell_data);
 int				check_path_type(const char *path);
 void			free_env_node(t_env *node);
-void			skip_dollar_char(char *env_start);
-int				get_length_of_array(char **array);
-void			print_export(t_env *head);
 void			child(t_chunk *chunk_list, t_shell_data *shell_data);
 void			parent(t_chunk *chunk_list, t_shell_data *shell_data);
 int				run_cmd(t_token *chunk, t_shell_data *shell_data,
 					int cmd_in_fd, int cmd_out);
+
 #endif

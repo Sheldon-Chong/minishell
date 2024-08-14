@@ -12,49 +12,11 @@
 
 #include "minishell.h"
 
-bool	is_pure_env(char *str)
+static char	*skip_dollar_char(char *env_start)
 {
-	char	*ref;
-
-	if (str[0] != '$')
-		return (false);
-	if (ft_strchr(str, '\'') || ft_strchr(str, '"'))
-		return (false);
-	ref = str;
-	while (1)
-	{
-		str += 1;
-		str += find_env_end(str);
-		if (find_env_end(str) == 0)
-		{
-			if ((size_t)(str - ref) == ft_strlen(ref))
-				return (true);
-			else
-				return (false);
-			break ;
-		}
-		else if (str[1] == '$')
-			return (false);
-	}
-	return (true);
-}
-
-int	find_env_end(char *env_start)
-{
-	int	i;
-
-	if (env_start[0] == '$')
-		return (-1);
-	if (!ft_isalpha(env_start[0]) && env_start[0] != '_')
-		return (0);
-	i = 1;
-	while (env_start[i])
-	{
-		if (!ft_isalnum(env_start[i]) && env_start[i] != '_')
-			break ;
-		i ++;
-	}
-	return (i);
+	while (*env_start == '$')
+		env_start++;
+	return (env_start);
 }
 
 static int	expand_env_iter(int *env_end, char *env_start,
@@ -85,43 +47,7 @@ static int	expand_env_iter(int *env_end, char *env_start,
 	return (0);
 }
 
-// returns a string with any occurences of $<text> expanded
-/*
-char	*expand_env(char *string, t_shell_data *shell_data)
-{
-	char	*buffer;
-	char	*env_start;
-	char	*i_before;
-	int		env_end;
-	char	*str;
-
-	env_start = ft_strchr(string, '$') + 1;
-	env_end = 0;
-	i_before = string;
-	if (!ft_strchr(string, '$'))
-		return (ft_strdup(string));
-	buffer = ft_strdup("");
-	while (*env_start)
-	{
-		while (*env_start == '$')
-			env_start ++;
-		if (!*env_start)
-			break ;
-		str = ft_substr(i_before, 0, env_start - i_before - 1);
-		buffer = ft_fstrjoinf(&buffer, &str);
-		expand_env_iter(&env_end, env_start, &buffer, shell_data);
-		i_before = env_start + env_end;
-		if (!ft_strchr(env_start, '$'))
-			break ;
-		env_start = ft_strchr(env_start, '$') + 1;
-	}
-	str = ft_substr(i_before, 0, ft_strlen(i_before));
-	buffer = ft_fstrjoinf(&buffer, &str);
-	return (buffer);
-}
-*/
-
-int	init_value(char *string, char **env_start, char **i_before, char **buffer)
+static int	init_value(char *string, char **env_start, char **i_before, char **buffer)
 {
 	*env_start = ft_strchr(string, '$') + 1;
 	*i_before = string;
@@ -143,7 +69,7 @@ char	*expand_env(char *string, t_shell_data *shell_data)
 	env_end = init_value(string, &env_start, &i_before, &buffer);
 	while (*env_start)
 	{
-		skip_dollar_char(env_start);
+		env_start = skip_dollar_char(env_start);
 		if (!*env_start)
 			break ;
 		str = ft_substr(i_before, 0, env_start - i_before - 1);

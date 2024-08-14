@@ -37,7 +37,7 @@ static int	handle_exit_errors(char **args, int len, t_shell_data *shell_data)
 		g_exit_status = 255;
 		free(shell_data->executor);
 		free_env_data(shell_data->env_data);
-		free_tokenlist(shell_data);
+		free_shell_data(shell_data);
 		exit(g_exit_status);
 	}
 	else if (!ft_str_is_digit(args[1]))
@@ -46,7 +46,7 @@ static int	handle_exit_errors(char **args, int len, t_shell_data *shell_data)
 		g_exit_status = 255;
 		free_env_data(shell_data->env_data);
 		free(shell_data->executor);
-		free_tokenlist(shell_data);
+		free_shell_data(shell_data);
 		exit(g_exit_status);
 	}
 	return (gen_err("exit: too many arguments", NULL, 1));
@@ -64,7 +64,7 @@ void	ft_exit(char **args, t_shell_data *shell_data)
 		g_exit_status = 0;
 		free(shell_data->executor);
 		free_env_data(shell_data->env_data);
-		free_tokenlist(shell_data);
+		free_shell_data(shell_data);
 		exit(0);
 	}
 	else if (len == 2 && ft_str_is_digit(args[1]))
@@ -72,7 +72,7 @@ void	ft_exit(char **args, t_shell_data *shell_data)
 		g_exit_status = ft_atoi(args[1]) % 256;
 		free(shell_data->executor);
 		free_env_data(shell_data->env_data);
-		free_tokenlist(shell_data);
+		free_shell_data(shell_data);
 		exit(g_exit_status);
 	}
 	handle_exit_errors(args, len, shell_data);

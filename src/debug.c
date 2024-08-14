@@ -22,7 +22,8 @@ int	print_tokens(t_shell_data *shell_data, char format)
 	i = -1;
 	head2 = shell_data->token_list;
 	printf("\n===============\n");
-	printf("%s>> TOKENIZATION: \n%sLocate tokens, process them and append them to token_list\n%stoken_list\n",
+	printf("%s>> TOKENIZATION: \n%segment tokens append them
+		to token_list\n%stoken_list\n",
 		C_BBLUE, C_GREEN, C_RESET);
 	while (head2)
 	{
@@ -41,7 +42,8 @@ int	print_tokens(t_shell_data *shell_data, char format)
 		head2 = head2->next;
 		i2++;
 	}
-	printf("%s\n>> TOKEN CHUNK: \n%sGroup tokens into arrays, based on '|' characters\n%scmd_array\n", C_BBLUE, C_GREEN, C_RESET);
+	printf("%s\n>> TOKEN CHUNK: \n%sGroup tokens into arrays, 
+		based on '|' characters\n%scmd_array\n", C_BBLUE, C_GREEN, C_RESET);
 	head2 = shell_data->token_chunks;
 	printf("starting position index: %d\n", shell_data->start_pos);
 	i2 = 0;
@@ -51,7 +53,9 @@ int	print_tokens(t_shell_data *shell_data, char format)
 		printf("	TOKEN %d: [", i2);
 		while (head2->tokens[++i])
 			printf("\"%s\", ", head2->tokens[i]);
-		printf("] (%c), infile: %s, outfile: %s mode [%c] heredoc_buffer %s\n", head2->type, head2->infile, head2->outfile, head2->outfile_mode, head2->heredoc_buffer);
+		printf("] (%c), infile: %s, outfile: %s mode [%c] 
+			heredoc_buffer %s\n", head2->type, head2->infile, 
+			head2->outfile, head2->outfile_mode, head2->heredoc_buffer);
 		head2 = head2->next;
 		i2 ++;
 	}

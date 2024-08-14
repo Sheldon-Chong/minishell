@@ -41,7 +41,8 @@
 		"dirent.h": "c",
 		"readline.h": "c",
 		"string.h": "c",
-		"assert.h": "c"
+		"assert.h": "c",
+		"stat.h": "c"
 	},
 	"peacock.color": "#a37d60",
 	"workbench.colorCustomizations": {

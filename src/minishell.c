@@ -42,36 +42,41 @@ void	init_signal(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-int	main(int ac, char **av, char **env)
+int	mainloop(t_env_data *env_data)
 {
 	t_shell_data	*shell_data;
 	char			*user_input;
-	t_env_data		*env_data;
 
-	init_signal();
-	env_data = new_env_data(env);
 	while (true)
 	{
 		user_input = readline(SHELL_MSG);
 		if (!user_input)
 			break ;
-		if (ft_strlen(user_input) > 0)
+		if (ft_strlen(user_input) <= 0)
+			continue ;
+		add_history(user_input);
+		shell_data = process_input(user_input, env_data);
+		if (!shell_data->token_list)
 		{
-			add_history(user_input);
-			shell_data = process_input(user_input, env_data);
-			if (!shell_data->token_list)
-			{
-				free_tokenlist(shell_data);
-				continue;
-			}
-			if (!shell_data->has_error)
-				executor(shell_data);
-			//print_tokens(shell_data, 'l');
-			free_tokenlist(shell_data);
+			free_shell_data(shell_data);
+			continue ;
 		}
+		if (!shell_data->has_error)
+			executor(shell_data);
+		free_shell_data(shell_data);
 	}
-	clear_history();
-	exit(0);
+	return (0);
+}
+
+int	main(int ac, char **av, char **env)
+{
+	t_env_data		*env_data;
+
 	(void)ac;
 	(void)av;
+	init_signal();
+	env_data = new_env_data(env);
+	mainloop(env_data);
+	clear_history();
+	exit(0);
 }

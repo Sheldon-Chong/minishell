@@ -13,14 +13,14 @@
 #include "minishell.h"
 
 // Join the quote linkedlist back into a single string
-static char	*quote_list2str(t_token *token_list)
+static char	*quote_list2str(t_subquote *quote_list)
 {
-	t_token	*head;
-	char	*buffer;
-	char	*buffer2;
-	t_token	*temp;
+	t_subquote	*head;
+	char		*buffer;
+	char		*buffer2;
+	t_subquote	*temp;
 
-	head = token_list;
+	head = quote_list;
 	buffer = ft_strdup("");
 	while (head)
 	{
@@ -35,7 +35,7 @@ static char	*quote_list2str(t_token *token_list)
 }
 
 // Remove the outermost quotes, expand any occurences of '$'
-static void	process_quote_list(t_token *head,
+static void	process_quote_list(t_subquote *head,
 	t_shell_data *shell_data, bool is_expand_env)
 {
 	char	*temp;
@@ -62,7 +62,7 @@ static void	process_quote_list(t_token *head,
 	}
 }
 
-void	split_into_quotes_sub(char *str, t_token **tokens)
+static void	split_into_quotes_sub(char *str, t_token **tokens)
 {
 	int		i;
 	char	quote;

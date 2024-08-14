@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: shechong <shechong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:17:33 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/05 10:19:46 by jyap             ###   ########.fr       */
+/*   Updated: 2024/08/14 13:26:43 by shechong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 void	unset_env_sub(char **var_names, t_env **envList)
 {
