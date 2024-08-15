@@ -56,6 +56,7 @@ void	clear_heredoc_fd(t_token *chunk)
 	if (chunk->heredoc_fd != NULL)
 	{
 		close(chunk->heredoc_fd[0]);
+		free(chunk->heredoc_fd);
 		chunk->heredoc_fd = NULL;
 	}
 }

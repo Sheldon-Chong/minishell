@@ -32,6 +32,8 @@ int	free_shell_data(t_shell_data *shell_data)
 		head = head->next;
 		ft_free_array((void **)temp->tokens, 0);
 		free(temp);
+		if (head->heredoc_fd != NULL)
+			free(head->heredoc_fd);
 	}
 	free(shell_data);
 	return (0);

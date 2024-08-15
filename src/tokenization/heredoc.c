@@ -25,6 +25,10 @@ void	heredoc(char *delimiter, int fd[2], t_shell_data *shell_data, int empty[2])
 	char	*tmp;
 	char	*tmp2;
 
+	close(fd[0]);
+	close(fd[1]);
+	close(empty[0]);
+	close(empty[1]);
 	signal(SIGINT, ctrl_c_heredoc);
 	tmp2 = NULL;
 	while (1)
@@ -61,6 +65,7 @@ void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 	int		status;
 
 	fd = ft_calloc(2, sizeof(int));
+	empty = ft_calloc(2, sizeof(int));
 	if (!delimiter || !*delimiter)
 	{
 		shell_data->has_error = true;
@@ -95,6 +100,7 @@ void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 		close(fd[1]);
 		close(empty[1]);
 		chunk->heredoc_fd = empty;
+		free(fd);
 		signal(SIGINT, ctrl_c_function);
 		shell_data->has_error = true;
 		return ;
@@ -103,5 +109,6 @@ void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 	close(empty[1]);
 	close(empty[0]);
 	chunk->heredoc_fd = fd;
+	free(empty);
 	signal(SIGINT, ctrl_c_function);
 }
