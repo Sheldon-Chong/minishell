@@ -60,7 +60,7 @@ void	heredoc(char *delimiter, int fd[2], t_shell_data *shell_data, int empty[2])
 void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 {
 	int		*fd;
-	int		empty[2];
+	int		*empty;
 	pid_t	pid;
 	int		status;
 
