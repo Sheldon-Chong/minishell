@@ -6,7 +6,7 @@
 /*   By: jyap <jyap@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:18:03 by jyap              #+#    #+#             */
-/*   Updated: 2024/08/14 19:12:58 by jyap             ###   ########.fr       */
+/*   Updated: 2024/08/15 15:43:54 by jyap             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,13 @@ void	ctrl_c_function(int signo)
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
+	g_exit_status = ERRNO_CTRL_C;
+}
+
+void	ctrl_c_heredoc(int signum)
+{
+	(void)signum;
+	printf("\n");
+	close(STDIN_FILENO);
 	g_exit_status = ERRNO_CTRL_C;
 }

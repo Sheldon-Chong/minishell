@@ -78,7 +78,6 @@ char	**group_tokens(t_token *chunk, t_token *str_end,
 			{
 				clear_heredoc_fd(chunk);
 				exec_heredoc(chunk, token->next->word, shell_data);
-
 			}
 			token = token->next->next;
 			continue ;

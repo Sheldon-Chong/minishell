@@ -237,5 +237,7 @@ int				run_cmd(t_token *chunk, t_shell_data *shell_data,
 					int cmd_in_fd, int cmd_out);
 void			exec_heredoc(t_chunk *chunk,
 					char *delimiter, t_shell_data *shell_data);
+void			ctrl_c_heredoc(int signum);
+void			heredoc_child_init(int *fd, int *empty);
 
 #endif

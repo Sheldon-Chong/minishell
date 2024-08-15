@@ -64,3 +64,12 @@ bool	post_validate(t_shell_data *shell_data)
 	}
 	return (true);
 }
+
+void	heredoc_child_init(int *fd, int *empty)
+{
+	close(fd[0]);
+	close(fd[1]);
+	close(empty[0]);
+	close(empty[1]);
+	signal(SIGINT, ctrl_c_heredoc);
+}
