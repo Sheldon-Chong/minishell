@@ -86,7 +86,7 @@ void	init_value_for_executor(t_shell_data *shell_data, int *lastpid,
 	*chunk_list = get_chunk_start(shell_data->token_chunks,
 			shell_data->start_pos);
 	shell_data->executor = executor_init();
-	//signal(SIGINT, ignore_sigint);
+	signal(SIGINT, ignore_sigint);
 }
 
 void	run_cmd_fork(int *lastpid, t_chunk *chunk_list,

@@ -26,6 +26,7 @@ void	heredoc(char *delimiter, int fd[2], t_shell_data *shell_data)
 	char	*tmp2;
 
 	signal(SIGINT, ctrl_c_heredoc);
+	tmp2 = NULL;
 	while (1)
 	{
 		tmp = readline("> ");
@@ -89,6 +90,7 @@ void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 		close(empty[1]);
 		chunk->heredoc_fd = empty;
 		signal(SIGINT, ctrl_c_function);
+		shell_data->has_error = true;
 		return ;
 	}
 	close(fd[1]);

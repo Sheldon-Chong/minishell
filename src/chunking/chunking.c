@@ -78,7 +78,7 @@ char	**group_tokens(t_token *chunk, t_token *str_end,
 			if (token->type == SH_HEREDOC)
 			{
 				clear_heredoc_fd(chunk);
-				exec_heredoc(chunk, token->next->word,shell_data);
+				exec_heredoc(chunk, token->next->word, shell_data);
 			}
 			token = token->next->next;
 			continue ;
