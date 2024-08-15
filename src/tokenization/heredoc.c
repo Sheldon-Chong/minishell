@@ -12,8 +12,9 @@
 
 #include "minishell.h"
 
-void	ctrl_c_heredoc(void)
+void	ctrl_c_heredoc(int signum)
 {
+	(void)signum;
 	printf("\n");
 	close(STDIN_FILENO);
 	g_exit_status = ERRNO_CTRL_C;
@@ -54,6 +55,7 @@ void	heredoc(char *delimiter, int fd[2], t_shell_data *shell_data)
 void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 {
 	int		fd[2];
+	int		empty[2];
 	pid_t	pid;
 	int		status;
 
@@ -64,11 +66,14 @@ void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 	}
 	if (pipe(fd) == -1)
 		return ;
+	if (pipe(empty) == -1)
+		return ;
 	if (chunk->heredoc_fd != NULL)
 	{
 		close(chunk->heredoc_fd[0]);
 		free(chunk->heredoc_fd);
 	}
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == 0)
 	{
@@ -81,14 +86,14 @@ void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 	{
 		close(fd[0]);
 		close(fd[1]);
-		fd[0] = open("empty", O_CREAT | O_WRONLY, 0644);
-		if (fd[0] == -1)
-			perror("Error opening file");
-		close(fd[0]);
-		fd[0] = open("empty", O_RDONLY);
-		if (fd[0] == -1)
-			perror("Error opening file");
+		close(empty[1]);
+		chunk->heredoc_fd = empty;
+		signal(SIGINT, ctrl_c_function);
+		return ;
 	}
 	close(fd[1]);
+	close(empty[1]);
+	close(empty[0]);
 	chunk->heredoc_fd = fd;
+	signal(SIGINT, ctrl_c_function);
 }
