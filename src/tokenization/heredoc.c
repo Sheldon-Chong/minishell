@@ -20,7 +20,7 @@ void	ctrl_c_heredoc(int signum)
 	g_exit_status = ERRNO_CTRL_C;
 }
 
-void	heredoc(char *delimiter, int fd[2], t_shell_data *shell_data)
+void	heredoc(char *delimiter, int fd[2], t_shell_data *shell_data, int empty[2])
 {
 	char	*tmp;
 	char	*tmp2;
@@ -55,30 +55,36 @@ void	heredoc(char *delimiter, int fd[2], t_shell_data *shell_data)
 
 void	exec_heredoc(t_chunk *chunk, char *delimiter, t_shell_data *shell_data)
 {
-	int		*fd = malloc(sizeof(int) * 2);
+	int		*fd;
 	int		empty[2];
 	pid_t	pid;
 	int		status;
 
+	fd = ft_calloc(2, sizeof(int));
 	if (!delimiter || !*delimiter)
 	{
 		shell_data->has_error = true;
 		return ;
 	}
 	if (pipe(fd) == -1)
-		return ;
-	if (pipe(empty) == -1)
-		return ;
-	if (chunk->heredoc_fd != NULL)
 	{
-		close(chunk->heredoc_fd[0]);
-		free(chunk->heredoc_fd);
+		free(fd);
+		return ;
 	}
+	if (pipe(empty) == -1)
+	{
+		close(fd[0]);
+		close(fd[1]);
+		free(fd);
+		return ;
+	}
+	if (chunk->heredoc_fd != NULL)
+		close(chunk->heredoc_fd[0]);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == 0)
 	{
-		heredoc(delimiter, fd, shell_data);
+		heredoc(delimiter, fd, shell_data, empty);
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
