@@ -2,13 +2,13 @@
 Developing a unix shell in C, which has to support command execution, pipes, redirections, environment variables, and built-in commands. This project deepened my understanding of process management, system calls, and shell behavior, mirroring features of bash.
 
 ## 📖 Concepts covered in minishell
-- forking, waiting, and killing processes
-- execution of commands using relative and absolute paths (path resolution)
-- redirections, communicating-between processes
-- lexing, tokenization, Abstract syntax tree
-- environment variables
-- builtin commands like `cd`, `echo`, `env`
-- signals
+- Forking, waiting, and killing processes
+- Execution of commands using relative and absolute paths (path resolution)
+- Redirections, communicating-between processes
+- Lexing, tokenization, Abstract syntax tree
+- Environment variables
+- Builtin commands
+- Signals
 
 ## ⬇️ Clone
 
@@ -25,6 +25,29 @@ make
 ./minishell
 ```
 
+## 💻 Capabilities of our shell
+
+- Displaying a prompt for user input
+- Utilize arrow keys to navigate through history
+- Launch executables via absolute or relative path
+- File & input/output redirection
+  - `<`: Redirect input from another source.
+  - `<<`: (heredoc) Continuously type input until the specified end-of-file keyword is provided.
+  - `>>`: Redirect and append output to another source.
+  - `>`: Redirect the output to another source.
+- Supports interprocess communication. Use `|` to connect one process's output to the input of the next process
+- Supports the following builtins:
+  - `echo` (with `-n` option): Prints a string inputted as argument  
+  - `cd`: Set the current path
+  - `pwd`: Display the path to the current working directory
+  - `export`: Display or set environment variables
+  - `unset`: Remove and environment variable
+  - `env`: List all environment variables and their respective values
+  - `exit`: Quit the shell
+- Expands special characters, such as `'` and `''` quotations, and any available environment variables, which start with `$` like `$PATH` to their assigned values
+- Supports signals
+  - `ctrl + C` to cancel the current line, and move to a newline
+  - `ctrl + D` to exit the shell
 
 ## My experience with this project
 
